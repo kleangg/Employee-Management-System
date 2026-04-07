@@ -17,3 +17,12 @@ require('./components/Example')
 require('./components/sidebar');
 require('./components/user_profile');
 require('./components/leave');
+
+// Start MSW in mock mode
+if (window.location.search.includes('mock=true')) {
+  import('./mocks/server').then(({ worker }) => {
+    worker.start({
+      onUnhandledRequest: 'bypass'
+    });
+  });
+}

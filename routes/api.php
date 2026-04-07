@@ -19,7 +19,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/leave/balance', [LeaveController::class, 'balance']);
-Route::get('/leave', [LeaveController::class, 'index']);
-Route::post('/leave', [LeaveController::class, 'store']);
-Route::delete('/leave/{id}', [LeaveController::class, 'destroy']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/leave/balance', [LeaveController::class, 'balance']);
+    Route::get('/leave', [LeaveController::class, 'index']);
+    Route::post('/leave', [LeaveController::class, 'store']);
+    Route::delete('/leave/{id}', [LeaveController::class, 'destroy']);
+
+    // Admin routes
+    Route::get('/admin/leave', [LeaveController::class, 'adminIndex']);
+    Route::get('/admin/leave/balance/{userId}', [LeaveController::class, 'adminBalance']);
+    Route::put('/admin/leave/{id}', [LeaveController::class, 'adminUpdate']);
+});

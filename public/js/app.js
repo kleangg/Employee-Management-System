@@ -5064,6 +5064,94 @@ module.exports = {
 
 /***/ },
 
+/***/ "./resources/js/AuthContext.js"
+/*!*************************************!*\
+  !*** ./resources/js/AuthContext.js ***!
+  \*************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AuthProvider: () => (/* binding */ AuthProvider),
+/* harmony export */   useAuth: () => (/* binding */ useAuth)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+var AuthContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)();
+var useAuth = function useAuth() {
+  var context = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+var AuthProvider = function AuthProvider(_ref) {
+  var children = _ref.children;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    user = _useState2[0],
+    setUser = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(localStorage.getItem('token')),
+    _useState4 = _slicedToArray(_useState3, 2),
+    token = _useState4[0],
+    setToken = _useState4[1];
+  var isMockMode = window.location.search.includes('mock=true') || "development" === 'development';
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (token) {
+      // Decode token or fetch user info
+      // For now, assume token contains user info or fetch from API
+      // This is a placeholder; in real app, decode JWT or call /api/user
+      setUser({
+        name: 'Admin User',
+        role: 'HR Admin',
+        email: 'admin@example.com'
+      });
+    } else if (isMockMode) {
+      // In mock mode, provide a default user
+      setUser({
+        name: 'Mock User',
+        role: 'Employee',
+        email: 'mock@example.com'
+      });
+      localStorage.setItem('token', 'mock-token');
+      setToken('mock-token');
+    }
+  }, [token, isMockMode]);
+  var login = function login(newToken, userData) {
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+    setUser(userData);
+  };
+  var logout = function logout() {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+  };
+  var value = {
+    user: user,
+    token: token,
+    login: login,
+    logout: logout,
+    isAuthenticated: !!token
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(AuthContext.Provider, {
+    value: value,
+    children: children
+  });
+};
+
+/***/ },
+
 /***/ "./resources/js/app.js"
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -5091,6 +5179,16 @@ __webpack_require__(/*! ./components/Example */ "./resources/js/components/Examp
 __webpack_require__(/*! ./components/sidebar */ "./resources/js/components/sidebar.jsx");
 __webpack_require__(/*! ./components/user_profile */ "./resources/js/components/user_profile.jsx");
 __webpack_require__(/*! ./components/leave */ "./resources/js/components/leave.jsx");
+
+// Start MSW in mock mode
+if (window.location.search.includes('mock=true')) {
+  __webpack_require__.e(/*! import() */ "resources_js_mocks_server_js").then(__webpack_require__.bind(__webpack_require__, /*! ./mocks/server */ "./resources/js/mocks/server.js")).then(function (_ref) {
+    var worker = _ref.worker;
+    worker.start({
+      onUnhandledRequest: 'bypass'
+    });
+  });
+}
 
 /***/ },
 
@@ -5192,178 +5290,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _AuthContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../AuthContext */ "./resources/js/AuthContext.js");
+/* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 // ============================================================
-//  pages/Leave.jsx
+//  pages/Leave.jsx  (v2 — role-based view)
 //
-//  Full leave management page for employees. Has 3 sections:
+//  HOW ROLE-BASED VIEW WORKS:
+//  This single file exports one component — Leave.
+//  Inside, it checks user.role from AuthContext.
+//  If role === "HR Admin" → renders <AdminLeaveView>
+//  Otherwise             → renders <EmployeeLeaveView>
 //
-//  1. Leave Balance   — shows remaining days per leave type
-//  2. Apply for Leave — form to submit a new leave request
-//  3. Leave History   — table of past/pending requests
-//                       with ability to cancel pending ones
-//
-//  Data flow:
-//  - On mount: fetch balance + history from Laravel API
-//  - On submit: POST /api/leave → refresh both
-//  - On cancel: DELETE /api/leave/{id} → refresh both
+//  This means no extra route or page needed — the same
+//  /leave URL shows different UI based on who is logged in.
 // ============================================================
 
 
 
 
-var USE_MOCK = window.location.search.includes("mockLeave=true");
-var mockLeaveData = {
-  balance: {
-    annual: 12,
-    medical: 4,
-    emergency: 1,
-    unpaid: 0
-  },
-  history: [{
-    id: 1,
-    type: "annual",
-    start_date: "2026-04-10",
-    end_date: "2026-04-12",
-    days: 3,
-    reason: "Family event",
-    status: "approved"
-  }, {
-    id: 2,
-    type: "medical",
-    start_date: "2026-04-20",
-    end_date: "2026-04-21",
-    days: 2,
-    reason: "Doctor appointment",
-    status: "pending"
-  }, {
-    id: 3,
-    type: "emergency",
-    start_date: "2026-05-02",
-    end_date: "2026-05-02",
-    days: 1,
-    reason: "Urgent errand",
-    status: "rejected"
-  }]
-};
-function delay(ms) {
-  return new Promise(function (resolve) {
-    return setTimeout(resolve, ms);
-  });
-}
-function getMockResponse(data) {
-  var ok = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+// ── Shared helpers ────────────────────────────────────────────
+
+function authHeaders() {
   return {
-    ok: ok,
-    json: function () {
-      var _json = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-        return _regenerator().w(function (_context) {
-          while (1) switch (_context.n) {
-            case 0:
-              return _context.a(2, data);
-          }
-        }, _callee);
-      }));
-      function json() {
-        return _json.apply(this, arguments);
-      }
-      return json;
-    }()
+    Authorization: "Bearer ".concat(localStorage.getItem("token")),
+    Accept: "application/json",
+    "Content-Type": "application/json"
   };
 }
-function mockFetch(_x) {
-  return _mockFetch.apply(this, arguments);
-} // ── Helpers ───────────────────────────────────────────────────
-function _mockFetch() {
-  _mockFetch = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(path) {
-    var options,
-      body,
-      record,
-      id,
-      _record,
-      _args6 = arguments;
-    return _regenerator().w(function (_context6) {
-      while (1) switch (_context6.n) {
-        case 0:
-          options = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : {};
-          _context6.n = 1;
-          return delay(250);
-        case 1:
-          if (!(path === "/api/leave/balance")) {
-            _context6.n = 2;
-            break;
-          }
-          return _context6.a(2, getMockResponse(mockLeaveData.balance));
-        case 2:
-          if (!(path === "/api/leave")) {
-            _context6.n = 4;
-            break;
-          }
-          if (!(options.method === "POST")) {
-            _context6.n = 3;
-            break;
-          }
-          body = JSON.parse(options.body || "{}");
-          record = {
-            id: Date.now(),
-            type: body.type || "annual",
-            start_date: body.start_date,
-            end_date: body.end_date,
-            days: countDays(body.start_date, body.end_date),
-            reason: body.reason || "No reason provided",
-            status: "pending"
-          };
-          mockLeaveData.history.unshift(record);
-          return _context6.a(2, getMockResponse({
-            message: "Leave request submitted."
-          }));
-        case 3:
-          return _context6.a(2, getMockResponse(mockLeaveData.history));
-        case 4:
-          if (!path.startsWith("/api/leave/")) {
-            _context6.n = 6;
-            break;
-          }
-          id = Number(path.split("/").pop());
-          _record = mockLeaveData.history.find(function (item) {
-            return item.id === id;
-          });
-          if (!_record) {
-            _context6.n = 5;
-            break;
-          }
-          _record.status = "cancelled";
-          return _context6.a(2, getMockResponse({
-            message: "Leave request cancelled."
-          }));
-        case 5:
-          return _context6.a(2, getMockResponse({
-            message: "Not found."
-          }, false));
-        case 6:
-          return _context6.a(2, getMockResponse({
-            message: "Unknown mock path."
-          }, false));
-      }
-    }, _callee6);
-  }));
-  return _mockFetch.apply(this, arguments);
-}
-function formatDate(dateStr) {
-  if (!dateStr) return "—";
-  return new Date(dateStr).toLocaleDateString("en-MY", {
+function formatDate(d) {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("en-MY", {
     day: "numeric",
     month: "short",
     year: "numeric"
@@ -5371,180 +5346,791 @@ function formatDate(dateStr) {
 }
 function countDays(from, to) {
   if (!from || !to) return 0;
-  return Math.floor((new Date(to) - new Date(from)) / 86400000) + 1;
-}
-function today() {
-  return new Date().toISOString().split("T")[0];
+  return Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000) + 1);
 }
 
-// ── Status badge ──────────────────────────────────────────────
+// ── Shared UI pieces ──────────────────────────────────────────
+
 function StatusBadge(_ref) {
   var status = _ref.status;
-  var styles = {
-    pending: "bg-amber-50  text-amber-700  border border-amber-200",
-    approved: "bg-green-50  text-green-700  border border-green-200",
-    rejected: "bg-red-50    text-red-700    border border-red-200",
-    cancelled: "bg-gray-100  text-gray-500   border border-gray-200"
+  var s = {
+    pending: "bg-amber-50 text-amber-700 border border-amber-200",
+    approved: "bg-green-50 text-green-700 border border-green-200",
+    rejected: "bg-red-50   text-red-700   border border-red-200"
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
-    className: "text-xs font-medium px-2 py-0.5 rounded-full ".concat(styles[status] || styles.pending),
-    children: status.charAt(0).toUpperCase() + status.slice(1)
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+    className: "text-xs font-medium px-2 py-0.5 rounded-full capitalize ".concat(s[status] || s.pending),
+    children: status
+  });
+}
+function Alert(_ref2) {
+  var type = _ref2.type,
+    message = _ref2.message,
+    onClose = _ref2.onClose;
+  if (!message) return null;
+  var s = {
+    success: "bg-green-50 border-green-200 text-green-800",
+    error: "bg-red-50   border-red-200   text-red-800"
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "border rounded-lg px-4 py-3 text-sm flex items-start justify-between gap-3 mb-4 ".concat(s[type]),
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+      children: message
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+      onClick: onClose,
+      className: "opacity-50 hover:opacity-100 flex-shrink-0",
+      children: "\u2715"
+    })]
   });
 }
 
-// ── Leave Balance Cards ───────────────────────────────────────
-function BalanceCards(_ref2) {
-  var balance = _ref2.balance,
-    loading = _ref2.loading;
-  var types = [{
-    label: "Annual leave",
-    key: "annual",
-    color: "bg-blue-50  text-blue-700  border-blue-100"
-  }, {
-    label: "Medical leave",
-    key: "medical",
-    color: "bg-teal-50  text-teal-700  border-teal-100"
-  }, {
-    label: "Emergency leave",
-    key: "emergency",
-    color: "bg-amber-50 text-amber-700 border-amber-100"
-  }, {
-    label: "Unpaid leave",
-    key: "unpaid",
-    color: "bg-gray-50  text-gray-600  border-gray-200"
-  }];
-  if (loading) {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8",
-      children: types.map(function (t) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-          className: "bg-white border border-gray-100 rounded-xl p-4 animate-pulse h-20"
-        }, t.key);
-      })
-    });
+// ── Approve / Reject modal ────────────────────────────────────
+// Shown when admin clicks Approve or Reject on a row.
+// Sends PUT /api/admin/leave/{id} with the decision + note.
+function ReviewModal(_ref3) {
+  var leave = _ref3.leave,
+    onClose = _ref3.onClose,
+    onDone = _ref3.onDone;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("approved"),
+    _useState2 = _slicedToArray(_useState, 2),
+    action = _useState2[0],
+    setAction = _useState2[1]; // "approved" | "rejected"
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState4 = _slicedToArray(_useState3, 2),
+    note = _useState4[0],
+    setNote = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    loading = _useState6[0],
+    setLoading = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState8 = _slicedToArray(_useState7, 2),
+    error = _useState8[0],
+    setError = _useState8[1];
+  function handleSubmit(_x) {
+    return _handleSubmit.apply(this, arguments);
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-    className: "grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8",
-    children: types.map(function (_ref3) {
-      var _balance$key;
-      var label = _ref3.label,
-        key = _ref3.key,
-        color = _ref3.color;
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        className: "border rounded-xl p-4 ".concat(color),
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-          className: "text-xs font-medium mb-2 opacity-70",
-          children: label
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("p", {
-          className: "text-2xl font-medium",
-          children: [(_balance$key = balance[key]) !== null && _balance$key !== void 0 ? _balance$key : "—", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
-            className: "text-sm font-normal ml-1 opacity-60",
-            children: "days"
+  function _handleSubmit() {
+    _handleSubmit = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
+      var res, data, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            e.preventDefault();
+            setLoading(true);
+            setError("");
+            _context.p = 1;
+            _context.n = 2;
+            return fetch("/api/admin/leave/".concat(leave.id), {
+              method: "PUT",
+              headers: authHeaders(),
+              body: JSON.stringify({
+                status: action,
+                note: note
+              })
+            });
+          case 2:
+            res = _context.v;
+            _context.n = 3;
+            return res.json();
+          case 3:
+            data = _context.v;
+            if (res.ok) {
+              _context.n = 4;
+              break;
+            }
+            setError(data.message || "Failed.");
+            return _context.a(2);
+          case 4:
+            onDone("Leave request ".concat(action, " successfully."));
+            onClose();
+            _context.n = 6;
+            break;
+          case 5:
+            _context.p = 5;
+            _t = _context.v;
+            setError("Network error. Please try again.");
+          case 6:
+            _context.p = 6;
+            setLoading(false);
+            return _context.f(6);
+          case 7:
+            return _context.a(2);
+        }
+      }, _callee, null, [[1, 5, 6, 7]]);
+    }));
+    return _handleSubmit.apply(this, arguments);
+  }
+  return (
+    /*#__PURE__*/
+    // Overlay — faux modal using normal flow so height is correct
+    (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      style: {
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.4)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 50
+      },
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "bg-white rounded-xl border border-gray-200 w-full max-w-md mx-4 p-6",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "flex items-start justify-between mb-4",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h2", {
+              className: "text-base font-medium text-gray-900",
+              children: "Review leave request"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+              className: "text-sm text-gray-400 mt-0.5",
+              children: [leave.user_name, " \xB7 ", leave.type, " leave \xB7 ", countDays(leave.start_date, leave.end_date), " day(s)"]
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+            onClick: onClose,
+            className: "text-gray-400 hover:text-gray-600 text-lg leading-none",
+            children: "\u2715"
           })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "bg-gray-50 rounded-lg p-3 mb-4 text-sm space-y-1",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            className: "flex gap-3",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+              className: "text-gray-400 w-20",
+              children: "Dates"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+              className: "text-gray-800",
+              children: [formatDate(leave.start_date), " \u2192 ", formatDate(leave.end_date)]
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            className: "flex gap-3",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+              className: "text-gray-400 w-20",
+              children: "Reason"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+              className: "text-gray-800",
+              children: leave.reason
+            })]
+          })]
+        }), error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
+          type: "error",
+          message: error,
+          onClose: function onClose() {
+            return setError("");
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
+          onSubmit: handleSubmit,
+          className: "space-y-4",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+              className: "block text-sm text-gray-600 mb-2",
+              children: "Decision"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+              className: "flex gap-2",
+              children: ["approved", "rejected"].map(function (a) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+                  type: "button",
+                  onClick: function onClick() {
+                    return setAction(a);
+                  },
+                  className: ["flex-1 py-2 rounded-lg text-sm font-medium border transition-all capitalize", action === a && a === "approved" ? "bg-green-50 border-green-400 text-green-700" : action === a && a === "rejected" ? "bg-red-50 border-red-400 text-red-700" : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"].join(" "),
+                  children: a === "approved" ? "✓ Approve" : "✕ Reject"
+                }, a);
+              })
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("label", {
+              className: "block text-sm text-gray-600 mb-1",
+              children: ["Note to employee ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                className: "text-gray-400",
+                children: "(optional)"
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("textarea", {
+              value: note,
+              onChange: function onChange(e) {
+                return setNote(e.target.value);
+              },
+              rows: 3,
+              placeholder: action === "approved" ? "e.g. Approved. Enjoy your leave!" : "e.g. Insufficient staffing during this period.",
+              className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            className: "flex gap-2 pt-1",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+              type: "button",
+              onClick: onClose,
+              className: "flex-1 py-2 rounded-lg text-sm border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors",
+              children: "Cancel"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+              type: "submit",
+              disabled: loading,
+              className: ["flex-1 py-2 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-60", action === "approved" ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"].join(" "),
+              children: loading ? "Saving..." : "Confirm ".concat(action)
+            })]
+          })]
+        })]
+      })
+    })
+  );
+}
+
+// ── Employee balance card (used in admin view) ─────────────────
+function EmployeeBalanceCard(_ref4) {
+  var balance = _ref4.balance;
+  if (!balance) return null;
+  var types = [{
+    key: "annual",
+    label: "Annual",
+    total: 14,
+    color: "text-blue-600"
+  }, {
+    key: "medical",
+    label: "Medical",
+    total: 14,
+    color: "text-teal-600"
+  }, {
+    key: "emergency",
+    label: "Emergency",
+    total: 3,
+    color: "text-amber-600"
+  }];
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "bg-blue-50 border border-blue-100 rounded-lg p-3 mt-2",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+      className: "text-xs font-medium text-blue-700 mb-2",
+      children: ["Leave balance for ", balance.name]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "flex gap-4",
+      children: types.map(function (_ref5) {
+        var _balance$key;
+        var key = _ref5.key,
+          label = _ref5.label,
+          total = _ref5.total,
+          color = _ref5.color;
+        var used = (_balance$key = balance[key]) !== null && _balance$key !== void 0 ? _balance$key : 0;
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "text-center",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+            className: "text-base font-medium ".concat(color),
+            children: total - used
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+            className: "text-xs text-gray-400",
+            children: label
+          })]
+        }, key);
+      })
+    })]
+  });
+}
+
+// ── ADMIN VIEW ────────────────────────────────────────────────
+// Shown when user.role === "HR Admin"
+function AdminLeaveView() {
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState0 = _slicedToArray(_useState9, 2),
+    requests = _useState0[0],
+    setRequests = _useState0[1];
+  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState10 = _slicedToArray(_useState1, 2),
+    loading = _useState10[0],
+    setLoading = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState12 = _slicedToArray(_useState11, 2),
+    success = _useState12[0],
+    setSuccess = _useState12[1];
+
+  // Filters
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("all"),
+    _useState14 = _slicedToArray(_useState13, 2),
+    filterStatus = _useState14[0],
+    setFilterStatus = _useState14[1];
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("all"),
+    _useState16 = _slicedToArray(_useState15, 2),
+    filterType = _useState16[0],
+    setFilterType = _useState16[1];
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState18 = _slicedToArray(_useState17, 2),
+    filterName = _useState18[0],
+    setFilterName = _useState18[1];
+
+  // Review modal state
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    modalLeave = _useState20[0],
+    setModalLeave = _useState20[1];
+
+  // Employee balance panel (shown when clicking on a row)
+  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState22 = _slicedToArray(_useState21, 2),
+    balanceData = _useState22[0],
+    setBalanceData = _useState22[1];
+  var _useState23 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState24 = _slicedToArray(_useState23, 2),
+    balanceId = _useState24[0],
+    setBalanceId = _useState24[1];
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchRequests();
+  }, []);
+  function fetchRequests() {
+    return _fetchRequests.apply(this, arguments);
+  }
+  function _fetchRequests() {
+    _fetchRequests = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var res, data, _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            setLoading(true);
+            _context2.p = 1;
+            _context2.n = 2;
+            return fetch("/api/admin/leave", {
+              headers: authHeaders()
+            });
+          case 2:
+            res = _context2.v;
+            if (res.ok) {
+              _context2.n = 3;
+              break;
+            }
+            throw new Error('Failed to fetch');
+          case 3:
+            _context2.n = 4;
+            return res.json();
+          case 4:
+            data = _context2.v;
+            setRequests(Array.isArray(data) ? data : []);
+            _context2.n = 6;
+            break;
+          case 5:
+            _context2.p = 5;
+            _t2 = _context2.v;
+            console.error("Failed to load leave requests");
+            setRequests([]);
+          case 6:
+            _context2.p = 6;
+            setLoading(false);
+            return _context2.f(6);
+          case 7:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[1, 5, 6, 7]]);
+    }));
+    return _fetchRequests.apply(this, arguments);
+  }
+  function fetchBalance(_x2, _x3) {
+    return _fetchBalance.apply(this, arguments);
+  }
+  function _fetchBalance() {
+    _fetchBalance = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(userId, userName) {
+      var res, data, _t3;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            if (!(balanceId === userId)) {
+              _context3.n = 1;
+              break;
+            }
+            setBalanceId(null);
+            setBalanceData(null);
+            return _context3.a(2);
+          case 1:
+            _context3.p = 1;
+            _context3.n = 2;
+            return fetch("/api/admin/leave/balance/".concat(userId), {
+              headers: authHeaders()
+            });
+          case 2:
+            res = _context3.v;
+            if (res.ok) {
+              _context3.n = 3;
+              break;
+            }
+            throw new Error('Failed to fetch');
+          case 3:
+            _context3.n = 4;
+            return res.json();
+          case 4:
+            data = _context3.v;
+            setBalanceData(_objectSpread(_objectSpread({}, data), {}, {
+              name: userName
+            }));
+            setBalanceId(userId);
+            _context3.n = 6;
+            break;
+          case 5:
+            _context3.p = 5;
+            _t3 = _context3.v;
+            console.error("Failed to load balance");
+            setBalanceData(null);
+            setBalanceId(null);
+          case 6:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[1, 5]]);
+    }));
+    return _fetchBalance.apply(this, arguments);
+  }
+  function handleDone(msg) {
+    setSuccess(msg);
+    setBalanceId(null);
+    setBalanceData(null);
+    fetchRequests();
+  }
+
+  // Apply filters
+  var filtered = requests.filter(function (r) {
+    if (filterStatus !== "all" && r.status !== filterStatus) return false;
+    if (filterType !== "all" && r.type !== filterType) return false;
+    if (filterName && !r.user_name.toLowerCase().includes(filterName.toLowerCase())) return false;
+    return true;
+  });
+
+  // Summary counts
+  var pending = requests.filter(function (r) {
+    return r.status === "pending";
+  }).length;
+  var approved = requests.filter(function (r) {
+    return r.status === "approved";
+  }).length;
+  var rejected = requests.filter(function (r) {
+    return r.status === "rejected";
+  }).length;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "p-8 max-w-5xl",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "flex items-center justify-between mb-1",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h1", {
+        className: "text-2xl font-medium text-gray-900",
+        children: "Leave requests"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        className: "text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100",
+        children: "HR Admin view"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "text-sm text-gray-400 mb-6",
+      children: "Review and manage employee leave applications."
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
+      type: "success",
+      message: success,
+      onClose: function onClose() {
+        return setSuccess("");
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "grid grid-cols-3 gap-4 mb-6",
+      children: [{
+        label: "Pending review",
+        value: pending,
+        color: "text-amber-600",
+        bg: "bg-amber-50"
+      }, {
+        label: "Approved",
+        value: approved,
+        color: "text-green-600",
+        bg: "bg-green-50"
+      }, {
+        label: "Rejected",
+        value: rejected,
+        color: "text-red-500",
+        bg: "bg-red-50"
+      }].map(function (_ref6) {
+        var label = _ref6.label,
+          value = _ref6.value,
+          color = _ref6.color,
+          bg = _ref6.bg;
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "".concat(bg, " border border-gray-100 rounded-xl p-4"),
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+            className: "text-xs text-gray-500 mb-1",
+            children: label
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+            className: "text-2xl font-medium ".concat(color),
+            children: value
+          })]
+        }, label);
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "flex flex-wrap gap-3 mb-4",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        type: "text",
+        value: filterName,
+        onChange: function onChange(e) {
+          return setFilterName(e.target.value);
+        },
+        placeholder: "Search employee...",
+        className: "border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 w-44"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("select", {
+        value: filterStatus,
+        onChange: function onChange(e) {
+          return setFilterStatus(e.target.value);
+        },
+        className: "border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "all",
+          children: "All statuses"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "pending",
+          children: "Pending"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "approved",
+          children: "Approved"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "rejected",
+          children: "Rejected"
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("select", {
+        value: filterType,
+        onChange: function onChange(e) {
+          return setFilterType(e.target.value);
+        },
+        className: "border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "all",
+          children: "All types"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "annual",
+          children: "Annual"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "medical",
+          children: "Medical"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "emergency",
+          children: "Emergency"
+        })]
+      }), (filterStatus !== "all" || filterType !== "all" || filterName) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+        onClick: function onClick() {
+          setFilterStatus("all");
+          setFilterType("all");
+          setFilterName("");
+        },
+        className: "text-sm text-gray-400 hover:text-gray-600 px-2",
+        children: "Clear filters"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "bg-white border border-gray-200 rounded-xl overflow-hidden",
+      children: loading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "p-8 text-center text-sm text-gray-400",
+        children: "Loading..."
+      }) : filtered.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "p-8 text-center text-sm text-gray-400",
+        children: "No requests found."
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "overflow-x-auto",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("table", {
+          className: "w-full text-sm",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("thead", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tr", {
+              className: "border-b border-gray-100",
+              children: ["Employee", "Type", "From", "To", "Days", "Reason", "Status", "Actions"].map(function (h) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                  className: "text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap",
+                  children: h
+                }, h);
+              })
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tbody", {
+            className: "divide-y divide-gray-50",
+            children: filtered.map(function (r) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("tr", {
+                  className: "hover:bg-gray-50 transition-colors",
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                    className: "px-4 py-3",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+                      onClick: function onClick() {
+                        return fetchBalance(r.user_id, r.user_name);
+                      },
+                      className: "font-medium text-blue-600 hover:text-blue-800 hover:underline text-left",
+                      title: "View leave balance",
+                      children: r.user_name
+                    })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                    className: "px-4 py-3 capitalize text-gray-700",
+                    children: r.type
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                    className: "px-4 py-3 text-gray-600 whitespace-nowrap",
+                    children: formatDate(r.start_date)
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                    className: "px-4 py-3 text-gray-600 whitespace-nowrap",
+                    children: formatDate(r.end_date)
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                    className: "px-4 py-3 text-gray-600",
+                    children: countDays(r.start_date, r.end_date)
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                    className: "px-4 py-3 text-gray-500 max-w-xs",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                      className: "line-clamp-2",
+                      children: r.reason
+                    })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                    className: "px-4 py-3",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(StatusBadge, {
+                      status: r.status
+                    })
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                    className: "px-4 py-3",
+                    children: r.status === "pending" ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+                      onClick: function onClick() {
+                        return setModalLeave(r);
+                      },
+                      className: "text-xs font-medium bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap",
+                      children: "Review"
+                    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                      className: "text-xs text-gray-300",
+                      children: "\u2014"
+                    })
+                  })]
+                }, r.id), balanceId === r.user_id && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tr", {
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                    colSpan: 8,
+                    className: "px-4 pb-3 pt-0",
+                    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(EmployeeBalanceCard, {
+                      balance: balanceData
+                    })
+                  })
+                }, "bal-".concat(r.user_id))]
+              });
+            })
+          })]
+        })
+      })
+    }), modalLeave && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ReviewModal, {
+      leave: modalLeave,
+      onClose: function onClose() {
+        return setModalLeave(null);
+      },
+      onDone: handleDone
+    })]
+  });
+}
+
+// ── EMPLOYEE VIEW ─────────────────────────────────────────────
+// (same as before — included here for completeness)
+function BalanceCards(_ref7) {
+  var balance = _ref7.balance,
+    loading = _ref7.loading;
+  var types = [{
+    key: "annual",
+    label: "Annual leave",
+    total: 14,
+    bar: "bg-blue-500",
+    pill: "bg-blue-50 text-blue-800",
+    num: "text-blue-700"
+  }, {
+    key: "medical",
+    label: "Medical leave",
+    total: 14,
+    bar: "bg-teal-500",
+    pill: "bg-teal-50 text-teal-800",
+    num: "text-teal-700"
+  }, {
+    key: "emergency",
+    label: "Emergency leave",
+    total: 3,
+    bar: "bg-amber-500",
+    pill: "bg-amber-50 text-amber-800",
+    num: "text-amber-700"
+  }];
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    className: "grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8",
+    children: types.map(function (_ref8) {
+      var _balance$key2;
+      var key = _ref8.key,
+        label = _ref8.label,
+        total = _ref8.total,
+        bar = _ref8.bar,
+        pill = _ref8.pill,
+        num = _ref8.num;
+      var used = loading ? 0 : (_balance$key2 = balance[key]) !== null && _balance$key2 !== void 0 ? _balance$key2 : 0;
+      var remaining = total - used;
+      var pct = Math.round(remaining / total * 100);
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "bg-white border border-gray-200 rounded-xl p-5",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "flex items-center justify-between mb-3",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            className: "text-xs font-medium text-gray-500",
+            children: label
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            className: "text-xs font-medium px-2 py-0.5 rounded-full ".concat(pill),
+            children: loading ? "—" : "".concat(remaining, " left")
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+          className: "h-1.5 bg-gray-100 rounded-full mb-3 overflow-hidden",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+            className: "h-full rounded-full ".concat(bar),
+            style: {
+              width: loading ? "0%" : "".concat(pct, "%")
+            }
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "flex items-baseline gap-1",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+            className: "text-2xl font-medium ".concat(num),
+            children: loading ? "—" : remaining
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("span", {
+            className: "text-xs text-gray-400",
+            children: ["/ ", total, " days"]
+          })]
+        }), !loading && used > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+          className: "text-xs text-gray-400 mt-1",
+          children: [used, " day", used > 1 ? "s" : "", " used"]
         })]
       }, key);
     })
   });
 }
-
-// ── Apply for Leave Form ──────────────────────────────────────
-function ApplyForm(_ref4) {
-  var onSubmitted = _ref4.onSubmitted;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("annual"),
-    _useState2 = _slicedToArray(_useState, 2),
-    type = _useState2[0],
-    setType = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
-    _useState4 = _slicedToArray(_useState3, 2),
-    from = _useState4[0],
-    setFrom = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
-    _useState6 = _slicedToArray(_useState5, 2),
-    to = _useState6[0],
-    setTo = _useState6[1];
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
-    _useState8 = _slicedToArray(_useState7, 2),
-    reason = _useState8[0],
-    setReason = _useState8[1];
-  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
-    _useState0 = _slicedToArray(_useState9, 2),
-    loading = _useState0[0],
-    setLoading = _useState0[1];
-  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
-    _useState10 = _slicedToArray(_useState1, 2),
-    error = _useState10[0],
-    setError = _useState10[1];
-  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
-    _useState12 = _slicedToArray(_useState11, 2),
-    success = _useState12[0],
-    setSuccess = _useState12[1];
-  function handleFromChange(val) {
-    setFrom(val);
-    if (to && val > to) setTo(val); // auto-correct end date
-  }
+function ApplyForm(_ref9) {
+  var onSuccess = _ref9.onSuccess;
+  var _useState25 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("annual"),
+    _useState26 = _slicedToArray(_useState25, 2),
+    type = _useState26[0],
+    setType = _useState26[1];
+  var _useState27 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState28 = _slicedToArray(_useState27, 2),
+    from = _useState28[0],
+    setFrom = _useState28[1];
+  var _useState29 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState30 = _slicedToArray(_useState29, 2),
+    to = _useState30[0],
+    setTo = _useState30[1];
+  var _useState31 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState32 = _slicedToArray(_useState31, 2),
+    reason = _useState32[0],
+    setReason = _useState32[1];
+  var _useState33 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState34 = _slicedToArray(_useState33, 2),
+    loading = _useState34[0],
+    setLoading = _useState34[1];
+  var _useState35 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState36 = _slicedToArray(_useState35, 2),
+    error = _useState36[0],
+    setError = _useState36[1];
   var days = countDays(from, to);
-  function handleSubmit(_x2) {
-    return _handleSubmit.apply(this, arguments);
+  var today = new Date().toISOString().split("T")[0];
+  function handleSubmit(_x4) {
+    return _handleSubmit2.apply(this, arguments);
   }
-  function _handleSubmit() {
-    _handleSubmit = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(e) {
-      var res, data, firstError, _t, _t2;
-      return _regenerator().w(function (_context2) {
-        while (1) switch (_context2.p = _context2.n) {
+  function _handleSubmit2() {
+    _handleSubmit2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(e) {
+      var res, data, _t4;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
           case 0:
             e.preventDefault();
             setError("");
-            setSuccess("");
-            if (!(!from || !to)) {
-              _context2.n = 1;
+            if (!(new Date(to) < new Date(from))) {
+              _context4.n = 1;
               break;
             }
-            setError("Please select start and end dates.");
-            return _context2.a(2);
+            setError("End date cannot be before start date.");
+            return _context4.a(2);
           case 1:
-            if (!(from > to)) {
-              _context2.n = 2;
-              break;
-            }
-            setError("End date must be after start date.");
-            return _context2.a(2);
-          case 2:
-            if (reason.trim()) {
-              _context2.n = 3;
-              break;
-            }
-            setError("Please provide a reason.");
-            return _context2.a(2);
-          case 3:
             setLoading(true);
-            _context2.p = 4;
-            if (!USE_MOCK) {
-              _context2.n = 6;
-              break;
-            }
-            _context2.n = 5;
-            return mockFetch("/api/leave", {
-              method: "POST",
-              body: JSON.stringify({
-                type: type,
-                start_date: from,
-                end_date: to,
-                reason: reason
-              })
-            });
-          case 5:
-            _t = _context2.v;
-            _context2.n = 8;
-            break;
-          case 6:
-            _context2.n = 7;
+            _context4.p = 2;
+            _context4.n = 3;
             return fetch("/api/leave", {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer ".concat(localStorage.getItem("token")),
-                Accept: "application/json"
-              },
+              headers: authHeaders(),
               body: JSON.stringify({
                 type: type,
                 start_date: from,
@@ -5552,129 +6138,125 @@ function ApplyForm(_ref4) {
                 reason: reason
               })
             });
-          case 7:
-            _t = _context2.v;
-          case 8:
-            res = _t;
-            _context2.n = 9;
+          case 3:
+            res = _context4.v;
+            _context4.n = 4;
             return res.json();
-          case 9:
-            data = _context2.v;
+          case 4:
+            data = _context4.v;
             if (res.ok) {
-              _context2.n = 10;
+              _context4.n = 5;
               break;
             }
-            firstError = data.errors ? Object.values(data.errors).flat()[0] : data.message;
-            setError(firstError || "Submission failed.");
-            return _context2.a(2);
-          case 10:
-            setSuccess("Leave request submitted! Waiting for HR approval.");
+            setError(data.errors ? Object.values(data.errors).flat()[0] : data.message);
+            return _context4.a(2);
+          case 5:
             setType("annual");
             setFrom("");
             setTo("");
             setReason("");
-            onSubmitted(); // refresh balance + history
-            _context2.n = 12;
+            onSuccess("Leave request submitted successfully!");
+            _context4.n = 7;
             break;
-          case 11:
-            _context2.p = 11;
-            _t2 = _context2.v;
+          case 6:
+            _context4.p = 6;
+            _t4 = _context4.v;
             setError("Network error. Please try again.");
-          case 12:
-            _context2.p = 12;
+          case 7:
+            _context4.p = 7;
             setLoading(false);
-            return _context2.f(12);
-          case 13:
-            return _context2.a(2);
+            return _context4.f(7);
+          case 8:
+            return _context4.a(2);
         }
-      }, _callee2, null, [[4, 11, 12, 13]]);
+      }, _callee4, null, [[2, 6, 7, 8]]);
     }));
-    return _handleSubmit.apply(this, arguments);
+    return _handleSubmit2.apply(this, arguments);
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-    className: "bg-white border border-gray-200 rounded-xl p-6 mb-6",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "bg-white border border-gray-200 rounded-xl p-6 mb-8",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h2", {
       className: "text-base font-medium text-gray-900 mb-5",
       children: "Apply for leave"
-    }), success && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3 mb-4",
-      children: success
-    }), error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4",
-      children: error
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
+    }), error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
+      type: "error",
+      message: error,
+      onClose: function onClose() {
+        return setError("");
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
       onSubmit: handleSubmit,
       className: "space-y-4",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
           className: "block text-sm text-gray-600 mb-1",
           children: "Leave type"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("select", {
           value: type,
           onChange: function onChange(e) {
             return setType(e.target.value);
           },
           className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
             value: "annual",
             children: "Annual leave"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
             value: "medical",
             children: "Medical leave"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
             value: "emergency",
             children: "Emergency leave"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
-            value: "unpaid",
-            children: "Unpaid leave"
           })]
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        className: "grid grid-cols-2 gap-3",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "grid grid-cols-2 gap-4",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
             className: "block text-sm text-gray-600 mb-1",
             children: "Start date"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
             type: "date",
             value: from,
-            min: today(),
+            min: today,
             onChange: function onChange(e) {
-              return handleFromChange(e.target.value);
+              return setFrom(e.target.value);
             },
-            className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required: true,
+            className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
             className: "block text-sm text-gray-600 mb-1",
             children: "End date"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
             type: "date",
             value: to,
-            min: from || today(),
+            min: from || today,
             onChange: function onChange(e) {
               return setTo(e.target.value);
             },
-            className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required: true,
+            className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           })]
         })]
-      }), days > 0 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("p", {
+      }), from && to && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
         className: "text-sm text-blue-600 font-medium",
         children: [days, " day", days > 1 ? "s" : "", " selected"]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
           className: "block text-sm text-gray-600 mb-1",
           children: "Reason"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("textarea", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("textarea", {
           value: reason,
           onChange: function onChange(e) {
             return setReason(e.target.value);
           },
+          required: true,
           rows: 3,
           placeholder: "Briefly describe the reason for your leave...",
-          className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
         type: "submit",
         disabled: loading,
         className: "bg-blue-600 text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60",
@@ -5683,346 +6265,224 @@ function ApplyForm(_ref4) {
     })]
   });
 }
-
-// ── Leave History Table ───────────────────────────────────────
-function LeaveHistory(_ref5) {
-  var history = _ref5.history,
-    loading = _ref5.loading,
-    onCancelled = _ref5.onCancelled;
-  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
-    _useState14 = _slicedToArray(_useState13, 2),
-    cancellingId = _useState14[0],
-    setCancellingId = _useState14[1];
-  var records = Array.isArray(history) ? history : [];
-  function handleCancel(_x3) {
-    return _handleCancel.apply(this, arguments);
-  }
-  function _handleCancel() {
-    _handleCancel = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(id) {
-      var res, _t3, _t4;
-      return _regenerator().w(function (_context3) {
-        while (1) switch (_context3.p = _context3.n) {
-          case 0:
-            if (window.confirm("Cancel this leave request?")) {
-              _context3.n = 1;
-              break;
-            }
-            return _context3.a(2);
-          case 1:
-            setCancellingId(id);
-            _context3.p = 2;
-            if (!USE_MOCK) {
-              _context3.n = 4;
-              break;
-            }
-            _context3.n = 3;
-            return mockFetch("/api/leave/".concat(id), {
-              method: "DELETE"
-            });
-          case 3:
-            _t3 = _context3.v;
-            _context3.n = 6;
-            break;
-          case 4:
-            _context3.n = 5;
-            return fetch("/api/leave/".concat(id), {
-              method: "DELETE",
-              headers: {
-                Authorization: "Bearer ".concat(localStorage.getItem("token")),
-                Accept: "application/json"
-              }
-            });
-          case 5:
-            _t3 = _context3.v;
-          case 6:
-            res = _t3;
-            if (res.ok) onCancelled();
-            _context3.n = 8;
-            break;
-          case 7:
-            _context3.p = 7;
-            _t4 = _context3.v;
-            console.error("Cancel failed:", _t4);
-          case 8:
-            _context3.p = 8;
-            setCancellingId(null);
-            return _context3.f(8);
-          case 9:
-            return _context3.a(2);
-        }
-      }, _callee3, null, [[2, 7, 8, 9]]);
-    }));
-    return _handleCancel.apply(this, arguments);
-  }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+function LeaveHistory(_ref0) {
+  var records = _ref0.records,
+    loading = _ref0.loading;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
     className: "bg-white border border-gray-200 rounded-xl overflow-hidden",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "px-6 py-4 border-b border-gray-100 flex items-center justify-between",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "px-6 py-4 border-b border-gray-100",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h2", {
         className: "text-base font-medium text-gray-900",
-        children: "Leave history"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("span", {
-        className: "text-xs text-gray-400",
-        children: [records.length, " record", records.length !== 1 ? "s" : ""]
-      })]
-    }), loading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "px-6 py-8 text-center text-sm text-gray-400",
+        children: "My leave history"
+      })
+    }), loading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "p-6 text-sm text-gray-400",
       children: "Loading..."
-    }) : records.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "px-6 py-12 text-center",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-        className: "text-sm text-gray-400",
-        children: "No leave requests yet."
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-        className: "text-xs text-gray-300 mt-1",
-        children: "Requests you submit will appear here."
-      })]
-    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    }) : records.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "px-6 py-12 text-center text-sm text-gray-400",
+      children: "No leave requests yet."
+    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "overflow-x-auto",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("table", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("table", {
         className: "w-full text-sm",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("thead", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tr", {
-            className: "border-b border-gray-100 bg-gray-50",
-            children: ["Type", "From", "To", "Days", "Reason", "Status", ""].map(function (h) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("th", {
-                className: "text-left text-xs font-medium text-gray-400 px-5 py-3",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("thead", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tr", {
+            className: "border-b border-gray-100",
+            children: ["Type", "From", "To", "Days", "Reason", "Status"].map(function (h) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                className: "text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider",
                 children: h
               }, h);
             })
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("tbody", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tbody", {
           className: "divide-y divide-gray-50",
-          children: records.map(function (row) {
-            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("tr", {
-              className: "hover:bg-gray-50 transition-colors",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                className: "px-5 py-3 font-medium text-gray-900 capitalize whitespace-nowrap",
-                children: row.type
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                className: "px-5 py-3 text-gray-500 whitespace-nowrap",
-                children: formatDate(row.start_date)
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                className: "px-5 py-3 text-gray-500 whitespace-nowrap",
-                children: formatDate(row.end_date)
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                className: "px-5 py-3 text-gray-500",
-                children: row.days
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                className: "px-5 py-3 text-gray-400 max-w-[160px] truncate",
-                title: row.reason,
-                children: row.reason
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                className: "px-5 py-3",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(StatusBadge, {
-                  status: row.status
-                })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("td", {
-                className: "px-5 py-3",
-                children: row.status === "pending" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                  onClick: function onClick() {
-                    return handleCancel(row.id);
-                  },
-                  disabled: cancellingId === row.id,
-                  className: "text-xs text-red-400 hover:text-red-600 transition-colors disabled:opacity-50 whitespace-nowrap",
-                  children: cancellingId === row.id ? "Cancelling..." : "Cancel"
+          children: records.map(function (r) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("tr", {
+              className: "hover:bg-gray-50",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4 capitalize font-medium text-gray-800",
+                children: r.type
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4 text-gray-600",
+                children: formatDate(r.start_date)
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4 text-gray-600",
+                children: formatDate(r.end_date)
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4 text-gray-600",
+                children: countDays(r.start_date, r.end_date)
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4 text-gray-500 max-w-xs truncate",
+                children: r.reason
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(StatusBadge, {
+                  status: r.status
                 })
               })]
-            }, row.id);
+            }, r.id);
           })
         })]
       })
     })]
   });
 }
-
-// ── Main Leave page ───────────────────────────────────────────
-function Leave() {
+function EmployeeLeaveView() {
   var _user$name;
-  var user = {
-    name: "Admin User"
-  };
-  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
-    _useState16 = _slicedToArray(_useState15, 2),
-    balance = _useState16[0],
-    setBalance = _useState16[1];
-  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
-    _useState18 = _slicedToArray(_useState17, 2),
-    history = _useState18[0],
-    setHistory = _useState18[1];
-  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
-    _useState20 = _slicedToArray(_useState19, 2),
-    balanceLoading = _useState20[0],
-    setBalanceLoading = _useState20[1];
-  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
-    _useState22 = _slicedToArray(_useState21, 2),
-    historyLoading = _useState22[0],
-    setHistoryLoading = _useState22[1];
+  var _useAuth = (0,_AuthContext__WEBPACK_IMPORTED_MODULE_1__.useAuth)(),
+    user = _useAuth.user;
+  var _useState37 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
+    _useState38 = _slicedToArray(_useState37, 2),
+    balance = _useState38[0],
+    setBalance = _useState38[1];
+  var _useState39 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState40 = _slicedToArray(_useState39, 2),
+    records = _useState40[0],
+    setRecords = _useState40[1];
+  var _useState41 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState42 = _slicedToArray(_useState41, 2),
+    balLoad = _useState42[0],
+    setBalLoad = _useState42[1];
+  var _useState43 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState44 = _slicedToArray(_useState43, 2),
+    recLoad = _useState44[0],
+    setRecLoad = _useState44[1];
+  var _useState45 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState46 = _slicedToArray(_useState45, 2),
+    success = _useState46[0],
+    setSuccess = _useState46[1];
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     fetchBalance();
     fetchHistory();
   }, []);
   function fetchBalance() {
-    return _fetchBalance.apply(this, arguments);
+    return _fetchBalance2.apply(this, arguments);
   }
-  function _fetchBalance() {
-    _fetchBalance = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
-      var res, data, _t5, _t6;
-      return _regenerator().w(function (_context4) {
-        while (1) switch (_context4.p = _context4.n) {
+  function _fetchBalance2() {
+    _fetchBalance2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+      var r, _t5, _t6;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
           case 0:
-            setBalanceLoading(true);
-            _context4.p = 1;
-            if (!USE_MOCK) {
-              _context4.n = 3;
-              break;
-            }
-            _context4.n = 2;
-            return mockFetch("/api/leave/balance");
-          case 2:
-            _t5 = _context4.v;
-            _context4.n = 5;
-            break;
-          case 3:
-            _context4.n = 4;
+            setBalLoad(true);
+            _context5.p = 1;
+            _context5.n = 2;
             return fetch("/api/leave/balance", {
-              headers: {
-                Authorization: "Bearer ".concat(localStorage.getItem("token")),
-                Accept: "application/json"
-              }
+              headers: authHeaders()
             });
-          case 4:
-            _t5 = _context4.v;
-          case 5:
-            res = _t5;
-            _context4.n = 6;
-            return res.json();
-          case 6:
-            data = _context4.v;
-            if (!res.ok || _typeof(data) !== "object") {
-              console.error("Balance fetch failed:", data);
-              setBalance({});
-            } else {
-              setBalance(data);
-            }
-            _context4.n = 8;
+          case 2:
+            r = _context5.v;
+            _t5 = setBalance;
+            _context5.n = 3;
+            return r.json();
+          case 3:
+            _t5(_context5.v);
+            _context5.n = 5;
             break;
-          case 7:
-            _context4.p = 7;
-            _t6 = _context4.v;
-            console.error("Balance fetch failed:", _t6);
-            setBalance({});
-          case 8:
-            _context4.p = 8;
-            setBalanceLoading(false);
-            return _context4.f(8);
-          case 9:
-            return _context4.a(2);
+          case 4:
+            _context5.p = 4;
+            _t6 = _context5.v;
+          case 5:
+            _context5.p = 5;
+            setBalLoad(false);
+            return _context5.f(5);
+          case 6:
+            return _context5.a(2);
         }
-      }, _callee4, null, [[1, 7, 8, 9]]);
+      }, _callee5, null, [[1, 4, 5, 6]]);
     }));
-    return _fetchBalance.apply(this, arguments);
+    return _fetchBalance2.apply(this, arguments);
   }
   function fetchHistory() {
     return _fetchHistory.apply(this, arguments);
   }
   function _fetchHistory() {
-    _fetchHistory = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
-      var res, data, _t7, _t8;
-      return _regenerator().w(function (_context5) {
-        while (1) switch (_context5.p = _context5.n) {
+    _fetchHistory = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+      var r, _t7, _t8;
+      return _regenerator().w(function (_context6) {
+        while (1) switch (_context6.p = _context6.n) {
           case 0:
-            setHistoryLoading(true);
-            _context5.p = 1;
-            if (!USE_MOCK) {
-              _context5.n = 3;
-              break;
-            }
-            _context5.n = 2;
-            return mockFetch("/api/leave");
-          case 2:
-            _t7 = _context5.v;
-            _context5.n = 5;
-            break;
-          case 3:
-            _context5.n = 4;
+            setRecLoad(true);
+            _context6.p = 1;
+            _context6.n = 2;
             return fetch("/api/leave", {
-              headers: {
-                Authorization: "Bearer ".concat(localStorage.getItem("token")),
-                Accept: "application/json"
-              }
+              headers: authHeaders()
             });
-          case 4:
-            _t7 = _context5.v;
-          case 5:
-            res = _t7;
-            _context5.n = 6;
-            return res.json();
-          case 6:
-            data = _context5.v;
-            if (!res.ok || !Array.isArray(data)) {
-              console.error("History fetch failed:", data);
-              setHistory([]);
-            } else {
-              setHistory(data);
-            }
-            _context5.n = 8;
+          case 2:
+            r = _context6.v;
+            _t7 = setRecords;
+            _context6.n = 3;
+            return r.json();
+          case 3:
+            _t7(_context6.v);
+            _context6.n = 5;
             break;
-          case 7:
-            _context5.p = 7;
-            _t8 = _context5.v;
-            console.error("History fetch failed:", _t8);
-            setHistory([]);
-          case 8:
-            _context5.p = 8;
-            setHistoryLoading(false);
-            return _context5.f(8);
-          case 9:
-            return _context5.a(2);
+          case 4:
+            _context6.p = 4;
+            _t8 = _context6.v;
+          case 5:
+            _context6.p = 5;
+            setRecLoad(false);
+            return _context6.f(5);
+          case 6:
+            return _context6.a(2);
         }
-      }, _callee5, null, [[1, 7, 8, 9]]);
+      }, _callee6, null, [[1, 4, 5, 6]]);
     }));
     return _fetchHistory.apply(this, arguments);
   }
-  function refresh() {
+  function handleSuccess(msg) {
+    setSuccess(msg);
     fetchBalance();
     fetchHistory();
   }
-  var firstName = (user === null || user === void 0 || (_user$name = user.name) === null || _user$name === void 0 ? void 0 : _user$name.split(" ")[0]) || "there";
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
     className: "p-8 max-w-4xl",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h1", {
       className: "text-2xl font-medium text-gray-900 mb-1",
       children: "Leave management"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("p", {
-      className: "text-sm text-gray-400 mb-4",
-      children: ["Hi ", firstName, ", manage your leave requests here.", USE_MOCK && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
-        className: "inline-flex ml-3 items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700",
-        children: "Mock data active"
-      })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("p", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
       className: "text-sm text-gray-400 mb-8",
-      children: ["Use ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("code", {
-        children: "?mockLeave=true"
-      }), " in the URL to enable mocked responses."]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(BalanceCards, {
+      children: ["Welcome, ", user === null || user === void 0 || (_user$name = user.name) === null || _user$name === void 0 ? void 0 : _user$name.split(" ")[0], ". Manage your leave requests below."]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
+      type: "success",
+      message: success,
+      onClose: function onClose() {
+        return setSuccess("");
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(BalanceCards, {
       balance: balance,
-      loading: balanceLoading
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ApplyForm, {
-      onSubmitted: refresh
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(LeaveHistory, {
-      history: history,
-      loading: historyLoading,
-      onCancelled: refresh
+      loading: balLoad
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ApplyForm, {
+      onSuccess: handleSuccess
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(LeaveHistory, {
+      records: records,
+      loading: recLoad
     })]
   });
 }
 
-// Mount the component when the container exists
-if (document.getElementById('leavePage')) {
-  var container = document.getElementById('leavePage');
-  var root = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot)(container);
-  root.render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Leave, {}));
+// ── Main export — switches view based on role ─────────────────
+function Leave() {
+  var _useAuth2 = (0,_AuthContext__WEBPACK_IMPORTED_MODULE_1__.useAuth)(),
+    user = _useAuth2.user;
+
+  // Wait for user to load before deciding which view to show
+  if (!user) return null;
+
+  // THE KEY LINE: role check decides which view to render
+  return user.role === "HR Admin" ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(AdminLeaveView, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(EmployeeLeaveView, {});
+}
+
+// ── Mount the component ─────────────────
+var container = document.getElementById('leavePage');
+if (container) {
+  var root = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_2__.createRoot)(container);
+  root.render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_AuthContext__WEBPACK_IMPORTED_MODULE_1__.AuthProvider, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Leave, {})
+  }));
 }
 
 /***/ },
@@ -6042,13 +6502,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/dist/development/chunk-QFMPRPBF.mjs");
 /* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _AuthContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../AuthContext */ "./resources/js/AuthContext.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -6061,11 +6523,11 @@ function getInitials(name) {
   }).join('');
 }
 var icons = {
-  chevronLeft: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
+  chevronLeft: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("svg", {
     className: "w-4 h-4 flex-shrink-0",
     viewBox: "0 0 12 12",
     fill: "none",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M7 2L3 6L7 10",
       stroke: "currentColor",
       strokeWidth: "1.5",
@@ -6073,11 +6535,11 @@ var icons = {
       strokeLinejoin: "round"
     })
   }),
-  chevronRight: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
+  chevronRight: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("svg", {
     className: "w-4 h-4 flex-shrink-0",
     viewBox: "0 0 12 12",
     fill: "none",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M5 2L9 6L5 10",
       stroke: "currentColor",
       strokeWidth: "1.5",
@@ -6085,16 +6547,16 @@ var icons = {
       strokeLinejoin: "round"
     })
   }),
-  logout: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("svg", {
+  logout: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("svg", {
     className: "w-4 h-4 flex-shrink-0",
     viewBox: "0 0 18 18",
     fill: "none",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M7 3H3a1 1 0 00-1 1v10a1 1 0 001 1h4",
       stroke: "currentColor",
       strokeWidth: "1.5",
       strokeLinecap: "round"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M12 5l4 4-4 4M16 9H7",
       stroke: "currentColor",
       strokeWidth: "1.5",
@@ -6102,17 +6564,17 @@ var icons = {
       strokeLinejoin: "round"
     })]
   }),
-  dashboard: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("svg", {
+  dashboard: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("svg", {
     className: "w-5 h-5",
     viewBox: "0 0 24 24",
     fill: "none",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z",
       stroke: "currentColor",
       strokeWidth: "1.5",
       strokeLinecap: "round",
       strokeLinejoin: "round"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z",
       stroke: "currentColor",
       strokeWidth: "1.5",
@@ -6120,11 +6582,11 @@ var icons = {
       strokeLinejoin: "round"
     })]
   }),
-  employees: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
+  employees: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("svg", {
     className: "w-5 h-5",
     viewBox: "0 0 24 24",
     fill: "none",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
       stroke: "currentColor",
       strokeWidth: "1.5",
@@ -6132,11 +6594,11 @@ var icons = {
       strokeLinejoin: "round"
     })
   }),
-  departments: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
+  departments: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("svg", {
     className: "w-5 h-5",
     viewBox: "0 0 24 24",
     fill: "none",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4",
       stroke: "currentColor",
       strokeWidth: "1.5",
@@ -6144,11 +6606,11 @@ var icons = {
       strokeLinejoin: "round"
     })
   }),
-  attendance: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
+  attendance: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("svg", {
     className: "w-5 h-5",
     viewBox: "0 0 24 24",
     fill: "none",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
       stroke: "currentColor",
       strokeWidth: "1.5",
@@ -6156,11 +6618,11 @@ var icons = {
       strokeLinejoin: "round"
     })
   }),
-  leave: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
+  leave: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("svg", {
     className: "w-5 h-5",
     viewBox: "0 0 24 24",
     fill: "none",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
       stroke: "currentColor",
       strokeWidth: "1.5",
@@ -6168,11 +6630,11 @@ var icons = {
       strokeLinejoin: "round"
     })
   }),
-  reports: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
+  reports: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("svg", {
     className: "w-5 h-5",
     viewBox: "0 0 24 24",
     fill: "none",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("path", {
       d: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
       stroke: "currentColor",
       strokeWidth: "1.5",
@@ -6186,7 +6648,7 @@ function NavItem(_ref) {
     label = _ref.label,
     collapsed = _ref.collapsed,
     icon = _ref.icon;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.NavLink, {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.NavLink, {
     to: to,
     style: function style(_ref2) {
       var isActive = _ref2.isActive;
@@ -6206,7 +6668,7 @@ function NavItem(_ref) {
       };
     },
     title: collapsed ? label : "",
-    children: [icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    children: [icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
       style: {
         display: 'flex',
         alignItems: 'center',
@@ -6215,7 +6677,7 @@ function NavItem(_ref) {
         minHeight: 24
       },
       children: icon
-    }), !collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+    }), !collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
       style: {
         whiteSpace: 'nowrap'
       },
@@ -6226,7 +6688,7 @@ function NavItem(_ref) {
 function SectionLabel(_ref3) {
   var label = _ref3.label,
     collapsed = _ref3.collapsed;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
     style: {
       padding: '0 12px',
       marginTop: '24px',
@@ -6250,13 +6712,12 @@ function Sidebar() {
     loggingOut = _useState4[0],
     setLoggingOut = _useState4[1];
   var navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.useNavigate)();
-  var user = {
-    name: 'Admin User'
-  };
+  var _useAuth = (0,_AuthContext__WEBPACK_IMPORTED_MODULE_3__.useAuth)(),
+    user = _useAuth.user,
+    logout = _useAuth.logout;
   var handleLogout = function handleLogout() {
     setLoggingOut(true);
-    // TODO: implement actual logout flow (API call, token remove, redirect)
-    // For now, redirect via router if available.
+    logout();
     setTimeout(function () {
       setLoggingOut(false);
       if (navigate) {
@@ -6266,7 +6727,7 @@ function Sidebar() {
       }
     }, 200);
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("aside", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("aside", {
     style: {
       position: 'sticky',
       top: 0,
@@ -6280,7 +6741,7 @@ function Sidebar() {
       alignSelf: 'flex-start',
       transition: 'width 0.3s ease'
     },
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
       style: {
         display: 'flex',
         alignItems: 'center',
@@ -6289,13 +6750,13 @@ function Sidebar() {
         borderBottom: '1px solid #e5e7eb',
         backgroundColor: '#f8fbff'
       },
-      children: [!collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      children: [!collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
         style: {
           display: 'flex',
           alignItems: 'center',
           gap: '10px'
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
           style: {
             width: 34,
             height: 34,
@@ -6305,7 +6766,7 @@ function Sidebar() {
             alignItems: 'center',
             justifyContent: 'center'
           },
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
             style: {
               color: '#fff',
               fontWeight: 700,
@@ -6313,7 +6774,7 @@ function Sidebar() {
             },
             children: "EMS"
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
           style: {
             fontSize: 14,
             fontWeight: 600,
@@ -6322,7 +6783,7 @@ function Sidebar() {
           },
           children: "Employee Management System"
         })]
-      }), collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      }), collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
         style: {
           width: 34,
           height: 34,
@@ -6332,7 +6793,7 @@ function Sidebar() {
           alignItems: 'center',
           justifyContent: 'center'
         },
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
           style: {
             color: '#fff',
             fontWeight: 700,
@@ -6341,7 +6802,7 @@ function Sidebar() {
           children: "EMS"
         })
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("nav", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("nav", {
       style: {
         flex: 1,
         display: 'flex',
@@ -6350,49 +6811,49 @@ function Sidebar() {
         padding: '18px 12px',
         overflowY: 'auto'
       },
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SectionLabel, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(SectionLabel, {
         label: "Main",
         collapsed: collapsed
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(NavItem, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(NavItem, {
         to: "/dashboard",
         label: "Dashboard",
         collapsed: collapsed,
         icon: icons.dashboard
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(NavItem, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(NavItem, {
         to: "/employees",
         label: "Employees",
         collapsed: collapsed,
         icon: icons.employees
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(NavItem, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(NavItem, {
         to: "/departments",
         label: "Departments",
         collapsed: collapsed,
         icon: icons.departments
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(NavItem, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(NavItem, {
         to: "/attendance",
         label: "Attendance",
         collapsed: collapsed,
         icon: icons.attendance
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SectionLabel, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(SectionLabel, {
         label: "Management",
         collapsed: collapsed
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(NavItem, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(NavItem, {
         to: "/leave",
         label: "Leave",
         collapsed: collapsed,
         icon: icons.leave
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(NavItem, {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(NavItem, {
         to: "/reports",
         label: "Reports",
         collapsed: collapsed,
         icon: icons.reports
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
       style: {
         padding: '12px 12px',
         borderTop: '1px solid #e5e7eb'
       },
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("button", {
         onClick: function onClick() {
           return setCollapsed(!collapsed);
         },
@@ -6416,7 +6877,7 @@ function Sidebar() {
         onMouseOut: function onMouseOut(e) {
           return e.currentTarget.style.backgroundColor = 'transparent';
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
           style: {
             width: 16,
             height: 16,
@@ -6425,26 +6886,26 @@ function Sidebar() {
             justifyContent: 'center'
           },
           children: collapsed ? icons.chevronRight : icons.chevronLeft
-        }), !collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        }), !collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("span", {
           style: {
             fontWeight: 600
           },
           children: "Collapse"
         })]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
       style: {
         borderTop: '1px solid #bdc4d2',
         padding: '18px 14px',
         backgroundColor: '#f9fafb'
       },
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
         style: {
           display: 'flex',
           alignItems: 'center',
           gap: 25
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("button", {
           onClick: function onClick() {
             return navigate('/profile');
           },
@@ -6462,7 +6923,7 @@ function Sidebar() {
           onMouseOut: function onMouseOut(e) {
             return e.currentTarget.style.backgroundColor = 'transparent';
           },
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
             style: {
               width: 40,
               height: 40,
@@ -6477,12 +6938,12 @@ function Sidebar() {
               border: '1px solid #bfdbfe'
             },
             children: getInitials(user === null || user === void 0 ? void 0 : user.name)
-          }), !collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          }), !collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             style: {
               flex: 1,
               minWidth: 0
             },
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
               style: {
                 margin: 0,
                 fontSize: 14,
@@ -6493,7 +6954,7 @@ function Sidebar() {
                 whiteSpace: 'nowrap'
               },
               children: (user === null || user === void 0 ? void 0 : user.name) || "Loading..."
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
               style: {
                 margin: 0,
                 fontSize: 12,
@@ -6505,7 +6966,7 @@ function Sidebar() {
               children: (user === null || user === void 0 ? void 0 : user.email) || ""
             })]
           })]
-        }), !collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+        }), !collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
           onClick: handleLogout,
           disabled: loggingOut,
           title: "Logout",
@@ -6527,7 +6988,7 @@ function Sidebar() {
           },
           children: icons.logout
         })]
-      }), collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+      }), collapsed && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
         onClick: handleLogout,
         disabled: loggingOut,
         title: "Logout",
@@ -6555,8 +7016,10 @@ function Sidebar() {
 if (document.getElementById('sideBar')) {
   var container = document.getElementById('sideBar');
   var root = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_2__.createRoot)(container);
-  root.render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.BrowserRouter, {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Sidebar, {})
+  root.render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_router_dom__WEBPACK_IMPORTED_MODULE_1__.BrowserRouter, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_AuthContext__WEBPACK_IMPORTED_MODULE_3__.AuthProvider, {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(Sidebar, {})
+    })
   }));
 }
 
@@ -6576,7 +7039,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _AuthContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../AuthContext */ "./resources/js/AuthContext.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -6590,16 +7054,9 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
-// Mock AuthContext data — replace with actual API call if needed
-
-var mockUser = {
-  name: "Admin User",
-  email: "admin@example.com",
-  role: "Administrator",
-  created_at: new Date().toISOString()
-};
 
 // ── Helper: get initials from name ────────────────────────────
+
 function getInitials() {
   var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   var parts = name.trim().split(" ");
@@ -6616,11 +7073,11 @@ function Field(_ref) {
     onChange = _ref.onChange,
     placeholder = _ref.placeholder,
     disabled = _ref.disabled;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
       className: "block text-sm text-gray-600 mb-1",
       children: label
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
       type: type,
       value: value,
       onChange: onChange,
@@ -6640,7 +7097,7 @@ function Alert(_ref2) {
     success: "bg-green-50 border-green-200 text-green-700",
     error: "bg-red-50   border-red-200   text-red-700"
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: "border rounded-lg px-4 py-3 text-sm ".concat(styles[type]),
     children: message
   });
@@ -6666,17 +7123,17 @@ function ProfileInfo(_ref3) {
       day: "numeric"
     }) : "—"
   }];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
     className: "space-y-4",
     children: fields.map(function (_ref4) {
       var label = _ref4.label,
         value = _ref4.value;
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "flex items-start gap-4 py-3 border-b border-gray-100 last:border-0",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
           className: "text-sm text-gray-400 w-32 flex-shrink-0 pt-0.5",
           children: label
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
           className: "text-sm text-gray-900 font-medium",
           children: value || "—"
         })]
@@ -6771,23 +7228,23 @@ function EditProfile(_ref5) {
     }));
     return _handleSubmit.apply(this, arguments);
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
     onSubmit: handleSubmit,
     className: "space-y-4",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Alert, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
       type: "success",
       message: success
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Alert, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
       type: "error",
       message: error
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Field, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Field, {
       label: "Full name",
       value: name,
       onChange: function onChange(e) {
         return setName(e.target.value);
       },
       placeholder: "Your full name"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Field, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Field, {
       label: "Email address",
       type: "email",
       value: email,
@@ -6795,14 +7252,14 @@ function EditProfile(_ref5) {
         return setEmail(e.target.value);
       },
       placeholder: "your@email.com"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Field, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Field, {
       label: "Role",
       value: (user === null || user === void 0 ? void 0 : user.role) || "",
       disabled: true
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
       className: "text-xs text-gray-400",
       children: "Role can only be changed by an administrator."
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
       type: "submit",
       disabled: loading,
       className: "bg-blue-600 text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60",
@@ -6917,16 +7374,16 @@ function ChangePassword() {
     }));
     return _handleSubmit2.apply(this, arguments);
   }
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
     onSubmit: handleSubmit,
     className: "space-y-4",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Alert, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
       type: "success",
       message: success
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Alert, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
       type: "error",
       message: error
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Field, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Field, {
       label: "Current password",
       type: "password",
       value: current,
@@ -6934,7 +7391,7 @@ function ChangePassword() {
         return setCurrent(e.target.value);
       },
       placeholder: "Enter current password"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Field, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Field, {
       label: "New password",
       type: "password",
       value: newPass,
@@ -6942,7 +7399,7 @@ function ChangePassword() {
         return setNewPass(e.target.value);
       },
       placeholder: "At least 8 characters"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Field, {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Field, {
       label: "Confirm new password",
       type: "password",
       value: confirm,
@@ -6950,7 +7407,7 @@ function ChangePassword() {
         return setConfirm(e.target.value);
       },
       placeholder: "Repeat new password"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
       type: "submit",
       disabled: loading,
       className: "bg-blue-600 text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60",
@@ -6965,8 +7422,8 @@ function Profile() {
     _useState22 = _slicedToArray(_useState21, 2),
     activeTab = _useState22[0],
     setActiveTab = _useState22[1];
-  var user = mockUser; // Use mock data
-
+  var _useAuth = (0,_AuthContext__WEBPACK_IMPORTED_MODULE_2__.useAuth)(),
+    user = _useAuth.user;
   function handleUserUpdate(updatedUser) {
     console.log("User updated:", updatedUser);
   }
@@ -6981,18 +7438,18 @@ function Profile() {
     key: "password",
     label: "Change password"
   }];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
     className: "p-8 max-w-2xl",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
       onClick: function onClick() {
         return back();
       },
       className: "flex items-center gap-2 text-sm text-gray-400 hover:text-gray-700 mb-6 transition-colors",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("svg", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
         className: "w-4 h-4",
         viewBox: "0 0 16 16",
         fill: "none",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("path", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
           d: "M10 3L5 8L10 13",
           stroke: "currentColor",
           strokeWidth: "1.5",
@@ -7000,27 +7457,27 @@ function Profile() {
           strokeLinejoin: "round"
         })
       }), "Back"]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "bg-white border border-gray-200 rounded-xl p-6 mb-6 flex items-center gap-5",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
         className: "w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-xl font-medium text-blue-700 flex-shrink-0",
         children: getInitials(user === null || user === void 0 ? void 0 : user.name)
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h1", {
           className: "text-lg font-medium text-gray-900",
           children: user === null || user === void 0 ? void 0 : user.name
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
           className: "text-sm text-gray-400",
           children: user === null || user === void 0 ? void 0 : user.email
-        }), (user === null || user === void 0 ? void 0 : user.role) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+        }), (user === null || user === void 0 ? void 0 : user.role) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
           className: "inline-block mt-1 text-xs font-medium bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full",
           children: user.role
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
       className: "flex gap-1 bg-gray-100 p-1 rounded-lg mb-6 w-fit",
       children: tabs.map(function (tab) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
           onClick: function onClick() {
             return setActiveTab(tab.key);
           },
@@ -7028,14 +7485,14 @@ function Profile() {
           children: tab.label
         }, tab.key);
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
       className: "bg-white border border-gray-200 rounded-xl p-6",
-      children: [activeTab === "info" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ProfileInfo, {
+      children: [activeTab === "info" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ProfileInfo, {
         user: user
-      }), activeTab === "edit" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(EditProfile, {
+      }), activeTab === "edit" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(EditProfile, {
         user: user,
         onUserUpdate: handleUserUpdate
-      }), activeTab === "password" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(ChangePassword, {})]
+      }), activeTab === "password" && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ChangePassword, {})]
     })]
   });
 }
@@ -7044,7 +7501,9 @@ function Profile() {
 if (document.getElementById('userProfile')) {
   var container = document.getElementById('userProfile');
   var root = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot)(container);
-  root.render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Profile, {}));
+  root.render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_AuthContext__WEBPACK_IMPORTED_MODULE_2__.AuthProvider, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Profile, {})
+  }));
 }
 
 /***/ },
@@ -11541,7 +12000,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "*, ::before, ::after {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position:  ;\n  --tw-gradient-via-position:  ;\n  --tw-gradient-to-position:  ;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n  --tw-contain-size:  ;\n  --tw-contain-layout:  ;\n  --tw-contain-paint:  ;\n  --tw-contain-style:  ;\n}\n\n::backdrop {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position:  ;\n  --tw-gradient-via-position:  ;\n  --tw-gradient-to-position:  ;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n  --tw-contain-size:  ;\n  --tw-contain-layout:  ;\n  --tw-contain-paint:  ;\n  --tw-contain-style:  ;\n}/*\n! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com\n*//*\n1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)\n2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)\n*/\n\n*,\n::before,\n::after {\n  box-sizing: border-box; /* 1 */\n  border-width: 0; /* 2 */\n  border-style: solid; /* 2 */\n  border-color: #e5e7eb; /* 2 */\n}\n\n::before,\n::after {\n  --tw-content: '';\n}\n\n/*\n1. Use a consistent sensible line-height in all browsers.\n2. Prevent adjustments of font size after orientation changes in iOS.\n3. Use a more readable tab size.\n4. Use the user's configured `sans` font-family by default.\n5. Use the user's configured `sans` font-feature-settings by default.\n6. Use the user's configured `sans` font-variation-settings by default.\n7. Disable tap highlights on iOS\n*/\n\nhtml,\n:host {\n  line-height: 1.5; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n  -moz-tab-size: 4; /* 3 */\n  -o-tab-size: 4;\n     tab-size: 4; /* 3 */\n  font-family: ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"; /* 4 */\n  font-feature-settings: normal; /* 5 */\n  font-variation-settings: normal; /* 6 */\n  -webkit-tap-highlight-color: transparent; /* 7 */\n}\n\n/*\n1. Remove the margin in all browsers.\n2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.\n*/\n\nbody {\n  margin: 0; /* 1 */\n  line-height: inherit; /* 2 */\n}\n\n/*\n1. Add the correct height in Firefox.\n2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)\n3. Ensure horizontal rules are visible by default.\n*/\n\nhr {\n  height: 0; /* 1 */\n  color: inherit; /* 2 */\n  border-top-width: 1px; /* 3 */\n}\n\n/*\nAdd the correct text decoration in Chrome, Edge, and Safari.\n*/\n\nabbr:where([title]) {\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted;\n}\n\n/*\nRemove the default font size and weight for headings.\n*/\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-size: inherit;\n  font-weight: inherit;\n}\n\n/*\nReset links to optimize for opt-in styling instead of opt-out.\n*/\n\na {\n  color: inherit;\n  text-decoration: inherit;\n}\n\n/*\nAdd the correct font weight in Edge and Safari.\n*/\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/*\n1. Use the user's configured `mono` font-family by default.\n2. Use the user's configured `mono` font-feature-settings by default.\n3. Use the user's configured `mono` font-variation-settings by default.\n4. Correct the odd `em` font sizing in all browsers.\n*/\n\ncode,\nkbd,\nsamp,\npre {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace; /* 1 */\n  font-feature-settings: normal; /* 2 */\n  font-variation-settings: normal; /* 3 */\n  font-size: 1em; /* 4 */\n}\n\n/*\nAdd the correct font size in all browsers.\n*/\n\nsmall {\n  font-size: 80%;\n}\n\n/*\nPrevent `sub` and `sup` elements from affecting the line height in all browsers.\n*/\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/*\n1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)\n2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)\n3. Remove gaps between table borders by default.\n*/\n\ntable {\n  text-indent: 0; /* 1 */\n  border-color: inherit; /* 2 */\n  border-collapse: collapse; /* 3 */\n}\n\n/*\n1. Change the font styles in all browsers.\n2. Remove the margin in Firefox and Safari.\n3. Remove default padding in all browsers.\n*/\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-feature-settings: inherit; /* 1 */\n  font-variation-settings: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  font-weight: inherit; /* 1 */\n  line-height: inherit; /* 1 */\n  letter-spacing: inherit; /* 1 */\n  color: inherit; /* 1 */\n  margin: 0; /* 2 */\n  padding: 0; /* 3 */\n}\n\n/*\nRemove the inheritance of text transform in Edge and Firefox.\n*/\n\nbutton,\nselect {\n  text-transform: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Remove default button styles.\n*/\n\nbutton,\ninput:where([type='button']),\ninput:where([type='reset']),\ninput:where([type='submit']) {\n  -webkit-appearance: button; /* 1 */\n  background-color: transparent; /* 2 */\n  background-image: none; /* 2 */\n}\n\n/*\nUse the modern Firefox focus style for all focusable elements.\n*/\n\n:-moz-focusring {\n  outline: auto;\n}\n\n/*\nRemove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)\n*/\n\n:-moz-ui-invalid {\n  box-shadow: none;\n}\n\n/*\nAdd the correct vertical alignment in Chrome and Firefox.\n*/\n\nprogress {\n  vertical-align: baseline;\n}\n\n/*\nCorrect the cursor style of increment and decrement buttons in Safari.\n*/\n\n::-webkit-inner-spin-button,\n::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/*\n1. Correct the odd appearance in Chrome and Safari.\n2. Correct the outline style in Safari.\n*/\n\n[type='search'] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/*\nRemove the inner padding in Chrome and Safari on macOS.\n*/\n\n::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Change font properties to `inherit` in Safari.\n*/\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/*\nAdd the correct display in Chrome and Safari.\n*/\n\nsummary {\n  display: list-item;\n}\n\n/*\nRemoves the default spacing and border for appropriate elements.\n*/\n\nblockquote,\ndl,\ndd,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nhr,\nfigure,\np,\npre {\n  margin: 0;\n}\n\nfieldset {\n  margin: 0;\n  padding: 0;\n}\n\nlegend {\n  padding: 0;\n}\n\nol,\nul,\nmenu {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n/*\nReset default styling for dialogs.\n*/\ndialog {\n  padding: 0;\n}\n\n/*\nPrevent resizing textareas horizontally by default.\n*/\n\ntextarea {\n  resize: vertical;\n}\n\n/*\n1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)\n2. Set the default placeholder color to the user's configured gray 400 color.\n*/\n\ninput::-moz-placeholder, textarea::-moz-placeholder {\n  opacity: 1; /* 1 */\n  color: #9ca3af; /* 2 */\n}\n\ninput::placeholder,\ntextarea::placeholder {\n  opacity: 1; /* 1 */\n  color: #9ca3af; /* 2 */\n}\n\n/*\nSet the default cursor for buttons.\n*/\n\nbutton,\n[role=\"button\"] {\n  cursor: pointer;\n}\n\n/*\nMake sure disabled buttons don't get the pointer cursor.\n*/\n:disabled {\n  cursor: default;\n}\n\n/*\n1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)\n2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)\n   This can trigger a poorly considered lint error in some tools but is included by design.\n*/\n\nimg,\nsvg,\nvideo,\ncanvas,\naudio,\niframe,\nembed,\nobject {\n  display: block; /* 1 */\n  vertical-align: middle; /* 2 */\n}\n\n/*\nConstrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)\n*/\n\nimg,\nvideo {\n  max-width: 100%;\n  height: auto;\n}\n\n/* Make elements with the HTML hidden attribute stay hidden by default */\n[hidden]:where(:not([hidden=\"until-found\"])) {\n  display: none;\n}\r\n.container {\n  width: 100%;\n}\r\n@media (min-width: 640px) {\n\n  .container {\n    max-width: 640px;\n  }\n}\r\n@media (min-width: 768px) {\n\n  .container {\n    max-width: 768px;\n  }\n}\r\n@media (min-width: 1024px) {\n\n  .container {\n    max-width: 1024px;\n  }\n}\r\n@media (min-width: 1280px) {\n\n  .container {\n    max-width: 1280px;\n  }\n}\r\n@media (min-width: 1536px) {\n\n  .container {\n    max-width: 1536px;\n  }\n}\r\n.collapse {\n  visibility: collapse;\n}\r\n.fixed {\n  position: fixed;\n}\r\n.relative {\n  position: relative;\n}\r\n.sticky {\n  position: sticky;\n}\r\n.right-0 {\n  right: 0px;\n}\r\n.top-0 {\n  top: 0px;\n}\r\n.m-0 {\n  margin: 0px;\n}\r\n.mx-auto {\n  margin-left: auto;\n  margin-right: auto;\n}\r\n.-mt-px {\n  margin-top: -1px;\n}\r\n.mb-0 {\n  margin-bottom: 0px;\n}\r\n.mb-1 {\n  margin-bottom: 0.25rem;\n}\r\n.mb-2 {\n  margin-bottom: 0.5rem;\n}\r\n.mb-3 {\n  margin-bottom: 0.75rem;\n}\r\n.mb-4 {\n  margin-bottom: 1rem;\n}\r\n.mb-5 {\n  margin-bottom: 1.25rem;\n}\r\n.mb-6 {\n  margin-bottom: 1.5rem;\n}\r\n.mb-8 {\n  margin-bottom: 2rem;\n}\r\n.me-auto {\n  margin-inline-end: auto;\n}\r\n.ml-1 {\n  margin-left: 0.25rem;\n}\r\n.ml-12 {\n  margin-left: 3rem;\n}\r\n.ml-2 {\n  margin-left: 0.5rem;\n}\r\n.ml-3 {\n  margin-left: 0.75rem;\n}\r\n.ml-4 {\n  margin-left: 1rem;\n}\r\n.mr-2 {\n  margin-right: 0.5rem;\n}\r\n.ms-auto {\n  margin-inline-start: auto;\n}\r\n.mt-1 {\n  margin-top: 0.25rem;\n}\r\n.mt-2 {\n  margin-top: 0.5rem;\n}\r\n.mt-4 {\n  margin-top: 1rem;\n}\r\n.mt-8 {\n  margin-top: 2rem;\n}\r\n.block {\n  display: block;\n}\r\n.inline-block {\n  display: inline-block;\n}\r\n.flex {\n  display: flex;\n}\r\n.inline-flex {\n  display: inline-flex;\n}\r\n.table {\n  display: table;\n}\r\n.grid {\n  display: grid;\n}\r\n.hidden {\n  display: none;\n}\r\n.h-16 {\n  height: 4rem;\n}\r\n.h-20 {\n  height: 5rem;\n}\r\n.h-4 {\n  height: 1rem;\n}\r\n.h-5 {\n  height: 1.25rem;\n}\r\n.h-8 {\n  height: 2rem;\n}\r\n.min-h-screen {\n  min-height: 100vh;\n}\r\n.w-16 {\n  width: 4rem;\n}\r\n.w-32 {\n  width: 8rem;\n}\r\n.w-4 {\n  width: 1rem;\n}\r\n.w-5 {\n  width: 1.25rem;\n}\r\n.w-8 {\n  width: 2rem;\n}\r\n.w-auto {\n  width: auto;\n}\r\n.w-fit {\n  width: -moz-fit-content;\n  width: fit-content;\n}\r\n.w-full {\n  width: 100%;\n}\r\n.max-w-2xl {\n  max-width: 42rem;\n}\r\n.max-w-4xl {\n  max-width: 56rem;\n}\r\n.max-w-6xl {\n  max-width: 72rem;\n}\r\n.max-w-\\[160px\\] {\n  max-width: 160px;\n}\r\n.flex-1 {\n  flex: 1 1 0%;\n}\r\n.flex-shrink {\n  flex-shrink: 1;\n}\r\n.flex-shrink-0 {\n  flex-shrink: 0;\n}\r\n@keyframes pulse {\n\n  50% {\n    opacity: .5;\n  }\n}\r\n.animate-pulse {\n  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;\n}\r\n.cursor-not-allowed {\n  cursor: not-allowed;\n}\r\n.resize-none {\n  resize: none;\n}\r\n.grid-cols-1 {\n  grid-template-columns: repeat(1, minmax(0, 1fr));\n}\r\n.grid-cols-2 {\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n}\r\n.items-start {\n  align-items: flex-start;\n}\r\n.items-center {\n  align-items: center;\n}\r\n.justify-center {\n  justify-content: center;\n}\r\n.justify-between {\n  justify-content: space-between;\n}\r\n.gap-1 {\n  gap: 0.25rem;\n}\r\n.gap-2 {\n  gap: 0.5rem;\n}\r\n.gap-3 {\n  gap: 0.75rem;\n}\r\n.gap-4 {\n  gap: 1rem;\n}\r\n.gap-5 {\n  gap: 1.25rem;\n}\r\n.space-y-4 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(1rem * var(--tw-space-y-reverse));\n}\r\n.divide-y > :not([hidden]) ~ :not([hidden]) {\n  --tw-divide-y-reverse: 0;\n  border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));\n  border-bottom-width: calc(1px * var(--tw-divide-y-reverse));\n}\r\n.divide-gray-50 > :not([hidden]) ~ :not([hidden]) {\n  --tw-divide-opacity: 1;\n  border-color: rgb(249 250 251 / var(--tw-divide-opacity, 1));\n}\r\n.overflow-hidden {\n  overflow: hidden;\n}\r\n.overflow-x-auto {\n  overflow-x: auto;\n}\r\n.truncate {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\r\n.whitespace-nowrap {\n  white-space: nowrap;\n}\r\n.rounded-full {\n  border-radius: 9999px;\n}\r\n.rounded-lg {\n  border-radius: 0.5rem;\n}\r\n.rounded-md {\n  border-radius: 0.375rem;\n}\r\n.rounded-xl {\n  border-radius: 0.75rem;\n}\r\n.border {\n  border-width: 1px;\n}\r\n.border-b {\n  border-bottom-width: 1px;\n}\r\n.border-t {\n  border-top-width: 1px;\n}\r\n.border-amber-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(254 243 199 / var(--tw-border-opacity, 1));\n}\r\n.border-amber-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(253 230 138 / var(--tw-border-opacity, 1));\n}\r\n.border-blue-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(219 234 254 / var(--tw-border-opacity, 1));\n}\r\n.border-gray-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(243 244 246 / var(--tw-border-opacity, 1));\n}\r\n.border-gray-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(229 231 235 / var(--tw-border-opacity, 1));\n}\r\n.border-green-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(187 247 208 / var(--tw-border-opacity, 1));\n}\r\n.border-red-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));\n}\r\n.border-teal-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(204 251 241 / var(--tw-border-opacity, 1));\n}\r\n.bg-amber-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(255 251 235 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-600 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));\n}\r\n.bg-gray-100 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));\n}\r\n.bg-gray-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));\n}\r\n.bg-green-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(240 253 244 / var(--tw-bg-opacity, 1));\n}\r\n.bg-red-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));\n}\r\n.bg-teal-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(240 253 250 / var(--tw-bg-opacity, 1));\n}\r\n.bg-white {\n  --tw-bg-opacity: 1;\n  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));\n}\r\n.p-0 {\n  padding: 0px;\n}\r\n.p-1 {\n  padding: 0.25rem;\n}\r\n.p-4 {\n  padding: 1rem;\n}\r\n.p-6 {\n  padding: 1.5rem;\n}\r\n.p-8 {\n  padding: 2rem;\n}\r\n.px-2 {\n  padding-left: 0.5rem;\n  padding-right: 0.5rem;\n}\r\n.px-2\\.5 {\n  padding-left: 0.625rem;\n  padding-right: 0.625rem;\n}\r\n.px-3 {\n  padding-left: 0.75rem;\n  padding-right: 0.75rem;\n}\r\n.px-4 {\n  padding-left: 1rem;\n  padding-right: 1rem;\n}\r\n.px-5 {\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n}\r\n.px-6 {\n  padding-left: 1.5rem;\n  padding-right: 1.5rem;\n}\r\n.py-0\\.5 {\n  padding-top: 0.125rem;\n  padding-bottom: 0.125rem;\n}\r\n.py-1 {\n  padding-top: 0.25rem;\n  padding-bottom: 0.25rem;\n}\r\n.py-1\\.5 {\n  padding-top: 0.375rem;\n  padding-bottom: 0.375rem;\n}\r\n.py-12 {\n  padding-top: 3rem;\n  padding-bottom: 3rem;\n}\r\n.py-2 {\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n}\r\n.py-3 {\n  padding-top: 0.75rem;\n  padding-bottom: 0.75rem;\n}\r\n.py-4 {\n  padding-top: 1rem;\n  padding-bottom: 1rem;\n}\r\n.py-8 {\n  padding-top: 2rem;\n  padding-bottom: 2rem;\n}\r\n.pt-0\\.5 {\n  padding-top: 0.125rem;\n}\r\n.pt-8 {\n  padding-top: 2rem;\n}\r\n.text-left {\n  text-align: left;\n}\r\n.text-center {\n  text-align: center;\n}\r\n.align-baseline {\n  vertical-align: baseline;\n}\r\n.text-2xl {\n  font-size: 1.5rem;\n  line-height: 2rem;\n}\r\n.text-5xl {\n  font-size: 3rem;\n  line-height: 1;\n}\r\n.text-base {\n  font-size: 1rem;\n  line-height: 1.5rem;\n}\r\n.text-lg {\n  font-size: 1.125rem;\n  line-height: 1.75rem;\n}\r\n.text-sm {\n  font-size: 0.875rem;\n  line-height: 1.25rem;\n}\r\n.text-xl {\n  font-size: 1.25rem;\n  line-height: 1.75rem;\n}\r\n.text-xs {\n  font-size: 0.75rem;\n  line-height: 1rem;\n}\r\n.font-medium {\n  font-weight: 500;\n}\r\n.font-normal {\n  font-weight: 400;\n}\r\n.font-semibold {\n  font-weight: 600;\n}\r\n.uppercase {\n  text-transform: uppercase;\n}\r\n.capitalize {\n  text-transform: capitalize;\n}\r\n.leading-7 {\n  line-height: 1.75rem;\n}\r\n.text-amber-700 {\n  --tw-text-opacity: 1;\n  color: rgb(180 83 9 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-600 {\n  --tw-text-opacity: 1;\n  color: rgb(37 99 235 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-700 {\n  --tw-text-opacity: 1;\n  color: rgb(29 78 216 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-200 {\n  --tw-text-opacity: 1;\n  color: rgb(229 231 235 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-300 {\n  --tw-text-opacity: 1;\n  color: rgb(209 213 219 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-400 {\n  --tw-text-opacity: 1;\n  color: rgb(156 163 175 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-500 {\n  --tw-text-opacity: 1;\n  color: rgb(107 114 128 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-600 {\n  --tw-text-opacity: 1;\n  color: rgb(75 85 99 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-700 {\n  --tw-text-opacity: 1;\n  color: rgb(55 65 81 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-900 {\n  --tw-text-opacity: 1;\n  color: rgb(17 24 39 / var(--tw-text-opacity, 1));\n}\r\n.text-green-700 {\n  --tw-text-opacity: 1;\n  color: rgb(21 128 61 / var(--tw-text-opacity, 1));\n}\r\n.text-red-400 {\n  --tw-text-opacity: 1;\n  color: rgb(248 113 113 / var(--tw-text-opacity, 1));\n}\r\n.text-red-700 {\n  --tw-text-opacity: 1;\n  color: rgb(185 28 28 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-700 {\n  --tw-text-opacity: 1;\n  color: rgb(15 118 110 / var(--tw-text-opacity, 1));\n}\r\n.text-white {\n  --tw-text-opacity: 1;\n  color: rgb(255 255 255 / var(--tw-text-opacity, 1));\n}\r\n.underline {\n  text-decoration-line: underline;\n}\r\n.antialiased {\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\r\n.opacity-60 {\n  opacity: 0.6;\n}\r\n.opacity-70 {\n  opacity: 0.7;\n}\r\n.shadow {\n  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);\n  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);\n  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\r\n.shadow-sm {\n  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);\n  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);\n  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\r\n.filter {\n  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);\n}\r\n.transition {\n  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.transition-all {\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.transition-colors {\n  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.last\\:border-0:last-child {\n  border-width: 0px;\n}\r\n.hover\\:bg-blue-700:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-gray-50:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:text-gray-700:hover {\n  --tw-text-opacity: 1;\n  color: rgb(55 65 81 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:text-red-600:hover {\n  --tw-text-opacity: 1;\n  color: rgb(220 38 38 / var(--tw-text-opacity, 1));\n}\r\n.focus\\:outline-none:focus {\n  outline: 2px solid transparent;\n  outline-offset: 2px;\n}\r\n.focus\\:ring-2:focus {\n  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);\n  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);\n}\r\n.focus\\:ring-blue-500:focus {\n  --tw-ring-opacity: 1;\n  --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity, 1));\n}\r\n.disabled\\:opacity-50:disabled {\n  opacity: 0.5;\n}\r\n.disabled\\:opacity-60:disabled {\n  opacity: 0.6;\n}\r\n@media (min-width: 640px) {\n\n  .sm\\:ml-0 {\n    margin-left: 0px;\n  }\n\n  .sm\\:block {\n    display: block;\n  }\n\n  .sm\\:grid-cols-4 {\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n  }\n\n  .sm\\:items-center {\n    align-items: center;\n  }\n\n  .sm\\:justify-start {\n    justify-content: flex-start;\n  }\n\n  .sm\\:justify-between {\n    justify-content: space-between;\n  }\n\n  .sm\\:px-6 {\n    padding-left: 1.5rem;\n    padding-right: 1.5rem;\n  }\n\n  .sm\\:pt-0 {\n    padding-top: 0px;\n  }\n\n  .sm\\:text-left {\n    text-align: left;\n  }\n\n  .sm\\:text-right {\n    text-align: right;\n  }\n}\r\n@media (min-width: 1024px) {\n\n  .lg\\:px-8 {\n    padding-left: 2rem;\n    padding-right: 2rem;\n  }\n}\r\n@media (prefers-color-scheme: dark) {\n\n  .dark\\:bg-gray-900 {\n    --tw-bg-opacity: 1;\n    background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));\n  }\n\n  .dark\\:text-gray-500 {\n    --tw-text-opacity: 1;\n    color: rgb(107 114 128 / var(--tw-text-opacity, 1));\n  }\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "*, ::before, ::after {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position:  ;\n  --tw-gradient-via-position:  ;\n  --tw-gradient-to-position:  ;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n  --tw-contain-size:  ;\n  --tw-contain-layout:  ;\n  --tw-contain-paint:  ;\n  --tw-contain-style:  ;\n}\n\n::backdrop {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position:  ;\n  --tw-gradient-via-position:  ;\n  --tw-gradient-to-position:  ;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n  --tw-contain-size:  ;\n  --tw-contain-layout:  ;\n  --tw-contain-paint:  ;\n  --tw-contain-style:  ;\n}/*\n! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com\n*//*\n1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)\n2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)\n*/\n\n*,\n::before,\n::after {\n  box-sizing: border-box; /* 1 */\n  border-width: 0; /* 2 */\n  border-style: solid; /* 2 */\n  border-color: #e5e7eb; /* 2 */\n}\n\n::before,\n::after {\n  --tw-content: '';\n}\n\n/*\n1. Use a consistent sensible line-height in all browsers.\n2. Prevent adjustments of font size after orientation changes in iOS.\n3. Use a more readable tab size.\n4. Use the user's configured `sans` font-family by default.\n5. Use the user's configured `sans` font-feature-settings by default.\n6. Use the user's configured `sans` font-variation-settings by default.\n7. Disable tap highlights on iOS\n*/\n\nhtml,\n:host {\n  line-height: 1.5; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n  -moz-tab-size: 4; /* 3 */\n  -o-tab-size: 4;\n     tab-size: 4; /* 3 */\n  font-family: ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"; /* 4 */\n  font-feature-settings: normal; /* 5 */\n  font-variation-settings: normal; /* 6 */\n  -webkit-tap-highlight-color: transparent; /* 7 */\n}\n\n/*\n1. Remove the margin in all browsers.\n2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.\n*/\n\nbody {\n  margin: 0; /* 1 */\n  line-height: inherit; /* 2 */\n}\n\n/*\n1. Add the correct height in Firefox.\n2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)\n3. Ensure horizontal rules are visible by default.\n*/\n\nhr {\n  height: 0; /* 1 */\n  color: inherit; /* 2 */\n  border-top-width: 1px; /* 3 */\n}\n\n/*\nAdd the correct text decoration in Chrome, Edge, and Safari.\n*/\n\nabbr:where([title]) {\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted;\n}\n\n/*\nRemove the default font size and weight for headings.\n*/\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-size: inherit;\n  font-weight: inherit;\n}\n\n/*\nReset links to optimize for opt-in styling instead of opt-out.\n*/\n\na {\n  color: inherit;\n  text-decoration: inherit;\n}\n\n/*\nAdd the correct font weight in Edge and Safari.\n*/\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/*\n1. Use the user's configured `mono` font-family by default.\n2. Use the user's configured `mono` font-feature-settings by default.\n3. Use the user's configured `mono` font-variation-settings by default.\n4. Correct the odd `em` font sizing in all browsers.\n*/\n\ncode,\nkbd,\nsamp,\npre {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace; /* 1 */\n  font-feature-settings: normal; /* 2 */\n  font-variation-settings: normal; /* 3 */\n  font-size: 1em; /* 4 */\n}\n\n/*\nAdd the correct font size in all browsers.\n*/\n\nsmall {\n  font-size: 80%;\n}\n\n/*\nPrevent `sub` and `sup` elements from affecting the line height in all browsers.\n*/\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/*\n1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)\n2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)\n3. Remove gaps between table borders by default.\n*/\n\ntable {\n  text-indent: 0; /* 1 */\n  border-color: inherit; /* 2 */\n  border-collapse: collapse; /* 3 */\n}\n\n/*\n1. Change the font styles in all browsers.\n2. Remove the margin in Firefox and Safari.\n3. Remove default padding in all browsers.\n*/\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-feature-settings: inherit; /* 1 */\n  font-variation-settings: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  font-weight: inherit; /* 1 */\n  line-height: inherit; /* 1 */\n  letter-spacing: inherit; /* 1 */\n  color: inherit; /* 1 */\n  margin: 0; /* 2 */\n  padding: 0; /* 3 */\n}\n\n/*\nRemove the inheritance of text transform in Edge and Firefox.\n*/\n\nbutton,\nselect {\n  text-transform: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Remove default button styles.\n*/\n\nbutton,\ninput:where([type='button']),\ninput:where([type='reset']),\ninput:where([type='submit']) {\n  -webkit-appearance: button; /* 1 */\n  background-color: transparent; /* 2 */\n  background-image: none; /* 2 */\n}\n\n/*\nUse the modern Firefox focus style for all focusable elements.\n*/\n\n:-moz-focusring {\n  outline: auto;\n}\n\n/*\nRemove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)\n*/\n\n:-moz-ui-invalid {\n  box-shadow: none;\n}\n\n/*\nAdd the correct vertical alignment in Chrome and Firefox.\n*/\n\nprogress {\n  vertical-align: baseline;\n}\n\n/*\nCorrect the cursor style of increment and decrement buttons in Safari.\n*/\n\n::-webkit-inner-spin-button,\n::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/*\n1. Correct the odd appearance in Chrome and Safari.\n2. Correct the outline style in Safari.\n*/\n\n[type='search'] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/*\nRemove the inner padding in Chrome and Safari on macOS.\n*/\n\n::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Change font properties to `inherit` in Safari.\n*/\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/*\nAdd the correct display in Chrome and Safari.\n*/\n\nsummary {\n  display: list-item;\n}\n\n/*\nRemoves the default spacing and border for appropriate elements.\n*/\n\nblockquote,\ndl,\ndd,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nhr,\nfigure,\np,\npre {\n  margin: 0;\n}\n\nfieldset {\n  margin: 0;\n  padding: 0;\n}\n\nlegend {\n  padding: 0;\n}\n\nol,\nul,\nmenu {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n/*\nReset default styling for dialogs.\n*/\ndialog {\n  padding: 0;\n}\n\n/*\nPrevent resizing textareas horizontally by default.\n*/\n\ntextarea {\n  resize: vertical;\n}\n\n/*\n1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)\n2. Set the default placeholder color to the user's configured gray 400 color.\n*/\n\ninput::-moz-placeholder, textarea::-moz-placeholder {\n  opacity: 1; /* 1 */\n  color: #9ca3af; /* 2 */\n}\n\ninput::placeholder,\ntextarea::placeholder {\n  opacity: 1; /* 1 */\n  color: #9ca3af; /* 2 */\n}\n\n/*\nSet the default cursor for buttons.\n*/\n\nbutton,\n[role=\"button\"] {\n  cursor: pointer;\n}\n\n/*\nMake sure disabled buttons don't get the pointer cursor.\n*/\n:disabled {\n  cursor: default;\n}\n\n/*\n1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)\n2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)\n   This can trigger a poorly considered lint error in some tools but is included by design.\n*/\n\nimg,\nsvg,\nvideo,\ncanvas,\naudio,\niframe,\nembed,\nobject {\n  display: block; /* 1 */\n  vertical-align: middle; /* 2 */\n}\n\n/*\nConstrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)\n*/\n\nimg,\nvideo {\n  max-width: 100%;\n  height: auto;\n}\n\n/* Make elements with the HTML hidden attribute stay hidden by default */\n[hidden]:where(:not([hidden=\"until-found\"])) {\n  display: none;\n}\r\n.container {\n  width: 100%;\n}\r\n@media (min-width: 640px) {\n\n  .container {\n    max-width: 640px;\n  }\n}\r\n@media (min-width: 768px) {\n\n  .container {\n    max-width: 768px;\n  }\n}\r\n@media (min-width: 1024px) {\n\n  .container {\n    max-width: 1024px;\n  }\n}\r\n@media (min-width: 1280px) {\n\n  .container {\n    max-width: 1280px;\n  }\n}\r\n@media (min-width: 1536px) {\n\n  .container {\n    max-width: 1536px;\n  }\n}\r\n.collapse {\n  visibility: collapse;\n}\r\n.fixed {\n  position: fixed;\n}\r\n.relative {\n  position: relative;\n}\r\n.sticky {\n  position: sticky;\n}\r\n.right-0 {\n  right: 0px;\n}\r\n.top-0 {\n  top: 0px;\n}\r\n.m-0 {\n  margin: 0px;\n}\r\n.mx-4 {\n  margin-left: 1rem;\n  margin-right: 1rem;\n}\r\n.mx-auto {\n  margin-left: auto;\n  margin-right: auto;\n}\r\n.-mt-px {\n  margin-top: -1px;\n}\r\n.mb-0 {\n  margin-bottom: 0px;\n}\r\n.mb-1 {\n  margin-bottom: 0.25rem;\n}\r\n.mb-2 {\n  margin-bottom: 0.5rem;\n}\r\n.mb-3 {\n  margin-bottom: 0.75rem;\n}\r\n.mb-4 {\n  margin-bottom: 1rem;\n}\r\n.mb-5 {\n  margin-bottom: 1.25rem;\n}\r\n.mb-6 {\n  margin-bottom: 1.5rem;\n}\r\n.mb-8 {\n  margin-bottom: 2rem;\n}\r\n.me-auto {\n  margin-inline-end: auto;\n}\r\n.ml-1 {\n  margin-left: 0.25rem;\n}\r\n.ml-12 {\n  margin-left: 3rem;\n}\r\n.ml-2 {\n  margin-left: 0.5rem;\n}\r\n.ml-4 {\n  margin-left: 1rem;\n}\r\n.mr-2 {\n  margin-right: 0.5rem;\n}\r\n.ms-auto {\n  margin-inline-start: auto;\n}\r\n.mt-0\\.5 {\n  margin-top: 0.125rem;\n}\r\n.mt-1 {\n  margin-top: 0.25rem;\n}\r\n.mt-2 {\n  margin-top: 0.5rem;\n}\r\n.mt-4 {\n  margin-top: 1rem;\n}\r\n.mt-8 {\n  margin-top: 2rem;\n}\r\n.line-clamp-2 {\n  overflow: hidden;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n}\r\n.block {\n  display: block;\n}\r\n.inline-block {\n  display: inline-block;\n}\r\n.flex {\n  display: flex;\n}\r\n.table {\n  display: table;\n}\r\n.grid {\n  display: grid;\n}\r\n.hidden {\n  display: none;\n}\r\n.h-1\\.5 {\n  height: 0.375rem;\n}\r\n.h-16 {\n  height: 4rem;\n}\r\n.h-4 {\n  height: 1rem;\n}\r\n.h-5 {\n  height: 1.25rem;\n}\r\n.h-8 {\n  height: 2rem;\n}\r\n.h-full {\n  height: 100%;\n}\r\n.min-h-screen {\n  min-height: 100vh;\n}\r\n.w-16 {\n  width: 4rem;\n}\r\n.w-20 {\n  width: 5rem;\n}\r\n.w-32 {\n  width: 8rem;\n}\r\n.w-4 {\n  width: 1rem;\n}\r\n.w-44 {\n  width: 11rem;\n}\r\n.w-5 {\n  width: 1.25rem;\n}\r\n.w-8 {\n  width: 2rem;\n}\r\n.w-auto {\n  width: auto;\n}\r\n.w-fit {\n  width: -moz-fit-content;\n  width: fit-content;\n}\r\n.w-full {\n  width: 100%;\n}\r\n.max-w-2xl {\n  max-width: 42rem;\n}\r\n.max-w-4xl {\n  max-width: 56rem;\n}\r\n.max-w-5xl {\n  max-width: 64rem;\n}\r\n.max-w-6xl {\n  max-width: 72rem;\n}\r\n.max-w-md {\n  max-width: 28rem;\n}\r\n.max-w-xs {\n  max-width: 20rem;\n}\r\n.flex-1 {\n  flex: 1 1 0%;\n}\r\n.flex-shrink {\n  flex-shrink: 1;\n}\r\n.flex-shrink-0 {\n  flex-shrink: 0;\n}\r\n.cursor-not-allowed {\n  cursor: not-allowed;\n}\r\n.resize-none {\n  resize: none;\n}\r\n.grid-cols-1 {\n  grid-template-columns: repeat(1, minmax(0, 1fr));\n}\r\n.grid-cols-2 {\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n}\r\n.grid-cols-3 {\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\r\n.flex-wrap {\n  flex-wrap: wrap;\n}\r\n.items-start {\n  align-items: flex-start;\n}\r\n.items-center {\n  align-items: center;\n}\r\n.items-baseline {\n  align-items: baseline;\n}\r\n.justify-center {\n  justify-content: center;\n}\r\n.justify-between {\n  justify-content: space-between;\n}\r\n.gap-1 {\n  gap: 0.25rem;\n}\r\n.gap-2 {\n  gap: 0.5rem;\n}\r\n.gap-3 {\n  gap: 0.75rem;\n}\r\n.gap-4 {\n  gap: 1rem;\n}\r\n.gap-5 {\n  gap: 1.25rem;\n}\r\n.space-y-1 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));\n}\r\n.space-y-4 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(1rem * var(--tw-space-y-reverse));\n}\r\n.divide-y > :not([hidden]) ~ :not([hidden]) {\n  --tw-divide-y-reverse: 0;\n  border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));\n  border-bottom-width: calc(1px * var(--tw-divide-y-reverse));\n}\r\n.divide-gray-50 > :not([hidden]) ~ :not([hidden]) {\n  --tw-divide-opacity: 1;\n  border-color: rgb(249 250 251 / var(--tw-divide-opacity, 1));\n}\r\n.overflow-hidden {\n  overflow: hidden;\n}\r\n.overflow-x-auto {\n  overflow-x: auto;\n}\r\n.truncate {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\r\n.whitespace-nowrap {\n  white-space: nowrap;\n}\r\n.rounded-full {\n  border-radius: 9999px;\n}\r\n.rounded-lg {\n  border-radius: 0.5rem;\n}\r\n.rounded-md {\n  border-radius: 0.375rem;\n}\r\n.rounded-xl {\n  border-radius: 0.75rem;\n}\r\n.border {\n  border-width: 1px;\n}\r\n.border-b {\n  border-bottom-width: 1px;\n}\r\n.border-t {\n  border-top-width: 1px;\n}\r\n.border-amber-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(253 230 138 / var(--tw-border-opacity, 1));\n}\r\n.border-blue-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(219 234 254 / var(--tw-border-opacity, 1));\n}\r\n.border-gray-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(243 244 246 / var(--tw-border-opacity, 1));\n}\r\n.border-gray-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(229 231 235 / var(--tw-border-opacity, 1));\n}\r\n.border-green-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(187 247 208 / var(--tw-border-opacity, 1));\n}\r\n.border-green-400 {\n  --tw-border-opacity: 1;\n  border-color: rgb(74 222 128 / var(--tw-border-opacity, 1));\n}\r\n.border-red-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));\n}\r\n.border-red-400 {\n  --tw-border-opacity: 1;\n  border-color: rgb(248 113 113 / var(--tw-border-opacity, 1));\n}\r\n.bg-amber-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(255 251 235 / var(--tw-bg-opacity, 1));\n}\r\n.bg-amber-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-600 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));\n}\r\n.bg-gray-100 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));\n}\r\n.bg-gray-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));\n}\r\n.bg-green-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(240 253 244 / var(--tw-bg-opacity, 1));\n}\r\n.bg-green-600 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));\n}\r\n.bg-red-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));\n}\r\n.bg-red-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(239 68 68 / var(--tw-bg-opacity, 1));\n}\r\n.bg-teal-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(240 253 250 / var(--tw-bg-opacity, 1));\n}\r\n.bg-teal-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(20 184 166 / var(--tw-bg-opacity, 1));\n}\r\n.bg-white {\n  --tw-bg-opacity: 1;\n  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));\n}\r\n.p-0 {\n  padding: 0px;\n}\r\n.p-1 {\n  padding: 0.25rem;\n}\r\n.p-3 {\n  padding: 0.75rem;\n}\r\n.p-4 {\n  padding: 1rem;\n}\r\n.p-5 {\n  padding: 1.25rem;\n}\r\n.p-6 {\n  padding: 1.5rem;\n}\r\n.p-8 {\n  padding: 2rem;\n}\r\n.px-2 {\n  padding-left: 0.5rem;\n  padding-right: 0.5rem;\n}\r\n.px-3 {\n  padding-left: 0.75rem;\n  padding-right: 0.75rem;\n}\r\n.px-4 {\n  padding-left: 1rem;\n  padding-right: 1rem;\n}\r\n.px-5 {\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n}\r\n.px-6 {\n  padding-left: 1.5rem;\n  padding-right: 1.5rem;\n}\r\n.py-0\\.5 {\n  padding-top: 0.125rem;\n  padding-bottom: 0.125rem;\n}\r\n.py-1 {\n  padding-top: 0.25rem;\n  padding-bottom: 0.25rem;\n}\r\n.py-1\\.5 {\n  padding-top: 0.375rem;\n  padding-bottom: 0.375rem;\n}\r\n.py-12 {\n  padding-top: 3rem;\n  padding-bottom: 3rem;\n}\r\n.py-2 {\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n}\r\n.py-3 {\n  padding-top: 0.75rem;\n  padding-bottom: 0.75rem;\n}\r\n.py-4 {\n  padding-top: 1rem;\n  padding-bottom: 1rem;\n}\r\n.pb-3 {\n  padding-bottom: 0.75rem;\n}\r\n.pt-0 {\n  padding-top: 0px;\n}\r\n.pt-0\\.5 {\n  padding-top: 0.125rem;\n}\r\n.pt-1 {\n  padding-top: 0.25rem;\n}\r\n.pt-8 {\n  padding-top: 2rem;\n}\r\n.text-left {\n  text-align: left;\n}\r\n.text-center {\n  text-align: center;\n}\r\n.align-baseline {\n  vertical-align: baseline;\n}\r\n.text-2xl {\n  font-size: 1.5rem;\n  line-height: 2rem;\n}\r\n.text-5xl {\n  font-size: 3rem;\n  line-height: 1;\n}\r\n.text-base {\n  font-size: 1rem;\n  line-height: 1.5rem;\n}\r\n.text-lg {\n  font-size: 1.125rem;\n  line-height: 1.75rem;\n}\r\n.text-sm {\n  font-size: 0.875rem;\n  line-height: 1.25rem;\n}\r\n.text-xl {\n  font-size: 1.25rem;\n  line-height: 1.75rem;\n}\r\n.text-xs {\n  font-size: 0.75rem;\n  line-height: 1rem;\n}\r\n.font-medium {\n  font-weight: 500;\n}\r\n.font-semibold {\n  font-weight: 600;\n}\r\n.uppercase {\n  text-transform: uppercase;\n}\r\n.capitalize {\n  text-transform: capitalize;\n}\r\n.leading-7 {\n  line-height: 1.75rem;\n}\r\n.leading-none {\n  line-height: 1;\n}\r\n.tracking-wider {\n  letter-spacing: 0.05em;\n}\r\n.text-amber-600 {\n  --tw-text-opacity: 1;\n  color: rgb(217 119 6 / var(--tw-text-opacity, 1));\n}\r\n.text-amber-700 {\n  --tw-text-opacity: 1;\n  color: rgb(180 83 9 / var(--tw-text-opacity, 1));\n}\r\n.text-amber-800 {\n  --tw-text-opacity: 1;\n  color: rgb(146 64 14 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-600 {\n  --tw-text-opacity: 1;\n  color: rgb(37 99 235 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-700 {\n  --tw-text-opacity: 1;\n  color: rgb(29 78 216 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-800 {\n  --tw-text-opacity: 1;\n  color: rgb(30 64 175 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-200 {\n  --tw-text-opacity: 1;\n  color: rgb(229 231 235 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-300 {\n  --tw-text-opacity: 1;\n  color: rgb(209 213 219 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-400 {\n  --tw-text-opacity: 1;\n  color: rgb(156 163 175 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-500 {\n  --tw-text-opacity: 1;\n  color: rgb(107 114 128 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-600 {\n  --tw-text-opacity: 1;\n  color: rgb(75 85 99 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-700 {\n  --tw-text-opacity: 1;\n  color: rgb(55 65 81 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-800 {\n  --tw-text-opacity: 1;\n  color: rgb(31 41 55 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-900 {\n  --tw-text-opacity: 1;\n  color: rgb(17 24 39 / var(--tw-text-opacity, 1));\n}\r\n.text-green-600 {\n  --tw-text-opacity: 1;\n  color: rgb(22 163 74 / var(--tw-text-opacity, 1));\n}\r\n.text-green-700 {\n  --tw-text-opacity: 1;\n  color: rgb(21 128 61 / var(--tw-text-opacity, 1));\n}\r\n.text-green-800 {\n  --tw-text-opacity: 1;\n  color: rgb(22 101 52 / var(--tw-text-opacity, 1));\n}\r\n.text-red-500 {\n  --tw-text-opacity: 1;\n  color: rgb(239 68 68 / var(--tw-text-opacity, 1));\n}\r\n.text-red-700 {\n  --tw-text-opacity: 1;\n  color: rgb(185 28 28 / var(--tw-text-opacity, 1));\n}\r\n.text-red-800 {\n  --tw-text-opacity: 1;\n  color: rgb(153 27 27 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-600 {\n  --tw-text-opacity: 1;\n  color: rgb(13 148 136 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-700 {\n  --tw-text-opacity: 1;\n  color: rgb(15 118 110 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-800 {\n  --tw-text-opacity: 1;\n  color: rgb(17 94 89 / var(--tw-text-opacity, 1));\n}\r\n.text-white {\n  --tw-text-opacity: 1;\n  color: rgb(255 255 255 / var(--tw-text-opacity, 1));\n}\r\n.underline {\n  text-decoration-line: underline;\n}\r\n.antialiased {\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\r\n.opacity-50 {\n  opacity: 0.5;\n}\r\n.shadow {\n  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);\n  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);\n  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\r\n.shadow-sm {\n  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);\n  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);\n  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\r\n.filter {\n  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);\n}\r\n.transition {\n  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.transition-all {\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.transition-colors {\n  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.last\\:border-0:last-child {\n  border-width: 0px;\n}\r\n.hover\\:bg-blue-700:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-gray-50:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-green-700:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-red-600:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:text-blue-800:hover {\n  --tw-text-opacity: 1;\n  color: rgb(30 64 175 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:text-gray-600:hover {\n  --tw-text-opacity: 1;\n  color: rgb(75 85 99 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:text-gray-700:hover {\n  --tw-text-opacity: 1;\n  color: rgb(55 65 81 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:underline:hover {\n  text-decoration-line: underline;\n}\r\n.hover\\:opacity-100:hover {\n  opacity: 1;\n}\r\n.focus\\:outline-none:focus {\n  outline: 2px solid transparent;\n  outline-offset: 2px;\n}\r\n.focus\\:ring-2:focus {\n  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);\n  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);\n}\r\n.focus\\:ring-blue-500:focus {\n  --tw-ring-opacity: 1;\n  --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity, 1));\n}\r\n.disabled\\:opacity-60:disabled {\n  opacity: 0.6;\n}\r\n@media (min-width: 640px) {\n\n  .sm\\:ml-0 {\n    margin-left: 0px;\n  }\n\n  .sm\\:block {\n    display: block;\n  }\n\n  .sm\\:grid-cols-3 {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n\n  .sm\\:items-center {\n    align-items: center;\n  }\n\n  .sm\\:justify-start {\n    justify-content: flex-start;\n  }\n\n  .sm\\:justify-between {\n    justify-content: space-between;\n  }\n\n  .sm\\:px-6 {\n    padding-left: 1.5rem;\n    padding-right: 1.5rem;\n  }\n\n  .sm\\:pt-0 {\n    padding-top: 0px;\n  }\n\n  .sm\\:text-left {\n    text-align: left;\n  }\n\n  .sm\\:text-right {\n    text-align: right;\n  }\n}\r\n@media (min-width: 1024px) {\n\n  .lg\\:px-8 {\n    padding-left: 2rem;\n    padding-right: 2rem;\n  }\n}\r\n@media (prefers-color-scheme: dark) {\n\n  .dark\\:bg-gray-900 {\n    --tw-bg-opacity: 1;\n    background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));\n  }\n\n  .dark\\:text-gray-500 {\n    --tw-text-opacity: 1;\n    color: rgb(107 114 128 / var(--tw-text-opacity, 1));\n  }\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -75600,6 +76059,39 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/ensure chunk */
+/******/ 	(() => {
+/******/ 		__webpack_require__.f = {};
+/******/ 		// This file contains only the entry chunk.
+/******/ 		// The chunk loading function for additional chunks
+/******/ 		__webpack_require__.e = (chunkId) => {
+/******/ 			return Promise.all(Object.keys(__webpack_require__.f).reduce((promises, key) => {
+/******/ 				__webpack_require__.f[key](chunkId, promises);
+/******/ 				return promises;
+/******/ 			}, []));
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/get javascript chunk filename */
+/******/ 	(() => {
+/******/ 		// This function allow to reference async chunks
+/******/ 		__webpack_require__.u = (chunkId) => {
+/******/ 			// return url for filenames not based on template
+/******/ 			if ({"resources_js_mocks_server_js":1,"node_modules_graphql_index_mjs":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			// return url for filenames based on template
+/******/ 			return undefined;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/get mini-css chunk filename */
+/******/ 	(() => {
+/******/ 		// This function allow to reference all chunks
+/******/ 		__webpack_require__.miniCssF = (chunkId) => {
+/******/ 			// return url for filenames based on template
+/******/ 			return "" + chunkId + ".css";
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/global */
 /******/ 	(() => {
 /******/ 		__webpack_require__.g = (function() {
@@ -75615,6 +76107,51 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/load script */
+/******/ 	(() => {
+/******/ 		var inProgress = {};
+/******/ 		// data-webpack is not used as build has no uniqueName
+/******/ 		// loadScript function to load a script via script tag
+/******/ 		__webpack_require__.l = (url, done, key, chunkId) => {
+/******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
+/******/ 			var script, needAttach;
+/******/ 			if(key !== undefined) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				for(var i = 0; i < scripts.length; i++) {
+/******/ 					var s = scripts[i];
+/******/ 					if(s.getAttribute("src") == url) { script = s; break; }
+/******/ 				}
+/******/ 			}
+/******/ 			if(!script) {
+/******/ 				needAttach = true;
+/******/ 				script = document.createElement('script');
+/******/ 		
+/******/ 				script.charset = 'utf-8';
+/******/ 				if (__webpack_require__.nc) {
+/******/ 					script.setAttribute("nonce", __webpack_require__.nc);
+/******/ 				}
+/******/ 		
+/******/ 		
+/******/ 				script.src = url;
+/******/ 			}
+/******/ 			inProgress[url] = [done];
+/******/ 			var onScriptComplete = (prev, event) => {
+/******/ 				// avoid mem leaks in IE.
+/******/ 				script.onerror = script.onload = null;
+/******/ 				clearTimeout(timeout);
+/******/ 				var doneFns = inProgress[url];
+/******/ 				delete inProgress[url];
+/******/ 				script.parentNode && script.parentNode.removeChild(script);
+/******/ 				doneFns && doneFns.forEach((fn) => (fn(event)));
+/******/ 				if(prev) return prev(event);
+/******/ 			}
+/******/ 			var timeout = setTimeout(onScriptComplete.bind(null, undefined, { type: 'timeout', target: script }), 120000);
+/******/ 			script.onerror = onScriptComplete.bind(null, script.onerror);
+/******/ 			script.onload = onScriptComplete.bind(null, script.onload);
+/******/ 			needAttach && document.head.appendChild(script);
+/******/ 		};
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
@@ -75637,6 +76174,11 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		__webpack_require__.p = "/";
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/jsonp chunk loading */
 /******/ 	(() => {
 /******/ 		// no baseURI
@@ -75649,7 +76191,44 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 			"css/app": 0
 /******/ 		};
 /******/ 		
-/******/ 		// no chunk on demand loading
+/******/ 		__webpack_require__.f.j = (chunkId, promises) => {
+/******/ 				// JSONP chunk loading for javascript
+/******/ 				var installedChunkData = __webpack_require__.o(installedChunks, chunkId) ? installedChunks[chunkId] : undefined;
+/******/ 				if(installedChunkData !== 0) { // 0 means "already installed".
+/******/ 		
+/******/ 					// a Promise means "currently loading".
+/******/ 					if(installedChunkData) {
+/******/ 						promises.push(installedChunkData[2]);
+/******/ 					} else {
+/******/ 						if("css/app" != chunkId) {
+/******/ 							// setup Promise in chunk cache
+/******/ 							var promise = new Promise((resolve, reject) => (installedChunkData = installedChunks[chunkId] = [resolve, reject]));
+/******/ 							promises.push(installedChunkData[2] = promise);
+/******/ 		
+/******/ 							// start chunk loading
+/******/ 							var url = __webpack_require__.p + __webpack_require__.u(chunkId);
+/******/ 							// create error before stack unwound to get useful stacktrace later
+/******/ 							var error = new Error();
+/******/ 							var loadingEnded = (event) => {
+/******/ 								if(__webpack_require__.o(installedChunks, chunkId)) {
+/******/ 									installedChunkData = installedChunks[chunkId];
+/******/ 									if(installedChunkData !== 0) installedChunks[chunkId] = undefined;
+/******/ 									if(installedChunkData) {
+/******/ 										var errorType = event && (event.type === 'load' ? 'missing' : event.type);
+/******/ 										var realSrc = event && event.target && event.target.src;
+/******/ 										error.message = 'Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')';
+/******/ 										error.name = 'ChunkLoadError';
+/******/ 										error.type = errorType;
+/******/ 										error.request = realSrc;
+/******/ 										installedChunkData[1](error);
+/******/ 									}
+/******/ 								}
+/******/ 							};
+/******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId, chunkId);
+/******/ 						} else installedChunks[chunkId] = 0;
+/******/ 					}
+/******/ 				}
+/******/ 		};
 /******/ 		
 /******/ 		// no prefetching
 /******/ 		

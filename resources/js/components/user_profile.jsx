@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-
-// Mock AuthContext data — replace with actual API call if needed
-const mockUser = {
-  name: "Admin User",
-  email: "admin@example.com",
-  role: "Administrator",
-  created_at: new Date().toISOString(),
-};
+import { useAuth, AuthProvider } from "../AuthContext";
  
 // ── Helper: get initials from name ────────────────────────────
 function getInitials(name = "") {
@@ -269,7 +262,7 @@ function ChangePassword() {
 // ── Main Profile page ─────────────────────────────────────────
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("info");
-  const user = mockUser; // Use mock data
+  const { user } = useAuth();
 
   function handleUserUpdate(updatedUser) {
     console.log("User updated:", updatedUser);
@@ -347,5 +340,9 @@ export default function Profile() {
 if (document.getElementById('userProfile')) {
   const container = document.getElementById('userProfile');
   const root = createRoot(container);
-  root.render(<Profile />);
+  root.render(
+    <AuthProvider>
+      <Profile />
+    </AuthProvider>
+  );
 }

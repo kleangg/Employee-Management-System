@@ -2,6 +2,7 @@
 import React, {useState} from 'react';
 import {NavLink, useNavigate, BrowserRouter} from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
+import { useAuth, AuthProvider } from '../AuthContext';
 
 function getInitials(name){
     if(!name) return '';
@@ -106,13 +107,11 @@ export default function Sidebar(){
     const [collapsed, setCollapsed] = useState(false);
     const [loggingOut, setLoggingOut] = useState(false);
     const navigate = useNavigate();
-
-    const user = { name: 'Admin User' };
+    const { user, logout } = useAuth();
 
     const handleLogout = () => {
         setLoggingOut(true);
-        // TODO: implement actual logout flow (API call, token remove, redirect)
-        // For now, redirect via router if available.
+        logout();
         setTimeout(() => {
             setLoggingOut(false);
             if (navigate) {
@@ -303,7 +302,9 @@ if (document.getElementById('sideBar')) {
     const root = createRoot(container);
     root.render(
         <BrowserRouter>
-            <Sidebar />
+            <AuthProvider>
+                <Sidebar />
+            </AuthProvider>
         </BrowserRouter>
     );
 }

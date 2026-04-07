@@ -84,4 +84,67 @@ class LeaveController extends Controller
             'id' => (int) $id,
         ]);
     }
+
+    public function adminIndex(): JsonResponse
+    {
+        return response()->json([
+            [
+                'id' => 1,
+                'user_id' => 1,
+                'user_name' => 'John Doe',
+                'type' => 'annual',
+                'start_date' => '2026-04-10',
+                'end_date' => '2026-04-12',
+                'days' => 3,
+                'reason' => 'Family event',
+                'status' => 'approved',
+            ],
+            [
+                'id' => 2,
+                'user_id' => 2,
+                'user_name' => 'Jane Smith',
+                'type' => 'medical',
+                'start_date' => '2026-04-20',
+                'end_date' => '2026-04-21',
+                'days' => 2,
+                'reason' => 'Doctor appointment',
+                'status' => 'pending',
+            ],
+            [
+                'id' => 3,
+                'user_id' => 3,
+                'user_name' => 'Bob Johnson',
+                'type' => 'emergency',
+                'start_date' => '2026-05-02',
+                'end_date' => '2026-05-02',
+                'days' => 1,
+                'reason' => 'Urgent errand',
+                'status' => 'rejected',
+            ],
+        ]);
+    }
+
+    public function adminBalance($userId): JsonResponse
+    {
+        return response()->json([
+            'user_id' => (int) $userId,
+            'annual' => 12,
+            'medical' => 4,
+            'emergency' => 1,
+            'unpaid' => 0,
+        ]);
+    }
+
+    public function adminUpdate(Request $request, $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:approved,rejected',
+        ]);
+
+        return response()->json([
+            'message' => 'Leave request updated successfully.',
+            'id' => (int) $id,
+            'status' => $validated['status'],
+        ]);
+    }
 }
