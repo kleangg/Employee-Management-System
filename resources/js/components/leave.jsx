@@ -7,6 +7,7 @@
 //  If role === "HR Admin" → renders <AdminLeaveView>
 //  Otherwise             → renders <EmployeeLeaveView>
 //
+// to check the mock data of employee leave view, add ?mock=true to the URL (e.g. http://localhost:8000/leave?mock=true)
 //  This means no extra route or page needed — the same
 //  /leave URL shows different UI based on who is logged in.
 // ============================================================
