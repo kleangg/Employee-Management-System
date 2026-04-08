@@ -81,6 +81,81 @@ var mockAdminBalance = {
   emergency: 1
 };
 
+// Mock attendance data
+var mockTodayAttendance = {
+  date: new Date().toISOString().split('T')[0],
+  clock_in: new Date().toISOString(),
+  clock_out: null,
+  status: 'present'
+};
+var mockAttendanceSummary = {
+  present: 18,
+  late: 2,
+  absent: 0,
+  avg_hours: 8.2
+};
+var mockAttendanceHistory = [{
+  id: 1,
+  date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+  clock_in: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 9 * 60 * 60 * 1000).toISOString(),
+  clock_out: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 17 * 60 * 60 * 1000).toISOString(),
+  status: 'present'
+}, {
+  id: 2,
+  date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+  clock_in: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 9.5 * 60 * 60 * 1000).toISOString(),
+  clock_out: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 17.25 * 60 * 60 * 1000).toISOString(),
+  status: 'late'
+}, {
+  id: 3,
+  date: new Date().toISOString().split('T')[0],
+  clock_in: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+  clock_out: null,
+  status: 'present'
+}];
+var mockAdminAttendance = [{
+  id: 1,
+  user_id: 1,
+  user_name: 'John Doe',
+  date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+  clock_in: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 9 * 60 * 60 * 1000).toISOString(),
+  clock_out: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 17 * 60 * 60 * 1000).toISOString(),
+  status: 'present'
+}, {
+  id: 2,
+  user_id: 2,
+  user_name: 'Jane Smith',
+  date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+  clock_in: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 9.5 * 60 * 60 * 1000).toISOString(),
+  clock_out: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 17.25 * 60 * 60 * 1000).toISOString(),
+  status: 'late'
+}];
+var mockEmployees = [{
+  id: 1,
+  name: 'John Doe'
+}, {
+  id: 2,
+  name: 'Jane Smith'
+}, {
+  id: 3,
+  name: 'Bob Johnson'
+}];
+var mockAdminAttendanceSummary = [{
+  user_id: 1,
+  name: 'John Doe',
+  present: 18,
+  late: 1,
+  absent: 0,
+  total_hours: 144
+}, {
+  user_id: 2,
+  name: 'Jane Smith',
+  present: 17,
+  late: 2,
+  absent: 1,
+  total_hours: 138
+}];
+
 // Handlers
 var handlers = [
 // Employee leave history
@@ -169,6 +244,75 @@ msw__WEBPACK_IMPORTED_MODULE_0__.http.put('/api/admin/leave/:id', /*#__PURE__*/f
   return function (_x2) {
     return _ref5.apply(this, arguments);
   };
+}()),
+// Attendance: today's record
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/attendance/today', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockTodayAttendance);
+}),
+// Attendance: monthly summary
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/attendance/summary', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAttendanceSummary);
+}),
+// Attendance: history
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/attendance', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAttendanceHistory);
+}),
+// Attendance: clock in
+msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/attendance/clock-in', function () {
+  mockTodayAttendance.clock_in = new Date().toISOString();
+  mockTodayAttendance.clock_out = null;
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+    message: 'Clocked in successfully.',
+    clock_in: mockTodayAttendance.clock_in,
+    date: mockTodayAttendance.date
+  });
+}),
+// Attendance: clock out
+msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/attendance/clock-out', function () {
+  mockTodayAttendance.clock_out = new Date().toISOString();
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+    message: 'Clocked out successfully.',
+    clock_out: mockTodayAttendance.clock_out,
+    date: mockTodayAttendance.date
+  });
+}),
+// Admin: attendance records
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/attendance', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAdminAttendance);
+}),
+// Admin: employees list
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/employees', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockEmployees);
+}),
+// Admin: attendance summary
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/attendance/summary', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAdminAttendanceSummary);
+}),
+// Admin: add attendance record
+msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/admin/attendance', /*#__PURE__*/function () {
+  var _ref7 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(_ref6) {
+    var request, body, newRecord;
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.n) {
+        case 0:
+          request = _ref6.request;
+          _context3.n = 1;
+          return request.json();
+        case 1:
+          body = _context3.v;
+          newRecord = _objectSpread({
+            id: Date.now()
+          }, body);
+          mockAdminAttendance.push(newRecord);
+          return _context3.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(newRecord, {
+            status: 201
+          }));
+      }
+    }, _callee3);
+  }));
+  return function (_x3) {
+    return _ref7.apply(this, arguments);
+  };
 }())];
 
 /***/ },
@@ -183,7 +327,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   worker: () => (/* binding */ worker)
 /* harmony export */ });
-/* harmony import */ var msw__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! msw */ "./node_modules/msw/lib/core/index.mjs");
+/* harmony import */ var msw_browser__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! msw/browser */ "./node_modules/msw/lib/browser/index.mjs");
 /* harmony import */ var _handlers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./handlers */ "./resources/js/mocks/handlers.js");
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -195,7 +339,7 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
 
 
 // This configures a Service Worker with the given request handlers.
-var worker = msw__WEBPACK_IMPORTED_MODULE_0__.setupWorker.apply(void 0, _toConsumableArray(_handlers__WEBPACK_IMPORTED_MODULE_1__.handlers));
+var worker = msw_browser__WEBPACK_IMPORTED_MODULE_0__.setupWorker.apply(void 0, _toConsumableArray(_handlers__WEBPACK_IMPORTED_MODULE_1__.handlers));
 
 /***/ },
 
@@ -2479,4205 +2623,6 @@ function serializeInput(message) {
 
 /***/ },
 
-/***/ "./node_modules/graphql/error/GraphQLError.mjs"
-/*!*****************************************************!*\
-  !*** ./node_modules/graphql/error/GraphQLError.mjs ***!
-  \*****************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   GraphQLError: () => (/* binding */ GraphQLError),
-/* harmony export */   formatError: () => (/* binding */ formatError),
-/* harmony export */   printError: () => (/* binding */ printError)
-/* harmony export */ });
-/* harmony import */ var _jsutils_isObjectLike_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../jsutils/isObjectLike.mjs */ "./node_modules/graphql/jsutils/isObjectLike.mjs");
-/* harmony import */ var _language_location_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../language/location.mjs */ "./node_modules/graphql/language/location.mjs");
-/* harmony import */ var _language_printLocation_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../language/printLocation.mjs */ "./node_modules/graphql/language/printLocation.mjs");
-
-
-
-
-function toNormalizedOptions(args) {
-  const firstArg = args[0];
-
-  if (firstArg == null || 'kind' in firstArg || 'length' in firstArg) {
-    return {
-      nodes: firstArg,
-      source: args[1],
-      positions: args[2],
-      path: args[3],
-      originalError: args[4],
-      extensions: args[5],
-    };
-  }
-
-  return firstArg;
-}
-/**
- * A GraphQLError describes an Error found during the parse, validate, or
- * execute phases of performing a GraphQL operation. In addition to a message
- * and stack trace, it also includes information about the locations in a
- * GraphQL document and/or execution result that correspond to the Error.
- */
-
-class GraphQLError extends Error {
-  /**
-   * An array of `{ line, column }` locations within the source GraphQL document
-   * which correspond to this error.
-   *
-   * Errors during validation often contain multiple locations, for example to
-   * point out two things with the same name. Errors during execution include a
-   * single location, the field which produced the error.
-   *
-   * Enumerable, and appears in the result of JSON.stringify().
-   */
-
-  /**
-   * An array describing the JSON-path into the execution response which
-   * corresponds to this error. Only included for errors during execution.
-   *
-   * Enumerable, and appears in the result of JSON.stringify().
-   */
-
-  /**
-   * An array of GraphQL AST Nodes corresponding to this error.
-   */
-
-  /**
-   * The source GraphQL document for the first location of this error.
-   *
-   * Note that if this Error represents more than one node, the source may not
-   * represent nodes after the first node.
-   */
-
-  /**
-   * An array of character offsets within the source GraphQL document
-   * which correspond to this error.
-   */
-
-  /**
-   * The original error thrown from a field resolver during execution.
-   */
-
-  /**
-   * Extension fields to add to the formatted error.
-   */
-
-  /**
-   * @deprecated Please use the `GraphQLErrorOptions` constructor overload instead.
-   */
-  constructor(message, ...rawArgs) {
-    var _this$nodes, _nodeLocations$, _ref;
-
-    const { nodes, source, positions, path, originalError, extensions } =
-      toNormalizedOptions(rawArgs);
-    super(message);
-    this.name = 'GraphQLError';
-    this.path = path !== null && path !== void 0 ? path : undefined;
-    this.originalError =
-      originalError !== null && originalError !== void 0
-        ? originalError
-        : undefined; // Compute list of blame nodes.
-
-    this.nodes = undefinedIfEmpty(
-      Array.isArray(nodes) ? nodes : nodes ? [nodes] : undefined,
-    );
-    const nodeLocations = undefinedIfEmpty(
-      (_this$nodes = this.nodes) === null || _this$nodes === void 0
-        ? void 0
-        : _this$nodes.map((node) => node.loc).filter((loc) => loc != null),
-    ); // Compute locations in the source for the given nodes/positions.
-
-    this.source =
-      source !== null && source !== void 0
-        ? source
-        : nodeLocations === null || nodeLocations === void 0
-        ? void 0
-        : (_nodeLocations$ = nodeLocations[0]) === null ||
-          _nodeLocations$ === void 0
-        ? void 0
-        : _nodeLocations$.source;
-    this.positions =
-      positions !== null && positions !== void 0
-        ? positions
-        : nodeLocations === null || nodeLocations === void 0
-        ? void 0
-        : nodeLocations.map((loc) => loc.start);
-    this.locations =
-      positions && source
-        ? positions.map((pos) => (0,_language_location_mjs__WEBPACK_IMPORTED_MODULE_1__.getLocation)(source, pos))
-        : nodeLocations === null || nodeLocations === void 0
-        ? void 0
-        : nodeLocations.map((loc) => (0,_language_location_mjs__WEBPACK_IMPORTED_MODULE_1__.getLocation)(loc.source, loc.start));
-    const originalExtensions = (0,_jsutils_isObjectLike_mjs__WEBPACK_IMPORTED_MODULE_0__.isObjectLike)(
-      originalError === null || originalError === void 0
-        ? void 0
-        : originalError.extensions,
-    )
-      ? originalError === null || originalError === void 0
-        ? void 0
-        : originalError.extensions
-      : undefined;
-    this.extensions =
-      (_ref =
-        extensions !== null && extensions !== void 0
-          ? extensions
-          : originalExtensions) !== null && _ref !== void 0
-        ? _ref
-        : Object.create(null); // Only properties prescribed by the spec should be enumerable.
-    // Keep the rest as non-enumerable.
-
-    Object.defineProperties(this, {
-      message: {
-        writable: true,
-        enumerable: true,
-      },
-      name: {
-        enumerable: false,
-      },
-      nodes: {
-        enumerable: false,
-      },
-      source: {
-        enumerable: false,
-      },
-      positions: {
-        enumerable: false,
-      },
-      originalError: {
-        enumerable: false,
-      },
-    }); // Include (non-enumerable) stack trace.
-
-    /* c8 ignore start */
-    // FIXME: https://github.com/graphql/graphql-js/issues/2317
-
-    if (
-      originalError !== null &&
-      originalError !== void 0 &&
-      originalError.stack
-    ) {
-      Object.defineProperty(this, 'stack', {
-        value: originalError.stack,
-        writable: true,
-        configurable: true,
-      });
-    } else if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, GraphQLError);
-    } else {
-      Object.defineProperty(this, 'stack', {
-        value: Error().stack,
-        writable: true,
-        configurable: true,
-      });
-    }
-    /* c8 ignore stop */
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'GraphQLError';
-  }
-
-  toString() {
-    let output = this.message;
-
-    if (this.nodes) {
-      for (const node of this.nodes) {
-        if (node.loc) {
-          output += '\n\n' + (0,_language_printLocation_mjs__WEBPACK_IMPORTED_MODULE_2__.printLocation)(node.loc);
-        }
-      }
-    } else if (this.source && this.locations) {
-      for (const location of this.locations) {
-        output += '\n\n' + (0,_language_printLocation_mjs__WEBPACK_IMPORTED_MODULE_2__.printSourceLocation)(this.source, location);
-      }
-    }
-
-    return output;
-  }
-
-  toJSON() {
-    const formattedError = {
-      message: this.message,
-    };
-
-    if (this.locations != null) {
-      formattedError.locations = this.locations;
-    }
-
-    if (this.path != null) {
-      formattedError.path = this.path;
-    }
-
-    if (this.extensions != null && Object.keys(this.extensions).length > 0) {
-      formattedError.extensions = this.extensions;
-    }
-
-    return formattedError;
-  }
-}
-
-function undefinedIfEmpty(array) {
-  return array === undefined || array.length === 0 ? undefined : array;
-}
-/**
- * See: https://spec.graphql.org/draft/#sec-Errors
- */
-
-/**
- * Prints a GraphQLError to a string, representing useful location information
- * about the error's position in the source.
- *
- * @deprecated Please use `error.toString` instead. Will be removed in v17
- */
-function printError(error) {
-  return error.toString();
-}
-/**
- * Given a GraphQLError, format it according to the rules described by the
- * Response Format, Errors section of the GraphQL Specification.
- *
- * @deprecated Please use `error.toJSON` instead. Will be removed in v17
- */
-
-function formatError(error) {
-  return error.toJSON();
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/error/syntaxError.mjs"
-/*!****************************************************!*\
-  !*** ./node_modules/graphql/error/syntaxError.mjs ***!
-  \****************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   syntaxError: () => (/* binding */ syntaxError)
-/* harmony export */ });
-/* harmony import */ var _GraphQLError_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GraphQLError.mjs */ "./node_modules/graphql/error/GraphQLError.mjs");
-
-/**
- * Produces a GraphQLError representing a syntax error, containing useful
- * descriptive information about the syntax error's position in the source.
- */
-
-function syntaxError(source, position, description) {
-  return new _GraphQLError_mjs__WEBPACK_IMPORTED_MODULE_0__.GraphQLError(`Syntax Error: ${description}`, {
-    source,
-    positions: [position],
-  });
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/jsutils/devAssert.mjs"
-/*!****************************************************!*\
-  !*** ./node_modules/graphql/jsutils/devAssert.mjs ***!
-  \****************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   devAssert: () => (/* binding */ devAssert)
-/* harmony export */ });
-function devAssert(condition, message) {
-  const booleanCondition = Boolean(condition);
-
-  if (!booleanCondition) {
-    throw new Error(message);
-  }
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/jsutils/inspect.mjs"
-/*!**************************************************!*\
-  !*** ./node_modules/graphql/jsutils/inspect.mjs ***!
-  \**************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   inspect: () => (/* binding */ inspect)
-/* harmony export */ });
-const MAX_ARRAY_LENGTH = 10;
-const MAX_RECURSIVE_DEPTH = 2;
-/**
- * Used to print values in error messages.
- */
-
-function inspect(value) {
-  return formatValue(value, []);
-}
-
-function formatValue(value, seenValues) {
-  switch (typeof value) {
-    case 'string':
-      return JSON.stringify(value);
-
-    case 'function':
-      return value.name ? `[function ${value.name}]` : '[function]';
-
-    case 'object':
-      return formatObjectValue(value, seenValues);
-
-    default:
-      return String(value);
-  }
-}
-
-function formatObjectValue(value, previouslySeenValues) {
-  if (value === null) {
-    return 'null';
-  }
-
-  if (previouslySeenValues.includes(value)) {
-    return '[Circular]';
-  }
-
-  const seenValues = [...previouslySeenValues, value];
-
-  if (isJSONable(value)) {
-    const jsonValue = value.toJSON(); // check for infinite recursion
-
-    if (jsonValue !== value) {
-      return typeof jsonValue === 'string'
-        ? jsonValue
-        : formatValue(jsonValue, seenValues);
-    }
-  } else if (Array.isArray(value)) {
-    return formatArray(value, seenValues);
-  }
-
-  return formatObject(value, seenValues);
-}
-
-function isJSONable(value) {
-  return typeof value.toJSON === 'function';
-}
-
-function formatObject(object, seenValues) {
-  const entries = Object.entries(object);
-
-  if (entries.length === 0) {
-    return '{}';
-  }
-
-  if (seenValues.length > MAX_RECURSIVE_DEPTH) {
-    return '[' + getObjectTag(object) + ']';
-  }
-
-  const properties = entries.map(
-    ([key, value]) => key + ': ' + formatValue(value, seenValues),
-  );
-  return '{ ' + properties.join(', ') + ' }';
-}
-
-function formatArray(array, seenValues) {
-  if (array.length === 0) {
-    return '[]';
-  }
-
-  if (seenValues.length > MAX_RECURSIVE_DEPTH) {
-    return '[Array]';
-  }
-
-  const len = Math.min(MAX_ARRAY_LENGTH, array.length);
-  const remaining = array.length - len;
-  const items = [];
-
-  for (let i = 0; i < len; ++i) {
-    items.push(formatValue(array[i], seenValues));
-  }
-
-  if (remaining === 1) {
-    items.push('... 1 more item');
-  } else if (remaining > 1) {
-    items.push(`... ${remaining} more items`);
-  }
-
-  return '[' + items.join(', ') + ']';
-}
-
-function getObjectTag(object) {
-  const tag = Object.prototype.toString
-    .call(object)
-    .replace(/^\[object /, '')
-    .replace(/]$/, '');
-
-  if (tag === 'Object' && typeof object.constructor === 'function') {
-    const name = object.constructor.name;
-
-    if (typeof name === 'string' && name !== '') {
-      return name;
-    }
-  }
-
-  return tag;
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/jsutils/instanceOf.mjs"
-/*!*****************************************************!*\
-  !*** ./node_modules/graphql/jsutils/instanceOf.mjs ***!
-  \*****************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   instanceOf: () => (/* binding */ instanceOf)
-/* harmony export */ });
-/* harmony import */ var _inspect_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./inspect.mjs */ "./node_modules/graphql/jsutils/inspect.mjs");
-
-/* c8 ignore next 3 */
-
-const isProduction =
-  globalThis.process && // eslint-disable-next-line no-undef
-  "development" === 'production';
-/**
- * A replacement for instanceof which includes an error warning when multi-realm
- * constructors are detected.
- * See: https://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production
- * See: https://webpack.js.org/guides/production/
- */
-
-const instanceOf =
-  /* c8 ignore next 6 */
-  // FIXME: https://github.com/graphql/graphql-js/issues/2317
-  isProduction
-    ? function instanceOf(value, constructor) {
-        return value instanceof constructor;
-      }
-    : function instanceOf(value, constructor) {
-        if (value instanceof constructor) {
-          return true;
-        }
-
-        if (typeof value === 'object' && value !== null) {
-          var _value$constructor;
-
-          // Prefer Symbol.toStringTag since it is immune to minification.
-          const className = constructor.prototype[Symbol.toStringTag];
-          const valueClassName = // We still need to support constructor's name to detect conflicts with older versions of this library.
-            Symbol.toStringTag in value // @ts-expect-error TS bug see, https://github.com/microsoft/TypeScript/issues/38009
-              ? value[Symbol.toStringTag]
-              : (_value$constructor = value.constructor) === null ||
-                _value$constructor === void 0
-              ? void 0
-              : _value$constructor.name;
-
-          if (className === valueClassName) {
-            const stringifiedValue = (0,_inspect_mjs__WEBPACK_IMPORTED_MODULE_0__.inspect)(value);
-            throw new Error(`Cannot use ${className} "${stringifiedValue}" from another module or realm.
-
-Ensure that there is only one instance of "graphql" in the node_modules
-directory. If different versions of "graphql" are the dependencies of other
-relied on modules, use "resolutions" to ensure only one version is installed.
-
-https://yarnpkg.com/en/docs/selective-version-resolutions
-
-Duplicate "graphql" modules cannot be used at the same time since different
-versions may have different capabilities and behavior. The data from one
-version used in the function from another could produce confusing and
-spurious results.`);
-          }
-        }
-
-        return false;
-      };
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/jsutils/invariant.mjs"
-/*!****************************************************!*\
-  !*** ./node_modules/graphql/jsutils/invariant.mjs ***!
-  \****************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   invariant: () => (/* binding */ invariant)
-/* harmony export */ });
-function invariant(condition, message) {
-  const booleanCondition = Boolean(condition);
-
-  if (!booleanCondition) {
-    throw new Error(
-      message != null ? message : 'Unexpected invariant triggered.',
-    );
-  }
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/jsutils/isObjectLike.mjs"
-/*!*******************************************************!*\
-  !*** ./node_modules/graphql/jsutils/isObjectLike.mjs ***!
-  \*******************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   isObjectLike: () => (/* binding */ isObjectLike)
-/* harmony export */ });
-/**
- * Return true if `value` is object-like. A value is object-like if it's not
- * `null` and has a `typeof` result of "object".
- */
-function isObjectLike(value) {
-  return typeof value == 'object' && value !== null;
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/ast.mjs"
-/*!***********************************************!*\
-  !*** ./node_modules/graphql/language/ast.mjs ***!
-  \***********************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Location: () => (/* binding */ Location),
-/* harmony export */   OperationTypeNode: () => (/* binding */ OperationTypeNode),
-/* harmony export */   QueryDocumentKeys: () => (/* binding */ QueryDocumentKeys),
-/* harmony export */   Token: () => (/* binding */ Token),
-/* harmony export */   isNode: () => (/* binding */ isNode)
-/* harmony export */ });
-/**
- * Contains a range of UTF-8 character offsets and token references that
- * identify the region of the source from which the AST derived.
- */
-class Location {
-  /**
-   * The character offset at which this Node begins.
-   */
-
-  /**
-   * The character offset at which this Node ends.
-   */
-
-  /**
-   * The Token at which this Node begins.
-   */
-
-  /**
-   * The Token at which this Node ends.
-   */
-
-  /**
-   * The Source document the AST represents.
-   */
-  constructor(startToken, endToken, source) {
-    this.start = startToken.start;
-    this.end = endToken.end;
-    this.startToken = startToken;
-    this.endToken = endToken;
-    this.source = source;
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'Location';
-  }
-
-  toJSON() {
-    return {
-      start: this.start,
-      end: this.end,
-    };
-  }
-}
-/**
- * Represents a range of characters represented by a lexical token
- * within a Source.
- */
-
-class Token {
-  /**
-   * The kind of Token.
-   */
-
-  /**
-   * The character offset at which this Node begins.
-   */
-
-  /**
-   * The character offset at which this Node ends.
-   */
-
-  /**
-   * The 1-indexed line number on which this Token appears.
-   */
-
-  /**
-   * The 1-indexed column number at which this Token begins.
-   */
-
-  /**
-   * For non-punctuation tokens, represents the interpreted value of the token.
-   *
-   * Note: is undefined for punctuation tokens, but typed as string for
-   * convenience in the parser.
-   */
-
-  /**
-   * Tokens exist as nodes in a double-linked-list amongst all tokens
-   * including ignored tokens. <SOF> is always the first node and <EOF>
-   * the last.
-   */
-  constructor(kind, start, end, line, column, value) {
-    this.kind = kind;
-    this.start = start;
-    this.end = end;
-    this.line = line;
-    this.column = column; // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-
-    this.value = value;
-    this.prev = null;
-    this.next = null;
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'Token';
-  }
-
-  toJSON() {
-    return {
-      kind: this.kind,
-      value: this.value,
-      line: this.line,
-      column: this.column,
-    };
-  }
-}
-/**
- * The list of all possible AST node types.
- */
-
-/**
- * @internal
- */
-const QueryDocumentKeys = {
-  Name: [],
-  Document: ['definitions'],
-  OperationDefinition: [
-    'description',
-    'name',
-    'variableDefinitions',
-    'directives',
-    'selectionSet',
-  ],
-  VariableDefinition: [
-    'description',
-    'variable',
-    'type',
-    'defaultValue',
-    'directives',
-  ],
-  Variable: ['name'],
-  SelectionSet: ['selections'],
-  Field: ['alias', 'name', 'arguments', 'directives', 'selectionSet'],
-  Argument: ['name', 'value'],
-  FragmentSpread: ['name', 'directives'],
-  InlineFragment: ['typeCondition', 'directives', 'selectionSet'],
-  FragmentDefinition: [
-    'description',
-    'name', // Note: fragment variable definitions are deprecated and will removed in v17.0.0
-    'variableDefinitions',
-    'typeCondition',
-    'directives',
-    'selectionSet',
-  ],
-  IntValue: [],
-  FloatValue: [],
-  StringValue: [],
-  BooleanValue: [],
-  NullValue: [],
-  EnumValue: [],
-  ListValue: ['values'],
-  ObjectValue: ['fields'],
-  ObjectField: ['name', 'value'],
-  Directive: ['name', 'arguments'],
-  NamedType: ['name'],
-  ListType: ['type'],
-  NonNullType: ['type'],
-  SchemaDefinition: ['description', 'directives', 'operationTypes'],
-  OperationTypeDefinition: ['type'],
-  ScalarTypeDefinition: ['description', 'name', 'directives'],
-  ObjectTypeDefinition: [
-    'description',
-    'name',
-    'interfaces',
-    'directives',
-    'fields',
-  ],
-  FieldDefinition: ['description', 'name', 'arguments', 'type', 'directives'],
-  InputValueDefinition: [
-    'description',
-    'name',
-    'type',
-    'defaultValue',
-    'directives',
-  ],
-  InterfaceTypeDefinition: [
-    'description',
-    'name',
-    'interfaces',
-    'directives',
-    'fields',
-  ],
-  UnionTypeDefinition: ['description', 'name', 'directives', 'types'],
-  EnumTypeDefinition: ['description', 'name', 'directives', 'values'],
-  EnumValueDefinition: ['description', 'name', 'directives'],
-  InputObjectTypeDefinition: ['description', 'name', 'directives', 'fields'],
-  DirectiveDefinition: ['description', 'name', 'arguments', 'locations'],
-  SchemaExtension: ['directives', 'operationTypes'],
-  ScalarTypeExtension: ['name', 'directives'],
-  ObjectTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
-  InterfaceTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
-  UnionTypeExtension: ['name', 'directives', 'types'],
-  EnumTypeExtension: ['name', 'directives', 'values'],
-  InputObjectTypeExtension: ['name', 'directives', 'fields'],
-  TypeCoordinate: ['name'],
-  MemberCoordinate: ['name', 'memberName'],
-  ArgumentCoordinate: ['name', 'fieldName', 'argumentName'],
-  DirectiveCoordinate: ['name'],
-  DirectiveArgumentCoordinate: ['name', 'argumentName'],
-};
-const kindValues = new Set(Object.keys(QueryDocumentKeys));
-/**
- * @internal
- */
-
-function isNode(maybeNode) {
-  const maybeKind =
-    maybeNode === null || maybeNode === void 0 ? void 0 : maybeNode.kind;
-  return typeof maybeKind === 'string' && kindValues.has(maybeKind);
-}
-/** Name */
-
-var OperationTypeNode;
-
-(function (OperationTypeNode) {
-  OperationTypeNode['QUERY'] = 'query';
-  OperationTypeNode['MUTATION'] = 'mutation';
-  OperationTypeNode['SUBSCRIPTION'] = 'subscription';
-})(OperationTypeNode || (OperationTypeNode = {}));
-
-
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/blockString.mjs"
-/*!*******************************************************!*\
-  !*** ./node_modules/graphql/language/blockString.mjs ***!
-  \*******************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   dedentBlockStringLines: () => (/* binding */ dedentBlockStringLines),
-/* harmony export */   isPrintableAsBlockString: () => (/* binding */ isPrintableAsBlockString),
-/* harmony export */   printBlockString: () => (/* binding */ printBlockString)
-/* harmony export */ });
-/* harmony import */ var _characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./characterClasses.mjs */ "./node_modules/graphql/language/characterClasses.mjs");
-
-/**
- * Produces the value of a block string from its parsed raw value, similar to
- * CoffeeScript's block string, Python's docstring trim or Ruby's strip_heredoc.
- *
- * This implements the GraphQL spec's BlockStringValue() static algorithm.
- *
- * @internal
- */
-
-function dedentBlockStringLines(lines) {
-  var _firstNonEmptyLine2;
-
-  let commonIndent = Number.MAX_SAFE_INTEGER;
-  let firstNonEmptyLine = null;
-  let lastNonEmptyLine = -1;
-
-  for (let i = 0; i < lines.length; ++i) {
-    var _firstNonEmptyLine;
-
-    const line = lines[i];
-    const indent = leadingWhitespace(line);
-
-    if (indent === line.length) {
-      continue; // skip empty lines
-    }
-
-    firstNonEmptyLine =
-      (_firstNonEmptyLine = firstNonEmptyLine) !== null &&
-      _firstNonEmptyLine !== void 0
-        ? _firstNonEmptyLine
-        : i;
-    lastNonEmptyLine = i;
-
-    if (i !== 0 && indent < commonIndent) {
-      commonIndent = indent;
-    }
-  }
-
-  return lines // Remove common indentation from all lines but first.
-    .map((line, i) => (i === 0 ? line : line.slice(commonIndent))) // Remove leading and trailing blank lines.
-    .slice(
-      (_firstNonEmptyLine2 = firstNonEmptyLine) !== null &&
-        _firstNonEmptyLine2 !== void 0
-        ? _firstNonEmptyLine2
-        : 0,
-      lastNonEmptyLine + 1,
-    );
-}
-
-function leadingWhitespace(str) {
-  let i = 0;
-
-  while (i < str.length && (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__.isWhiteSpace)(str.charCodeAt(i))) {
-    ++i;
-  }
-
-  return i;
-}
-/**
- * @internal
- */
-
-function isPrintableAsBlockString(value) {
-  if (value === '') {
-    return true; // empty string is printable
-  }
-
-  let isEmptyLine = true;
-  let hasIndent = false;
-  let hasCommonIndent = true;
-  let seenNonEmptyLine = false;
-
-  for (let i = 0; i < value.length; ++i) {
-    switch (value.codePointAt(i)) {
-      case 0x0000:
-      case 0x0001:
-      case 0x0002:
-      case 0x0003:
-      case 0x0004:
-      case 0x0005:
-      case 0x0006:
-      case 0x0007:
-      case 0x0008:
-      case 0x000b:
-      case 0x000c:
-      case 0x000e:
-      case 0x000f:
-        return false;
-      // Has non-printable characters
-
-      case 0x000d:
-        //  \r
-        return false;
-      // Has \r or \r\n which will be replaced as \n
-
-      case 10:
-        //  \n
-        if (isEmptyLine && !seenNonEmptyLine) {
-          return false; // Has leading new line
-        }
-
-        seenNonEmptyLine = true;
-        isEmptyLine = true;
-        hasIndent = false;
-        break;
-
-      case 9: //   \t
-
-      case 32:
-        //  <space>
-        hasIndent || (hasIndent = isEmptyLine);
-        break;
-
-      default:
-        hasCommonIndent && (hasCommonIndent = hasIndent);
-        isEmptyLine = false;
-    }
-  }
-
-  if (isEmptyLine) {
-    return false; // Has trailing empty lines
-  }
-
-  if (hasCommonIndent && seenNonEmptyLine) {
-    return false; // Has internal indent
-  }
-
-  return true;
-}
-/**
- * Print a block string in the indented block form by adding a leading and
- * trailing blank line. However, if a block string starts with whitespace and is
- * a single-line, adding a leading blank line would strip that whitespace.
- *
- * @internal
- */
-
-function printBlockString(value, options) {
-  const escapedValue = value.replace(/"""/g, '\\"""'); // Expand a block string's raw value into independent lines.
-
-  const lines = escapedValue.split(/\r\n|[\n\r]/g);
-  const isSingleLine = lines.length === 1; // If common indentation is found we can fix some of those cases by adding leading new line
-
-  const forceLeadingNewLine =
-    lines.length > 1 &&
-    lines
-      .slice(1)
-      .every((line) => line.length === 0 || (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__.isWhiteSpace)(line.charCodeAt(0))); // Trailing triple quotes just looks confusing but doesn't force trailing new line
-
-  const hasTrailingTripleQuotes = escapedValue.endsWith('\\"""'); // Trailing quote (single or double) or slash forces trailing new line
-
-  const hasTrailingQuote = value.endsWith('"') && !hasTrailingTripleQuotes;
-  const hasTrailingSlash = value.endsWith('\\');
-  const forceTrailingNewline = hasTrailingQuote || hasTrailingSlash;
-  const printAsMultipleLines =
-    !(options !== null && options !== void 0 && options.minimize) && // add leading and trailing new lines only if it improves readability
-    (!isSingleLine ||
-      value.length > 70 ||
-      forceTrailingNewline ||
-      forceLeadingNewLine ||
-      hasTrailingTripleQuotes);
-  let result = ''; // Format a multi-line block quote to account for leading space.
-
-  const skipLeadingNewLine = isSingleLine && (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__.isWhiteSpace)(value.charCodeAt(0));
-
-  if ((printAsMultipleLines && !skipLeadingNewLine) || forceLeadingNewLine) {
-    result += '\n';
-  }
-
-  result += escapedValue;
-
-  if (printAsMultipleLines || forceTrailingNewline) {
-    result += '\n';
-  }
-
-  return '"""' + result + '"""';
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/characterClasses.mjs"
-/*!************************************************************!*\
-  !*** ./node_modules/graphql/language/characterClasses.mjs ***!
-  \************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   isDigit: () => (/* binding */ isDigit),
-/* harmony export */   isLetter: () => (/* binding */ isLetter),
-/* harmony export */   isNameContinue: () => (/* binding */ isNameContinue),
-/* harmony export */   isNameStart: () => (/* binding */ isNameStart),
-/* harmony export */   isWhiteSpace: () => (/* binding */ isWhiteSpace)
-/* harmony export */ });
-/**
- * ```
- * WhiteSpace ::
- *   - "Horizontal Tab (U+0009)"
- *   - "Space (U+0020)"
- * ```
- * @internal
- */
-function isWhiteSpace(code) {
-  return code === 0x0009 || code === 0x0020;
-}
-/**
- * ```
- * Digit :: one of
- *   - `0` `1` `2` `3` `4` `5` `6` `7` `8` `9`
- * ```
- * @internal
- */
-
-function isDigit(code) {
-  return code >= 0x0030 && code <= 0x0039;
-}
-/**
- * ```
- * Letter :: one of
- *   - `A` `B` `C` `D` `E` `F` `G` `H` `I` `J` `K` `L` `M`
- *   - `N` `O` `P` `Q` `R` `S` `T` `U` `V` `W` `X` `Y` `Z`
- *   - `a` `b` `c` `d` `e` `f` `g` `h` `i` `j` `k` `l` `m`
- *   - `n` `o` `p` `q` `r` `s` `t` `u` `v` `w` `x` `y` `z`
- * ```
- * @internal
- */
-
-function isLetter(code) {
-  return (
-    (code >= 0x0061 && code <= 0x007a) || // A-Z
-    (code >= 0x0041 && code <= 0x005a) // a-z
-  );
-}
-/**
- * ```
- * NameStart ::
- *   - Letter
- *   - `_`
- * ```
- * @internal
- */
-
-function isNameStart(code) {
-  return isLetter(code) || code === 0x005f;
-}
-/**
- * ```
- * NameContinue ::
- *   - Letter
- *   - Digit
- *   - `_`
- * ```
- * @internal
- */
-
-function isNameContinue(code) {
-  return isLetter(code) || isDigit(code) || code === 0x005f;
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/directiveLocation.mjs"
-/*!*************************************************************!*\
-  !*** ./node_modules/graphql/language/directiveLocation.mjs ***!
-  \*************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   DirectiveLocation: () => (/* binding */ DirectiveLocation)
-/* harmony export */ });
-/**
- * The set of allowed directive location values.
- */
-var DirectiveLocation;
-
-(function (DirectiveLocation) {
-  DirectiveLocation['QUERY'] = 'QUERY';
-  DirectiveLocation['MUTATION'] = 'MUTATION';
-  DirectiveLocation['SUBSCRIPTION'] = 'SUBSCRIPTION';
-  DirectiveLocation['FIELD'] = 'FIELD';
-  DirectiveLocation['FRAGMENT_DEFINITION'] = 'FRAGMENT_DEFINITION';
-  DirectiveLocation['FRAGMENT_SPREAD'] = 'FRAGMENT_SPREAD';
-  DirectiveLocation['INLINE_FRAGMENT'] = 'INLINE_FRAGMENT';
-  DirectiveLocation['VARIABLE_DEFINITION'] = 'VARIABLE_DEFINITION';
-  DirectiveLocation['SCHEMA'] = 'SCHEMA';
-  DirectiveLocation['SCALAR'] = 'SCALAR';
-  DirectiveLocation['OBJECT'] = 'OBJECT';
-  DirectiveLocation['FIELD_DEFINITION'] = 'FIELD_DEFINITION';
-  DirectiveLocation['ARGUMENT_DEFINITION'] = 'ARGUMENT_DEFINITION';
-  DirectiveLocation['INTERFACE'] = 'INTERFACE';
-  DirectiveLocation['UNION'] = 'UNION';
-  DirectiveLocation['ENUM'] = 'ENUM';
-  DirectiveLocation['ENUM_VALUE'] = 'ENUM_VALUE';
-  DirectiveLocation['INPUT_OBJECT'] = 'INPUT_OBJECT';
-  DirectiveLocation['INPUT_FIELD_DEFINITION'] = 'INPUT_FIELD_DEFINITION';
-})(DirectiveLocation || (DirectiveLocation = {}));
-
-
-/**
- * The enum type representing the directive location values.
- *
- * @deprecated Please use `DirectiveLocation`. Will be remove in v17.
- */
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/kinds.mjs"
-/*!*************************************************!*\
-  !*** ./node_modules/graphql/language/kinds.mjs ***!
-  \*************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Kind: () => (/* binding */ Kind)
-/* harmony export */ });
-/**
- * The set of allowed kind values for AST nodes.
- */
-var Kind;
-
-(function (Kind) {
-  Kind['NAME'] = 'Name';
-  Kind['DOCUMENT'] = 'Document';
-  Kind['OPERATION_DEFINITION'] = 'OperationDefinition';
-  Kind['VARIABLE_DEFINITION'] = 'VariableDefinition';
-  Kind['SELECTION_SET'] = 'SelectionSet';
-  Kind['FIELD'] = 'Field';
-  Kind['ARGUMENT'] = 'Argument';
-  Kind['FRAGMENT_SPREAD'] = 'FragmentSpread';
-  Kind['INLINE_FRAGMENT'] = 'InlineFragment';
-  Kind['FRAGMENT_DEFINITION'] = 'FragmentDefinition';
-  Kind['VARIABLE'] = 'Variable';
-  Kind['INT'] = 'IntValue';
-  Kind['FLOAT'] = 'FloatValue';
-  Kind['STRING'] = 'StringValue';
-  Kind['BOOLEAN'] = 'BooleanValue';
-  Kind['NULL'] = 'NullValue';
-  Kind['ENUM'] = 'EnumValue';
-  Kind['LIST'] = 'ListValue';
-  Kind['OBJECT'] = 'ObjectValue';
-  Kind['OBJECT_FIELD'] = 'ObjectField';
-  Kind['DIRECTIVE'] = 'Directive';
-  Kind['NAMED_TYPE'] = 'NamedType';
-  Kind['LIST_TYPE'] = 'ListType';
-  Kind['NON_NULL_TYPE'] = 'NonNullType';
-  Kind['SCHEMA_DEFINITION'] = 'SchemaDefinition';
-  Kind['OPERATION_TYPE_DEFINITION'] = 'OperationTypeDefinition';
-  Kind['SCALAR_TYPE_DEFINITION'] = 'ScalarTypeDefinition';
-  Kind['OBJECT_TYPE_DEFINITION'] = 'ObjectTypeDefinition';
-  Kind['FIELD_DEFINITION'] = 'FieldDefinition';
-  Kind['INPUT_VALUE_DEFINITION'] = 'InputValueDefinition';
-  Kind['INTERFACE_TYPE_DEFINITION'] = 'InterfaceTypeDefinition';
-  Kind['UNION_TYPE_DEFINITION'] = 'UnionTypeDefinition';
-  Kind['ENUM_TYPE_DEFINITION'] = 'EnumTypeDefinition';
-  Kind['ENUM_VALUE_DEFINITION'] = 'EnumValueDefinition';
-  Kind['INPUT_OBJECT_TYPE_DEFINITION'] = 'InputObjectTypeDefinition';
-  Kind['DIRECTIVE_DEFINITION'] = 'DirectiveDefinition';
-  Kind['SCHEMA_EXTENSION'] = 'SchemaExtension';
-  Kind['SCALAR_TYPE_EXTENSION'] = 'ScalarTypeExtension';
-  Kind['OBJECT_TYPE_EXTENSION'] = 'ObjectTypeExtension';
-  Kind['INTERFACE_TYPE_EXTENSION'] = 'InterfaceTypeExtension';
-  Kind['UNION_TYPE_EXTENSION'] = 'UnionTypeExtension';
-  Kind['ENUM_TYPE_EXTENSION'] = 'EnumTypeExtension';
-  Kind['INPUT_OBJECT_TYPE_EXTENSION'] = 'InputObjectTypeExtension';
-  Kind['TYPE_COORDINATE'] = 'TypeCoordinate';
-  Kind['MEMBER_COORDINATE'] = 'MemberCoordinate';
-  Kind['ARGUMENT_COORDINATE'] = 'ArgumentCoordinate';
-  Kind['DIRECTIVE_COORDINATE'] = 'DirectiveCoordinate';
-  Kind['DIRECTIVE_ARGUMENT_COORDINATE'] = 'DirectiveArgumentCoordinate';
-})(Kind || (Kind = {}));
-
-
-/**
- * The enum type representing the possible kind values of AST nodes.
- *
- * @deprecated Please use `Kind`. Will be remove in v17.
- */
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/lexer.mjs"
-/*!*************************************************!*\
-  !*** ./node_modules/graphql/language/lexer.mjs ***!
-  \*************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Lexer: () => (/* binding */ Lexer),
-/* harmony export */   createToken: () => (/* binding */ createToken),
-/* harmony export */   isPunctuatorTokenKind: () => (/* binding */ isPunctuatorTokenKind),
-/* harmony export */   printCodePointAt: () => (/* binding */ printCodePointAt),
-/* harmony export */   readName: () => (/* binding */ readName)
-/* harmony export */ });
-/* harmony import */ var _error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../error/syntaxError.mjs */ "./node_modules/graphql/error/syntaxError.mjs");
-/* harmony import */ var _ast_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ast.mjs */ "./node_modules/graphql/language/ast.mjs");
-/* harmony import */ var _blockString_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./blockString.mjs */ "./node_modules/graphql/language/blockString.mjs");
-/* harmony import */ var _characterClasses_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./characterClasses.mjs */ "./node_modules/graphql/language/characterClasses.mjs");
-/* harmony import */ var _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./tokenKind.mjs */ "./node_modules/graphql/language/tokenKind.mjs");
-
-
-
-
-
-/**
- * A Lexer interface which provides common properties and methods required for
- * lexing GraphQL source.
- *
- * @internal
- */
-
-/**
- * Given a Source object, creates a Lexer for that source.
- * A Lexer is a stateful stream generator in that every time
- * it is advanced, it returns the next token in the Source. Assuming the
- * source lexes, the final Token emitted by the lexer will be of kind
- * EOF, after which the lexer will repeatedly return the same EOF token
- * whenever called.
- */
-class Lexer {
-  /**
-   * The previously focused non-ignored token.
-   */
-
-  /**
-   * The currently focused non-ignored token.
-   */
-
-  /**
-   * The (1-indexed) line containing the current token.
-   */
-
-  /**
-   * The character offset at which the current line begins.
-   */
-  constructor(source) {
-    const startOfFileToken = new _ast_mjs__WEBPACK_IMPORTED_MODULE_1__.Token(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.SOF, 0, 0, 0, 0);
-    this.source = source;
-    this.lastToken = startOfFileToken;
-    this.token = startOfFileToken;
-    this.line = 1;
-    this.lineStart = 0;
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'Lexer';
-  }
-  /**
-   * Advances the token stream to the next non-ignored token.
-   */
-
-  advance() {
-    this.lastToken = this.token;
-    const token = (this.token = this.lookahead());
-    return token;
-  }
-  /**
-   * Looks ahead and returns the next non-ignored token, but does not change
-   * the state of Lexer.
-   */
-
-  lookahead() {
-    let token = this.token;
-
-    if (token.kind !== _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.EOF) {
-      do {
-        if (token.next) {
-          token = token.next;
-        } else {
-          // Read the next token and form a link in the token linked-list.
-          const nextToken = readNextToken(this, token.end); // @ts-expect-error next is only mutable during parsing.
-
-          token.next = nextToken; // @ts-expect-error prev is only mutable during parsing.
-
-          nextToken.prev = token;
-          token = nextToken;
-        }
-      } while (token.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.COMMENT);
-    }
-
-    return token;
-  }
-}
-/**
- * @internal
- */
-
-function isPunctuatorTokenKind(kind) {
-  return (
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BANG ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.DOLLAR ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.AMP ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.PAREN_L ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.PAREN_R ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.DOT ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.SPREAD ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.COLON ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.EQUALS ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.AT ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BRACKET_L ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BRACKET_R ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BRACE_L ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.PIPE ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BRACE_R
-  );
-}
-/**
- * A Unicode scalar value is any Unicode code point except surrogate code
- * points. In other words, the inclusive ranges of values 0x0000 to 0xD7FF and
- * 0xE000 to 0x10FFFF.
- *
- * SourceCharacter ::
- *   - "Any Unicode scalar value"
- */
-
-function isUnicodeScalarValue(code) {
-  return (
-    (code >= 0x0000 && code <= 0xd7ff) || (code >= 0xe000 && code <= 0x10ffff)
-  );
-}
-/**
- * The GraphQL specification defines source text as a sequence of unicode scalar
- * values (which Unicode defines to exclude surrogate code points). However
- * JavaScript defines strings as a sequence of UTF-16 code units which may
- * include surrogates. A surrogate pair is a valid source character as it
- * encodes a supplementary code point (above U+FFFF), but unpaired surrogate
- * code points are not valid source characters.
- */
-
-function isSupplementaryCodePoint(body, location) {
-  return (
-    isLeadingSurrogate(body.charCodeAt(location)) &&
-    isTrailingSurrogate(body.charCodeAt(location + 1))
-  );
-}
-
-function isLeadingSurrogate(code) {
-  return code >= 0xd800 && code <= 0xdbff;
-}
-
-function isTrailingSurrogate(code) {
-  return code >= 0xdc00 && code <= 0xdfff;
-}
-/**
- * Prints the code point (or end of file reference) at a given location in a
- * source for use in error messages.
- *
- * Printable ASCII is printed quoted, while other points are printed in Unicode
- * code point form (ie. U+1234).
- *
- * @internal
- */
-
-function printCodePointAt(lexer, location) {
-  const code = lexer.source.body.codePointAt(location);
-
-  if (code === undefined) {
-    return _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.EOF;
-  } else if (code >= 0x0020 && code <= 0x007e) {
-    // Printable ASCII
-    const char = String.fromCodePoint(code);
-    return char === '"' ? "'\"'" : `"${char}"`;
-  } // Unicode code point
-
-  return 'U+' + code.toString(16).toUpperCase().padStart(4, '0');
-}
-/**
- * Create a token with line and column location information.
- *
- * @internal
- */
-
-function createToken(lexer, kind, start, end, value) {
-  const line = lexer.line;
-  const col = 1 + start - lexer.lineStart;
-  return new _ast_mjs__WEBPACK_IMPORTED_MODULE_1__.Token(kind, start, end, line, col, value);
-}
-/**
- * Gets the next token from the source starting at the given position.
- *
- * This skips over whitespace until it finds the next lexable token, then lexes
- * punctuators immediately or calls the appropriate helper function for more
- * complicated tokens.
- */
-
-function readNextToken(lexer, start) {
-  const body = lexer.source.body;
-  const bodyLength = body.length;
-  let position = start;
-
-  while (position < bodyLength) {
-    const code = body.charCodeAt(position); // SourceCharacter
-
-    switch (code) {
-      // Ignored ::
-      //   - UnicodeBOM
-      //   - WhiteSpace
-      //   - LineTerminator
-      //   - Comment
-      //   - Comma
-      //
-      // UnicodeBOM :: "Byte Order Mark (U+FEFF)"
-      //
-      // WhiteSpace ::
-      //   - "Horizontal Tab (U+0009)"
-      //   - "Space (U+0020)"
-      //
-      // Comma :: ,
-      case 0xfeff: // <BOM>
-
-      case 0x0009: // \t
-
-      case 0x0020: // <space>
-
-      case 0x002c:
-        // ,
-        ++position;
-        continue;
-      // LineTerminator ::
-      //   - "New Line (U+000A)"
-      //   - "Carriage Return (U+000D)" [lookahead != "New Line (U+000A)"]
-      //   - "Carriage Return (U+000D)" "New Line (U+000A)"
-
-      case 0x000a:
-        // \n
-        ++position;
-        ++lexer.line;
-        lexer.lineStart = position;
-        continue;
-
-      case 0x000d:
-        // \r
-        if (body.charCodeAt(position + 1) === 0x000a) {
-          position += 2;
-        } else {
-          ++position;
-        }
-
-        ++lexer.line;
-        lexer.lineStart = position;
-        continue;
-      // Comment
-
-      case 0x0023:
-        // #
-        return readComment(lexer, position);
-      // Token ::
-      //   - Punctuator
-      //   - Name
-      //   - IntValue
-      //   - FloatValue
-      //   - StringValue
-      //
-      // Punctuator :: one of ! $ & ( ) ... : = @ [ ] { | }
-
-      case 0x0021:
-        // !
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BANG, position, position + 1);
-
-      case 0x0024:
-        // $
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.DOLLAR, position, position + 1);
-
-      case 0x0026:
-        // &
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.AMP, position, position + 1);
-
-      case 0x0028:
-        // (
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.PAREN_L, position, position + 1);
-
-      case 0x0029:
-        // )
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.PAREN_R, position, position + 1);
-
-      case 0x002e:
-        // .
-        if (
-          body.charCodeAt(position + 1) === 0x002e &&
-          body.charCodeAt(position + 2) === 0x002e
-        ) {
-          return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.SPREAD, position, position + 3);
-        }
-
-        break;
-
-      case 0x003a:
-        // :
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.COLON, position, position + 1);
-
-      case 0x003d:
-        // =
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.EQUALS, position, position + 1);
-
-      case 0x0040:
-        // @
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.AT, position, position + 1);
-
-      case 0x005b:
-        // [
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BRACKET_L, position, position + 1);
-
-      case 0x005d:
-        // ]
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BRACKET_R, position, position + 1);
-
-      case 0x007b:
-        // {
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BRACE_L, position, position + 1);
-
-      case 0x007c:
-        // |
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.PIPE, position, position + 1);
-
-      case 0x007d:
-        // }
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BRACE_R, position, position + 1);
-      // StringValue
-
-      case 0x0022:
-        // "
-        if (
-          body.charCodeAt(position + 1) === 0x0022 &&
-          body.charCodeAt(position + 2) === 0x0022
-        ) {
-          return readBlockString(lexer, position);
-        }
-
-        return readString(lexer, position);
-    } // IntValue | FloatValue (Digit | -)
-
-    if ((0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_3__.isDigit)(code) || code === 0x002d) {
-      return readNumber(lexer, position, code);
-    } // Name
-
-    if ((0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_3__.isNameStart)(code)) {
-      return readName(lexer, position);
-    }
-
-    throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-      lexer.source,
-      position,
-      code === 0x0027
-        ? 'Unexpected single quote character (\'), did you mean to use a double quote (")?'
-        : isUnicodeScalarValue(code) || isSupplementaryCodePoint(body, position)
-        ? `Unexpected character: ${printCodePointAt(lexer, position)}.`
-        : `Invalid character: ${printCodePointAt(lexer, position)}.`,
-    );
-  }
-
-  return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.EOF, bodyLength, bodyLength);
-}
-/**
- * Reads a comment token from the source file.
- *
- * ```
- * Comment :: # CommentChar* [lookahead != CommentChar]
- *
- * CommentChar :: SourceCharacter but not LineTerminator
- * ```
- */
-
-function readComment(lexer, start) {
-  const body = lexer.source.body;
-  const bodyLength = body.length;
-  let position = start + 1;
-
-  while (position < bodyLength) {
-    const code = body.charCodeAt(position); // LineTerminator (\n | \r)
-
-    if (code === 0x000a || code === 0x000d) {
-      break;
-    } // SourceCharacter
-
-    if (isUnicodeScalarValue(code)) {
-      ++position;
-    } else if (isSupplementaryCodePoint(body, position)) {
-      position += 2;
-    } else {
-      break;
-    }
-  }
-
-  return createToken(
-    lexer,
-    _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.COMMENT,
-    start,
-    position,
-    body.slice(start + 1, position),
-  );
-}
-/**
- * Reads a number token from the source file, either a FloatValue or an IntValue
- * depending on whether a FractionalPart or ExponentPart is encountered.
- *
- * ```
- * IntValue :: IntegerPart [lookahead != {Digit, `.`, NameStart}]
- *
- * IntegerPart ::
- *   - NegativeSign? 0
- *   - NegativeSign? NonZeroDigit Digit*
- *
- * NegativeSign :: -
- *
- * NonZeroDigit :: Digit but not `0`
- *
- * FloatValue ::
- *   - IntegerPart FractionalPart ExponentPart [lookahead != {Digit, `.`, NameStart}]
- *   - IntegerPart FractionalPart [lookahead != {Digit, `.`, NameStart}]
- *   - IntegerPart ExponentPart [lookahead != {Digit, `.`, NameStart}]
- *
- * FractionalPart :: . Digit+
- *
- * ExponentPart :: ExponentIndicator Sign? Digit+
- *
- * ExponentIndicator :: one of `e` `E`
- *
- * Sign :: one of + -
- * ```
- */
-
-function readNumber(lexer, start, firstCode) {
-  const body = lexer.source.body;
-  let position = start;
-  let code = firstCode;
-  let isFloat = false; // NegativeSign (-)
-
-  if (code === 0x002d) {
-    code = body.charCodeAt(++position);
-  } // Zero (0)
-
-  if (code === 0x0030) {
-    code = body.charCodeAt(++position);
-
-    if ((0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_3__.isDigit)(code)) {
-      throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-        lexer.source,
-        position,
-        `Invalid number, unexpected digit after 0: ${printCodePointAt(
-          lexer,
-          position,
-        )}.`,
-      );
-    }
-  } else {
-    position = readDigits(lexer, position, code);
-    code = body.charCodeAt(position);
-  } // Full stop (.)
-
-  if (code === 0x002e) {
-    isFloat = true;
-    code = body.charCodeAt(++position);
-    position = readDigits(lexer, position, code);
-    code = body.charCodeAt(position);
-  } // E e
-
-  if (code === 0x0045 || code === 0x0065) {
-    isFloat = true;
-    code = body.charCodeAt(++position); // + -
-
-    if (code === 0x002b || code === 0x002d) {
-      code = body.charCodeAt(++position);
-    }
-
-    position = readDigits(lexer, position, code);
-    code = body.charCodeAt(position);
-  } // Numbers cannot be followed by . or NameStart
-
-  if (code === 0x002e || (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_3__.isNameStart)(code)) {
-    throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-      lexer.source,
-      position,
-      `Invalid number, expected digit but got: ${printCodePointAt(
-        lexer,
-        position,
-      )}.`,
-    );
-  }
-
-  return createToken(
-    lexer,
-    isFloat ? _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.FLOAT : _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.INT,
-    start,
-    position,
-    body.slice(start, position),
-  );
-}
-/**
- * Returns the new position in the source after reading one or more digits.
- */
-
-function readDigits(lexer, start, firstCode) {
-  if (!(0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_3__.isDigit)(firstCode)) {
-    throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-      lexer.source,
-      start,
-      `Invalid number, expected digit but got: ${printCodePointAt(
-        lexer,
-        start,
-      )}.`,
-    );
-  }
-
-  const body = lexer.source.body;
-  let position = start + 1; // +1 to skip first firstCode
-
-  while ((0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_3__.isDigit)(body.charCodeAt(position))) {
-    ++position;
-  }
-
-  return position;
-}
-/**
- * Reads a single-quote string token from the source file.
- *
- * ```
- * StringValue ::
- *   - `""` [lookahead != `"`]
- *   - `"` StringCharacter+ `"`
- *
- * StringCharacter ::
- *   - SourceCharacter but not `"` or `\` or LineTerminator
- *   - `\u` EscapedUnicode
- *   - `\` EscapedCharacter
- *
- * EscapedUnicode ::
- *   - `{` HexDigit+ `}`
- *   - HexDigit HexDigit HexDigit HexDigit
- *
- * EscapedCharacter :: one of `"` `\` `/` `b` `f` `n` `r` `t`
- * ```
- */
-
-function readString(lexer, start) {
-  const body = lexer.source.body;
-  const bodyLength = body.length;
-  let position = start + 1;
-  let chunkStart = position;
-  let value = '';
-
-  while (position < bodyLength) {
-    const code = body.charCodeAt(position); // Closing Quote (")
-
-    if (code === 0x0022) {
-      value += body.slice(chunkStart, position);
-      return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.STRING, start, position + 1, value);
-    } // Escape Sequence (\)
-
-    if (code === 0x005c) {
-      value += body.slice(chunkStart, position);
-      const escape =
-        body.charCodeAt(position + 1) === 0x0075 // u
-          ? body.charCodeAt(position + 2) === 0x007b // {
-            ? readEscapedUnicodeVariableWidth(lexer, position)
-            : readEscapedUnicodeFixedWidth(lexer, position)
-          : readEscapedCharacter(lexer, position);
-      value += escape.value;
-      position += escape.size;
-      chunkStart = position;
-      continue;
-    } // LineTerminator (\n | \r)
-
-    if (code === 0x000a || code === 0x000d) {
-      break;
-    } // SourceCharacter
-
-    if (isUnicodeScalarValue(code)) {
-      ++position;
-    } else if (isSupplementaryCodePoint(body, position)) {
-      position += 2;
-    } else {
-      throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-        lexer.source,
-        position,
-        `Invalid character within String: ${printCodePointAt(
-          lexer,
-          position,
-        )}.`,
-      );
-    }
-  }
-
-  throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(lexer.source, position, 'Unterminated string.');
-} // The string value and lexed size of an escape sequence.
-
-function readEscapedUnicodeVariableWidth(lexer, position) {
-  const body = lexer.source.body;
-  let point = 0;
-  let size = 3; // Cannot be larger than 12 chars (\u{00000000}).
-
-  while (size < 12) {
-    const code = body.charCodeAt(position + size++); // Closing Brace (})
-
-    if (code === 0x007d) {
-      // Must be at least 5 chars (\u{0}) and encode a Unicode scalar value.
-      if (size < 5 || !isUnicodeScalarValue(point)) {
-        break;
-      }
-
-      return {
-        value: String.fromCodePoint(point),
-        size,
-      };
-    } // Append this hex digit to the code point.
-
-    point = (point << 4) | readHexDigit(code);
-
-    if (point < 0) {
-      break;
-    }
-  }
-
-  throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-    lexer.source,
-    position,
-    `Invalid Unicode escape sequence: "${body.slice(
-      position,
-      position + size,
-    )}".`,
-  );
-}
-
-function readEscapedUnicodeFixedWidth(lexer, position) {
-  const body = lexer.source.body;
-  const code = read16BitHexCode(body, position + 2);
-
-  if (isUnicodeScalarValue(code)) {
-    return {
-      value: String.fromCodePoint(code),
-      size: 6,
-    };
-  } // GraphQL allows JSON-style surrogate pair escape sequences, but only when
-  // a valid pair is formed.
-
-  if (isLeadingSurrogate(code)) {
-    // \u
-    if (
-      body.charCodeAt(position + 6) === 0x005c &&
-      body.charCodeAt(position + 7) === 0x0075
-    ) {
-      const trailingCode = read16BitHexCode(body, position + 8);
-
-      if (isTrailingSurrogate(trailingCode)) {
-        // JavaScript defines strings as a sequence of UTF-16 code units and
-        // encodes Unicode code points above U+FFFF using a surrogate pair of
-        // code units. Since this is a surrogate pair escape sequence, just
-        // include both codes into the JavaScript string value. Had JavaScript
-        // not been internally based on UTF-16, then this surrogate pair would
-        // be decoded to retrieve the supplementary code point.
-        return {
-          value: String.fromCodePoint(code, trailingCode),
-          size: 12,
-        };
-      }
-    }
-  }
-
-  throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-    lexer.source,
-    position,
-    `Invalid Unicode escape sequence: "${body.slice(position, position + 6)}".`,
-  );
-}
-/**
- * Reads four hexadecimal characters and returns the positive integer that 16bit
- * hexadecimal string represents. For example, "000f" will return 15, and "dead"
- * will return 57005.
- *
- * Returns a negative number if any char was not a valid hexadecimal digit.
- */
-
-function read16BitHexCode(body, position) {
-  // readHexDigit() returns -1 on error. ORing a negative value with any other
-  // value always produces a negative value.
-  return (
-    (readHexDigit(body.charCodeAt(position)) << 12) |
-    (readHexDigit(body.charCodeAt(position + 1)) << 8) |
-    (readHexDigit(body.charCodeAt(position + 2)) << 4) |
-    readHexDigit(body.charCodeAt(position + 3))
-  );
-}
-/**
- * Reads a hexadecimal character and returns its positive integer value (0-15).
- *
- * '0' becomes 0, '9' becomes 9
- * 'A' becomes 10, 'F' becomes 15
- * 'a' becomes 10, 'f' becomes 15
- *
- * Returns -1 if the provided character code was not a valid hexadecimal digit.
- *
- * HexDigit :: one of
- *   - `0` `1` `2` `3` `4` `5` `6` `7` `8` `9`
- *   - `A` `B` `C` `D` `E` `F`
- *   - `a` `b` `c` `d` `e` `f`
- */
-
-function readHexDigit(code) {
-  return code >= 0x0030 && code <= 0x0039 // 0-9
-    ? code - 0x0030
-    : code >= 0x0041 && code <= 0x0046 // A-F
-    ? code - 0x0037
-    : code >= 0x0061 && code <= 0x0066 // a-f
-    ? code - 0x0057
-    : -1;
-}
-/**
- * | Escaped Character | Code Point | Character Name               |
- * | ----------------- | ---------- | ---------------------------- |
- * | `"`               | U+0022     | double quote                 |
- * | `\`               | U+005C     | reverse solidus (back slash) |
- * | `/`               | U+002F     | solidus (forward slash)      |
- * | `b`               | U+0008     | backspace                    |
- * | `f`               | U+000C     | form feed                    |
- * | `n`               | U+000A     | line feed (new line)         |
- * | `r`               | U+000D     | carriage return              |
- * | `t`               | U+0009     | horizontal tab               |
- */
-
-function readEscapedCharacter(lexer, position) {
-  const body = lexer.source.body;
-  const code = body.charCodeAt(position + 1);
-
-  switch (code) {
-    case 0x0022:
-      // "
-      return {
-        value: '\u0022',
-        size: 2,
-      };
-
-    case 0x005c:
-      // \
-      return {
-        value: '\u005c',
-        size: 2,
-      };
-
-    case 0x002f:
-      // /
-      return {
-        value: '\u002f',
-        size: 2,
-      };
-
-    case 0x0062:
-      // b
-      return {
-        value: '\u0008',
-        size: 2,
-      };
-
-    case 0x0066:
-      // f
-      return {
-        value: '\u000c',
-        size: 2,
-      };
-
-    case 0x006e:
-      // n
-      return {
-        value: '\u000a',
-        size: 2,
-      };
-
-    case 0x0072:
-      // r
-      return {
-        value: '\u000d',
-        size: 2,
-      };
-
-    case 0x0074:
-      // t
-      return {
-        value: '\u0009',
-        size: 2,
-      };
-  }
-
-  throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-    lexer.source,
-    position,
-    `Invalid character escape sequence: "${body.slice(
-      position,
-      position + 2,
-    )}".`,
-  );
-}
-/**
- * Reads a block string token from the source file.
- *
- * ```
- * StringValue ::
- *   - `"""` BlockStringCharacter* `"""`
- *
- * BlockStringCharacter ::
- *   - SourceCharacter but not `"""` or `\"""`
- *   - `\"""`
- * ```
- */
-
-function readBlockString(lexer, start) {
-  const body = lexer.source.body;
-  const bodyLength = body.length;
-  let lineStart = lexer.lineStart;
-  let position = start + 3;
-  let chunkStart = position;
-  let currentLine = '';
-  const blockLines = [];
-
-  while (position < bodyLength) {
-    const code = body.charCodeAt(position); // Closing Triple-Quote (""")
-
-    if (
-      code === 0x0022 &&
-      body.charCodeAt(position + 1) === 0x0022 &&
-      body.charCodeAt(position + 2) === 0x0022
-    ) {
-      currentLine += body.slice(chunkStart, position);
-      blockLines.push(currentLine);
-      const token = createToken(
-        lexer,
-        _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.BLOCK_STRING,
-        start,
-        position + 3, // Return a string of the lines joined with U+000A.
-        (0,_blockString_mjs__WEBPACK_IMPORTED_MODULE_2__.dedentBlockStringLines)(blockLines).join('\n'),
-      );
-      lexer.line += blockLines.length - 1;
-      lexer.lineStart = lineStart;
-      return token;
-    } // Escaped Triple-Quote (\""")
-
-    if (
-      code === 0x005c &&
-      body.charCodeAt(position + 1) === 0x0022 &&
-      body.charCodeAt(position + 2) === 0x0022 &&
-      body.charCodeAt(position + 3) === 0x0022
-    ) {
-      currentLine += body.slice(chunkStart, position);
-      chunkStart = position + 1; // skip only slash
-
-      position += 4;
-      continue;
-    } // LineTerminator
-
-    if (code === 0x000a || code === 0x000d) {
-      currentLine += body.slice(chunkStart, position);
-      blockLines.push(currentLine);
-
-      if (code === 0x000d && body.charCodeAt(position + 1) === 0x000a) {
-        position += 2;
-      } else {
-        ++position;
-      }
-
-      currentLine = '';
-      chunkStart = position;
-      lineStart = position;
-      continue;
-    } // SourceCharacter
-
-    if (isUnicodeScalarValue(code)) {
-      ++position;
-    } else if (isSupplementaryCodePoint(body, position)) {
-      position += 2;
-    } else {
-      throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-        lexer.source,
-        position,
-        `Invalid character within String: ${printCodePointAt(
-          lexer,
-          position,
-        )}.`,
-      );
-    }
-  }
-
-  throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(lexer.source, position, 'Unterminated string.');
-}
-/**
- * Reads an alphanumeric + underscore name from the source.
- *
- * ```
- * Name ::
- *   - NameStart NameContinue* [lookahead != NameContinue]
- * ```
- *
- * @internal
- */
-
-function readName(lexer, start) {
-  const body = lexer.source.body;
-  const bodyLength = body.length;
-  let position = start + 1;
-
-  while (position < bodyLength) {
-    const code = body.charCodeAt(position);
-
-    if ((0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_3__.isNameContinue)(code)) {
-      ++position;
-    } else {
-      break;
-    }
-  }
-
-  return createToken(
-    lexer,
-    _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.NAME,
-    start,
-    position,
-    body.slice(start, position),
-  );
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/location.mjs"
-/*!****************************************************!*\
-  !*** ./node_modules/graphql/language/location.mjs ***!
-  \****************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getLocation: () => (/* binding */ getLocation)
-/* harmony export */ });
-/* harmony import */ var _jsutils_invariant_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../jsutils/invariant.mjs */ "./node_modules/graphql/jsutils/invariant.mjs");
-
-const LineRegExp = /\r\n|[\n\r]/g;
-/**
- * Represents a location in a Source.
- */
-
-/**
- * Takes a Source and a UTF-8 character offset, and returns the corresponding
- * line and column as a SourceLocation.
- */
-function getLocation(source, position) {
-  let lastLineStart = 0;
-  let line = 1;
-
-  for (const match of source.body.matchAll(LineRegExp)) {
-    typeof match.index === 'number' || (0,_jsutils_invariant_mjs__WEBPACK_IMPORTED_MODULE_0__.invariant)(false);
-
-    if (match.index >= position) {
-      break;
-    }
-
-    lastLineStart = match.index + match[0].length;
-    line += 1;
-  }
-
-  return {
-    line,
-    column: position + 1 - lastLineStart,
-  };
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/parser.mjs"
-/*!**************************************************!*\
-  !*** ./node_modules/graphql/language/parser.mjs ***!
-  \**************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Parser: () => (/* binding */ Parser),
-/* harmony export */   parse: () => (/* binding */ parse),
-/* harmony export */   parseConstValue: () => (/* binding */ parseConstValue),
-/* harmony export */   parseSchemaCoordinate: () => (/* binding */ parseSchemaCoordinate),
-/* harmony export */   parseType: () => (/* binding */ parseType),
-/* harmony export */   parseValue: () => (/* binding */ parseValue)
-/* harmony export */ });
-/* harmony import */ var _error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../error/syntaxError.mjs */ "./node_modules/graphql/error/syntaxError.mjs");
-/* harmony import */ var _ast_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ast.mjs */ "./node_modules/graphql/language/ast.mjs");
-/* harmony import */ var _directiveLocation_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./directiveLocation.mjs */ "./node_modules/graphql/language/directiveLocation.mjs");
-/* harmony import */ var _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./kinds.mjs */ "./node_modules/graphql/language/kinds.mjs");
-/* harmony import */ var _lexer_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./lexer.mjs */ "./node_modules/graphql/language/lexer.mjs");
-/* harmony import */ var _schemaCoordinateLexer_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./schemaCoordinateLexer.mjs */ "./node_modules/graphql/language/schemaCoordinateLexer.mjs");
-/* harmony import */ var _source_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./source.mjs */ "./node_modules/graphql/language/source.mjs");
-/* harmony import */ var _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./tokenKind.mjs */ "./node_modules/graphql/language/tokenKind.mjs");
-
-
-
-
-
-
-
-
-/**
- * Configuration options to control parser behavior
- */
-
-/**
- * Given a GraphQL source, parses it into a Document.
- * Throws GraphQLError if a syntax error is encountered.
- */
-function parse(source, options) {
-  const parser = new Parser(source, options);
-  const document = parser.parseDocument();
-  Object.defineProperty(document, 'tokenCount', {
-    enumerable: false,
-    value: parser.tokenCount,
-  });
-  return document;
-}
-/**
- * Given a string containing a GraphQL value (ex. `[42]`), parse the AST for
- * that value.
- * Throws GraphQLError if a syntax error is encountered.
- *
- * This is useful within tools that operate upon GraphQL Values directly and
- * in isolation of complete GraphQL documents.
- *
- * Consider providing the results to the utility function: valueFromAST().
- */
-
-function parseValue(source, options) {
-  const parser = new Parser(source, options);
-  parser.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.SOF);
-  const value = parser.parseValueLiteral(false);
-  parser.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.EOF);
-  return value;
-}
-/**
- * Similar to parseValue(), but raises a parse error if it encounters a
- * variable. The return type will be a constant value.
- */
-
-function parseConstValue(source, options) {
-  const parser = new Parser(source, options);
-  parser.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.SOF);
-  const value = parser.parseConstValueLiteral();
-  parser.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.EOF);
-  return value;
-}
-/**
- * Given a string containing a GraphQL Type (ex. `[Int!]`), parse the AST for
- * that type.
- * Throws GraphQLError if a syntax error is encountered.
- *
- * This is useful within tools that operate upon GraphQL Types directly and
- * in isolation of complete GraphQL documents.
- *
- * Consider providing the results to the utility function: typeFromAST().
- */
-
-function parseType(source, options) {
-  const parser = new Parser(source, options);
-  parser.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.SOF);
-  const type = parser.parseTypeReference();
-  parser.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.EOF);
-  return type;
-}
-/**
- * Given a string containing a GraphQL Schema Coordinate (ex. `Type.field`),
- * parse the AST for that schema coordinate.
- * Throws GraphQLError if a syntax error is encountered.
- *
- * Consider providing the results to the utility function:
- * resolveASTSchemaCoordinate(). Or calling resolveSchemaCoordinate() directly
- * with an unparsed source.
- */
-
-function parseSchemaCoordinate(source) {
-  const sourceObj = (0,_source_mjs__WEBPACK_IMPORTED_MODULE_6__.isSource)(source) ? source : new _source_mjs__WEBPACK_IMPORTED_MODULE_6__.Source(source);
-  const lexer = new _schemaCoordinateLexer_mjs__WEBPACK_IMPORTED_MODULE_5__.SchemaCoordinateLexer(sourceObj);
-  const parser = new Parser(source, {
-    lexer,
-  });
-  parser.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.SOF);
-  const coordinate = parser.parseSchemaCoordinate();
-  parser.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.EOF);
-  return coordinate;
-}
-/**
- * This class is exported only to assist people in implementing their own parsers
- * without duplicating too much code and should be used only as last resort for cases
- * such as experimental syntax or if certain features could not be contributed upstream.
- *
- * It is still part of the internal API and is versioned, so any changes to it are never
- * considered breaking changes. If you still need to support multiple versions of the
- * library, please use the `versionInfo` variable for version detection.
- *
- * @internal
- */
-
-class Parser {
-  constructor(source, options = {}) {
-    const { lexer, ..._options } = options;
-
-    if (lexer) {
-      this._lexer = lexer;
-    } else {
-      const sourceObj = (0,_source_mjs__WEBPACK_IMPORTED_MODULE_6__.isSource)(source) ? source : new _source_mjs__WEBPACK_IMPORTED_MODULE_6__.Source(source);
-      this._lexer = new _lexer_mjs__WEBPACK_IMPORTED_MODULE_4__.Lexer(sourceObj);
-    }
-
-    this._options = _options;
-    this._tokenCounter = 0;
-  }
-
-  get tokenCount() {
-    return this._tokenCounter;
-  }
-  /**
-   * Converts a name lex token into a name parse node.
-   */
-
-  parseName() {
-    const token = this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME);
-    return this.node(token, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.NAME,
-      value: token.value,
-    });
-  } // Implements the parsing rules in the Document section.
-
-  /**
-   * Document : Definition+
-   */
-
-  parseDocument() {
-    return this.node(this._lexer.token, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.DOCUMENT,
-      definitions: this.many(
-        _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.SOF,
-        this.parseDefinition,
-        _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.EOF,
-      ),
-    });
-  }
-  /**
-   * Definition :
-   *   - ExecutableDefinition
-   *   - TypeSystemDefinition
-   *   - TypeSystemExtension
-   *
-   * ExecutableDefinition :
-   *   - OperationDefinition
-   *   - FragmentDefinition
-   *
-   * TypeSystemDefinition :
-   *   - SchemaDefinition
-   *   - TypeDefinition
-   *   - DirectiveDefinition
-   *
-   * TypeDefinition :
-   *   - ScalarTypeDefinition
-   *   - ObjectTypeDefinition
-   *   - InterfaceTypeDefinition
-   *   - UnionTypeDefinition
-   *   - EnumTypeDefinition
-   *   - InputObjectTypeDefinition
-   */
-
-  parseDefinition() {
-    if (this.peek(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L)) {
-      return this.parseOperationDefinition();
-    } // Many definitions begin with a description and require a lookahead.
-
-    const hasDescription = this.peekDescription();
-    const keywordToken = hasDescription
-      ? this._lexer.lookahead()
-      : this._lexer.token;
-
-    if (hasDescription && keywordToken.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L) {
-      throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-        this._lexer.source,
-        this._lexer.token.start,
-        'Unexpected description, descriptions are not supported on shorthand queries.',
-      );
-    }
-
-    if (keywordToken.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME) {
-      switch (keywordToken.value) {
-        case 'schema':
-          return this.parseSchemaDefinition();
-
-        case 'scalar':
-          return this.parseScalarTypeDefinition();
-
-        case 'type':
-          return this.parseObjectTypeDefinition();
-
-        case 'interface':
-          return this.parseInterfaceTypeDefinition();
-
-        case 'union':
-          return this.parseUnionTypeDefinition();
-
-        case 'enum':
-          return this.parseEnumTypeDefinition();
-
-        case 'input':
-          return this.parseInputObjectTypeDefinition();
-
-        case 'directive':
-          return this.parseDirectiveDefinition();
-      }
-
-      switch (keywordToken.value) {
-        case 'query':
-        case 'mutation':
-        case 'subscription':
-          return this.parseOperationDefinition();
-
-        case 'fragment':
-          return this.parseFragmentDefinition();
-      }
-
-      if (hasDescription) {
-        throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-          this._lexer.source,
-          this._lexer.token.start,
-          'Unexpected description, only GraphQL definitions support descriptions.',
-        );
-      }
-
-      switch (keywordToken.value) {
-        case 'extend':
-          return this.parseTypeSystemExtension();
-      }
-    }
-
-    throw this.unexpected(keywordToken);
-  } // Implements the parsing rules in the Operations section.
-
-  /**
-   * OperationDefinition :
-   *  - SelectionSet
-   *  - OperationType Name? VariableDefinitions? Directives? SelectionSet
-   */
-
-  parseOperationDefinition() {
-    const start = this._lexer.token;
-
-    if (this.peek(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L)) {
-      return this.node(start, {
-        kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.OPERATION_DEFINITION,
-        operation: _ast_mjs__WEBPACK_IMPORTED_MODULE_1__.OperationTypeNode.QUERY,
-        description: undefined,
-        name: undefined,
-        variableDefinitions: [],
-        directives: [],
-        selectionSet: this.parseSelectionSet(),
-      });
-    }
-
-    const description = this.parseDescription();
-    const operation = this.parseOperationType();
-    let name;
-
-    if (this.peek(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME)) {
-      name = this.parseName();
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.OPERATION_DEFINITION,
-      operation,
-      description,
-      name,
-      variableDefinitions: this.parseVariableDefinitions(),
-      directives: this.parseDirectives(false),
-      selectionSet: this.parseSelectionSet(),
-    });
-  }
-  /**
-   * OperationType : one of query mutation subscription
-   */
-
-  parseOperationType() {
-    const operationToken = this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME);
-
-    switch (operationToken.value) {
-      case 'query':
-        return _ast_mjs__WEBPACK_IMPORTED_MODULE_1__.OperationTypeNode.QUERY;
-
-      case 'mutation':
-        return _ast_mjs__WEBPACK_IMPORTED_MODULE_1__.OperationTypeNode.MUTATION;
-
-      case 'subscription':
-        return _ast_mjs__WEBPACK_IMPORTED_MODULE_1__.OperationTypeNode.SUBSCRIPTION;
-    }
-
-    throw this.unexpected(operationToken);
-  }
-  /**
-   * VariableDefinitions : ( VariableDefinition+ )
-   */
-
-  parseVariableDefinitions() {
-    return this.optionalMany(
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PAREN_L,
-      this.parseVariableDefinition,
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PAREN_R,
-    );
-  }
-  /**
-   * VariableDefinition : Variable : Type DefaultValue? Directives[Const]?
-   */
-
-  parseVariableDefinition() {
-    return this.node(this._lexer.token, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.VARIABLE_DEFINITION,
-      description: this.parseDescription(),
-      variable: this.parseVariable(),
-      type: (this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.COLON), this.parseTypeReference()),
-      defaultValue: this.expectOptionalToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.EQUALS)
-        ? this.parseConstValueLiteral()
-        : undefined,
-      directives: this.parseConstDirectives(),
-    });
-  }
-  /**
-   * Variable : $ Name
-   */
-
-  parseVariable() {
-    const start = this._lexer.token;
-    this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.DOLLAR);
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.VARIABLE,
-      name: this.parseName(),
-    });
-  }
-  /**
-   * ```
-   * SelectionSet : { Selection+ }
-   * ```
-   */
-
-  parseSelectionSet() {
-    return this.node(this._lexer.token, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.SELECTION_SET,
-      selections: this.many(
-        _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L,
-        this.parseSelection,
-        _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_R,
-      ),
-    });
-  }
-  /**
-   * Selection :
-   *   - Field
-   *   - FragmentSpread
-   *   - InlineFragment
-   */
-
-  parseSelection() {
-    return this.peek(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.SPREAD)
-      ? this.parseFragment()
-      : this.parseField();
-  }
-  /**
-   * Field : Alias? Name Arguments? Directives? SelectionSet?
-   *
-   * Alias : Name :
-   */
-
-  parseField() {
-    const start = this._lexer.token;
-    const nameOrAlias = this.parseName();
-    let alias;
-    let name;
-
-    if (this.expectOptionalToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.COLON)) {
-      alias = nameOrAlias;
-      name = this.parseName();
-    } else {
-      name = nameOrAlias;
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.FIELD,
-      alias,
-      name,
-      arguments: this.parseArguments(false),
-      directives: this.parseDirectives(false),
-      selectionSet: this.peek(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L)
-        ? this.parseSelectionSet()
-        : undefined,
-    });
-  }
-  /**
-   * Arguments[Const] : ( Argument[?Const]+ )
-   */
-
-  parseArguments(isConst) {
-    const item = isConst ? this.parseConstArgument : this.parseArgument;
-    return this.optionalMany(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PAREN_L, item, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PAREN_R);
-  }
-  /**
-   * Argument[Const] : Name : Value[?Const]
-   */
-
-  parseArgument(isConst = false) {
-    const start = this._lexer.token;
-    const name = this.parseName();
-    this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.COLON);
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.ARGUMENT,
-      name,
-      value: this.parseValueLiteral(isConst),
-    });
-  }
-
-  parseConstArgument() {
-    return this.parseArgument(true);
-  } // Implements the parsing rules in the Fragments section.
-
-  /**
-   * Corresponds to both FragmentSpread and InlineFragment in the spec.
-   *
-   * FragmentSpread : ... FragmentName Directives?
-   *
-   * InlineFragment : ... TypeCondition? Directives? SelectionSet
-   */
-
-  parseFragment() {
-    const start = this._lexer.token;
-    this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.SPREAD);
-    const hasTypeCondition = this.expectOptionalKeyword('on');
-
-    if (!hasTypeCondition && this.peek(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME)) {
-      return this.node(start, {
-        kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.FRAGMENT_SPREAD,
-        name: this.parseFragmentName(),
-        directives: this.parseDirectives(false),
-      });
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.INLINE_FRAGMENT,
-      typeCondition: hasTypeCondition ? this.parseNamedType() : undefined,
-      directives: this.parseDirectives(false),
-      selectionSet: this.parseSelectionSet(),
-    });
-  }
-  /**
-   * FragmentDefinition :
-   *   - fragment FragmentName on TypeCondition Directives? SelectionSet
-   *
-   * TypeCondition : NamedType
-   */
-
-  parseFragmentDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    this.expectKeyword('fragment'); // Legacy support for defining variables within fragments changes
-    // the grammar of FragmentDefinition:
-    //   - fragment FragmentName VariableDefinitions? on TypeCondition Directives? SelectionSet
-
-    if (this._options.allowLegacyFragmentVariables === true) {
-      return this.node(start, {
-        kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.FRAGMENT_DEFINITION,
-        description,
-        name: this.parseFragmentName(),
-        variableDefinitions: this.parseVariableDefinitions(),
-        typeCondition: (this.expectKeyword('on'), this.parseNamedType()),
-        directives: this.parseDirectives(false),
-        selectionSet: this.parseSelectionSet(),
-      });
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.FRAGMENT_DEFINITION,
-      description,
-      name: this.parseFragmentName(),
-      typeCondition: (this.expectKeyword('on'), this.parseNamedType()),
-      directives: this.parseDirectives(false),
-      selectionSet: this.parseSelectionSet(),
-    });
-  }
-  /**
-   * FragmentName : Name but not `on`
-   */
-
-  parseFragmentName() {
-    if (this._lexer.token.value === 'on') {
-      throw this.unexpected();
-    }
-
-    return this.parseName();
-  } // Implements the parsing rules in the Values section.
-
-  /**
-   * Value[Const] :
-   *   - [~Const] Variable
-   *   - IntValue
-   *   - FloatValue
-   *   - StringValue
-   *   - BooleanValue
-   *   - NullValue
-   *   - EnumValue
-   *   - ListValue[?Const]
-   *   - ObjectValue[?Const]
-   *
-   * BooleanValue : one of `true` `false`
-   *
-   * NullValue : `null`
-   *
-   * EnumValue : Name but not `true`, `false` or `null`
-   */
-
-  parseValueLiteral(isConst) {
-    const token = this._lexer.token;
-
-    switch (token.kind) {
-      case _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACKET_L:
-        return this.parseList(isConst);
-
-      case _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L:
-        return this.parseObject(isConst);
-
-      case _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.INT:
-        this.advanceLexer();
-        return this.node(token, {
-          kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.INT,
-          value: token.value,
-        });
-
-      case _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.FLOAT:
-        this.advanceLexer();
-        return this.node(token, {
-          kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.FLOAT,
-          value: token.value,
-        });
-
-      case _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.STRING:
-      case _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BLOCK_STRING:
-        return this.parseStringLiteral();
-
-      case _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME:
-        this.advanceLexer();
-
-        switch (token.value) {
-          case 'true':
-            return this.node(token, {
-              kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.BOOLEAN,
-              value: true,
-            });
-
-          case 'false':
-            return this.node(token, {
-              kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.BOOLEAN,
-              value: false,
-            });
-
-          case 'null':
-            return this.node(token, {
-              kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.NULL,
-            });
-
-          default:
-            return this.node(token, {
-              kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.ENUM,
-              value: token.value,
-            });
-        }
-
-      case _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.DOLLAR:
-        if (isConst) {
-          this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.DOLLAR);
-
-          if (this._lexer.token.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME) {
-            const varName = this._lexer.token.value;
-            throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-              this._lexer.source,
-              token.start,
-              `Unexpected variable "$${varName}" in constant value.`,
-            );
-          } else {
-            throw this.unexpected(token);
-          }
-        }
-
-        return this.parseVariable();
-
-      default:
-        throw this.unexpected();
-    }
-  }
-
-  parseConstValueLiteral() {
-    return this.parseValueLiteral(true);
-  }
-
-  parseStringLiteral() {
-    const token = this._lexer.token;
-    this.advanceLexer();
-    return this.node(token, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.STRING,
-      value: token.value,
-      block: token.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BLOCK_STRING,
-    });
-  }
-  /**
-   * ListValue[Const] :
-   *   - [ ]
-   *   - [ Value[?Const]+ ]
-   */
-
-  parseList(isConst) {
-    const item = () => this.parseValueLiteral(isConst);
-
-    return this.node(this._lexer.token, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.LIST,
-      values: this.any(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACKET_L, item, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACKET_R),
-    });
-  }
-  /**
-   * ```
-   * ObjectValue[Const] :
-   *   - { }
-   *   - { ObjectField[?Const]+ }
-   * ```
-   */
-
-  parseObject(isConst) {
-    const item = () => this.parseObjectField(isConst);
-
-    return this.node(this._lexer.token, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.OBJECT,
-      fields: this.any(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L, item, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_R),
-    });
-  }
-  /**
-   * ObjectField[Const] : Name : Value[?Const]
-   */
-
-  parseObjectField(isConst) {
-    const start = this._lexer.token;
-    const name = this.parseName();
-    this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.COLON);
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.OBJECT_FIELD,
-      name,
-      value: this.parseValueLiteral(isConst),
-    });
-  } // Implements the parsing rules in the Directives section.
-
-  /**
-   * Directives[Const] : Directive[?Const]+
-   */
-
-  parseDirectives(isConst) {
-    const directives = [];
-
-    while (this.peek(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.AT)) {
-      directives.push(this.parseDirective(isConst));
-    }
-
-    return directives;
-  }
-
-  parseConstDirectives() {
-    return this.parseDirectives(true);
-  }
-  /**
-   * ```
-   * Directive[Const] : @ Name Arguments[?Const]?
-   * ```
-   */
-
-  parseDirective(isConst) {
-    const start = this._lexer.token;
-    this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.AT);
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.DIRECTIVE,
-      name: this.parseName(),
-      arguments: this.parseArguments(isConst),
-    });
-  } // Implements the parsing rules in the Types section.
-
-  /**
-   * Type :
-   *   - NamedType
-   *   - ListType
-   *   - NonNullType
-   */
-
-  parseTypeReference() {
-    const start = this._lexer.token;
-    let type;
-
-    if (this.expectOptionalToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACKET_L)) {
-      const innerType = this.parseTypeReference();
-      this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACKET_R);
-      type = this.node(start, {
-        kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.LIST_TYPE,
-        type: innerType,
-      });
-    } else {
-      type = this.parseNamedType();
-    }
-
-    if (this.expectOptionalToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BANG)) {
-      return this.node(start, {
-        kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.NON_NULL_TYPE,
-        type,
-      });
-    }
-
-    return type;
-  }
-  /**
-   * NamedType : Name
-   */
-
-  parseNamedType() {
-    return this.node(this._lexer.token, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.NAMED_TYPE,
-      name: this.parseName(),
-    });
-  } // Implements the parsing rules in the Type Definition section.
-
-  peekDescription() {
-    return this.peek(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.STRING) || this.peek(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BLOCK_STRING);
-  }
-  /**
-   * Description : StringValue
-   */
-
-  parseDescription() {
-    if (this.peekDescription()) {
-      return this.parseStringLiteral();
-    }
-  }
-  /**
-   * ```
-   * SchemaDefinition : Description? schema Directives[Const]? { OperationTypeDefinition+ }
-   * ```
-   */
-
-  parseSchemaDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    this.expectKeyword('schema');
-    const directives = this.parseConstDirectives();
-    const operationTypes = this.many(
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L,
-      this.parseOperationTypeDefinition,
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_R,
-    );
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.SCHEMA_DEFINITION,
-      description,
-      directives,
-      operationTypes,
-    });
-  }
-  /**
-   * OperationTypeDefinition : OperationType : NamedType
-   */
-
-  parseOperationTypeDefinition() {
-    const start = this._lexer.token;
-    const operation = this.parseOperationType();
-    this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.COLON);
-    const type = this.parseNamedType();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.OPERATION_TYPE_DEFINITION,
-      operation,
-      type,
-    });
-  }
-  /**
-   * ScalarTypeDefinition : Description? scalar Name Directives[Const]?
-   */
-
-  parseScalarTypeDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    this.expectKeyword('scalar');
-    const name = this.parseName();
-    const directives = this.parseConstDirectives();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.SCALAR_TYPE_DEFINITION,
-      description,
-      name,
-      directives,
-    });
-  }
-  /**
-   * ObjectTypeDefinition :
-   *   Description?
-   *   type Name ImplementsInterfaces? Directives[Const]? FieldsDefinition?
-   */
-
-  parseObjectTypeDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    this.expectKeyword('type');
-    const name = this.parseName();
-    const interfaces = this.parseImplementsInterfaces();
-    const directives = this.parseConstDirectives();
-    const fields = this.parseFieldsDefinition();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.OBJECT_TYPE_DEFINITION,
-      description,
-      name,
-      interfaces,
-      directives,
-      fields,
-    });
-  }
-  /**
-   * ImplementsInterfaces :
-   *   - implements `&`? NamedType
-   *   - ImplementsInterfaces & NamedType
-   */
-
-  parseImplementsInterfaces() {
-    return this.expectOptionalKeyword('implements')
-      ? this.delimitedMany(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.AMP, this.parseNamedType)
-      : [];
-  }
-  /**
-   * ```
-   * FieldsDefinition : { FieldDefinition+ }
-   * ```
-   */
-
-  parseFieldsDefinition() {
-    return this.optionalMany(
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L,
-      this.parseFieldDefinition,
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_R,
-    );
-  }
-  /**
-   * FieldDefinition :
-   *   - Description? Name ArgumentsDefinition? : Type Directives[Const]?
-   */
-
-  parseFieldDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    const name = this.parseName();
-    const args = this.parseArgumentDefs();
-    this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.COLON);
-    const type = this.parseTypeReference();
-    const directives = this.parseConstDirectives();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.FIELD_DEFINITION,
-      description,
-      name,
-      arguments: args,
-      type,
-      directives,
-    });
-  }
-  /**
-   * ArgumentsDefinition : ( InputValueDefinition+ )
-   */
-
-  parseArgumentDefs() {
-    return this.optionalMany(
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PAREN_L,
-      this.parseInputValueDef,
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PAREN_R,
-    );
-  }
-  /**
-   * InputValueDefinition :
-   *   - Description? Name : Type DefaultValue? Directives[Const]?
-   */
-
-  parseInputValueDef() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    const name = this.parseName();
-    this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.COLON);
-    const type = this.parseTypeReference();
-    let defaultValue;
-
-    if (this.expectOptionalToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.EQUALS)) {
-      defaultValue = this.parseConstValueLiteral();
-    }
-
-    const directives = this.parseConstDirectives();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.INPUT_VALUE_DEFINITION,
-      description,
-      name,
-      type,
-      defaultValue,
-      directives,
-    });
-  }
-  /**
-   * InterfaceTypeDefinition :
-   *   - Description? interface Name Directives[Const]? FieldsDefinition?
-   */
-
-  parseInterfaceTypeDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    this.expectKeyword('interface');
-    const name = this.parseName();
-    const interfaces = this.parseImplementsInterfaces();
-    const directives = this.parseConstDirectives();
-    const fields = this.parseFieldsDefinition();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.INTERFACE_TYPE_DEFINITION,
-      description,
-      name,
-      interfaces,
-      directives,
-      fields,
-    });
-  }
-  /**
-   * UnionTypeDefinition :
-   *   - Description? union Name Directives[Const]? UnionMemberTypes?
-   */
-
-  parseUnionTypeDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    this.expectKeyword('union');
-    const name = this.parseName();
-    const directives = this.parseConstDirectives();
-    const types = this.parseUnionMemberTypes();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.UNION_TYPE_DEFINITION,
-      description,
-      name,
-      directives,
-      types,
-    });
-  }
-  /**
-   * UnionMemberTypes :
-   *   - = `|`? NamedType
-   *   - UnionMemberTypes | NamedType
-   */
-
-  parseUnionMemberTypes() {
-    return this.expectOptionalToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.EQUALS)
-      ? this.delimitedMany(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PIPE, this.parseNamedType)
-      : [];
-  }
-  /**
-   * EnumTypeDefinition :
-   *   - Description? enum Name Directives[Const]? EnumValuesDefinition?
-   */
-
-  parseEnumTypeDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    this.expectKeyword('enum');
-    const name = this.parseName();
-    const directives = this.parseConstDirectives();
-    const values = this.parseEnumValuesDefinition();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.ENUM_TYPE_DEFINITION,
-      description,
-      name,
-      directives,
-      values,
-    });
-  }
-  /**
-   * ```
-   * EnumValuesDefinition : { EnumValueDefinition+ }
-   * ```
-   */
-
-  parseEnumValuesDefinition() {
-    return this.optionalMany(
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L,
-      this.parseEnumValueDefinition,
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_R,
-    );
-  }
-  /**
-   * EnumValueDefinition : Description? EnumValue Directives[Const]?
-   */
-
-  parseEnumValueDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    const name = this.parseEnumValueName();
-    const directives = this.parseConstDirectives();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.ENUM_VALUE_DEFINITION,
-      description,
-      name,
-      directives,
-    });
-  }
-  /**
-   * EnumValue : Name but not `true`, `false` or `null`
-   */
-
-  parseEnumValueName() {
-    if (
-      this._lexer.token.value === 'true' ||
-      this._lexer.token.value === 'false' ||
-      this._lexer.token.value === 'null'
-    ) {
-      throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-        this._lexer.source,
-        this._lexer.token.start,
-        `${getTokenDesc(
-          this._lexer.token,
-        )} is reserved and cannot be used for an enum value.`,
-      );
-    }
-
-    return this.parseName();
-  }
-  /**
-   * InputObjectTypeDefinition :
-   *   - Description? input Name Directives[Const]? InputFieldsDefinition?
-   */
-
-  parseInputObjectTypeDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    this.expectKeyword('input');
-    const name = this.parseName();
-    const directives = this.parseConstDirectives();
-    const fields = this.parseInputFieldsDefinition();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.INPUT_OBJECT_TYPE_DEFINITION,
-      description,
-      name,
-      directives,
-      fields,
-    });
-  }
-  /**
-   * ```
-   * InputFieldsDefinition : { InputValueDefinition+ }
-   * ```
-   */
-
-  parseInputFieldsDefinition() {
-    return this.optionalMany(
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L,
-      this.parseInputValueDef,
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_R,
-    );
-  }
-  /**
-   * TypeSystemExtension :
-   *   - SchemaExtension
-   *   - TypeExtension
-   *
-   * TypeExtension :
-   *   - ScalarTypeExtension
-   *   - ObjectTypeExtension
-   *   - InterfaceTypeExtension
-   *   - UnionTypeExtension
-   *   - EnumTypeExtension
-   *   - InputObjectTypeDefinition
-   */
-
-  parseTypeSystemExtension() {
-    const keywordToken = this._lexer.lookahead();
-
-    if (keywordToken.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME) {
-      switch (keywordToken.value) {
-        case 'schema':
-          return this.parseSchemaExtension();
-
-        case 'scalar':
-          return this.parseScalarTypeExtension();
-
-        case 'type':
-          return this.parseObjectTypeExtension();
-
-        case 'interface':
-          return this.parseInterfaceTypeExtension();
-
-        case 'union':
-          return this.parseUnionTypeExtension();
-
-        case 'enum':
-          return this.parseEnumTypeExtension();
-
-        case 'input':
-          return this.parseInputObjectTypeExtension();
-      }
-    }
-
-    throw this.unexpected(keywordToken);
-  }
-  /**
-   * ```
-   * SchemaExtension :
-   *  - extend schema Directives[Const]? { OperationTypeDefinition+ }
-   *  - extend schema Directives[Const]
-   * ```
-   */
-
-  parseSchemaExtension() {
-    const start = this._lexer.token;
-    this.expectKeyword('extend');
-    this.expectKeyword('schema');
-    const directives = this.parseConstDirectives();
-    const operationTypes = this.optionalMany(
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_L,
-      this.parseOperationTypeDefinition,
-      _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.BRACE_R,
-    );
-
-    if (directives.length === 0 && operationTypes.length === 0) {
-      throw this.unexpected();
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.SCHEMA_EXTENSION,
-      directives,
-      operationTypes,
-    });
-  }
-  /**
-   * ScalarTypeExtension :
-   *   - extend scalar Name Directives[Const]
-   */
-
-  parseScalarTypeExtension() {
-    const start = this._lexer.token;
-    this.expectKeyword('extend');
-    this.expectKeyword('scalar');
-    const name = this.parseName();
-    const directives = this.parseConstDirectives();
-
-    if (directives.length === 0) {
-      throw this.unexpected();
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.SCALAR_TYPE_EXTENSION,
-      name,
-      directives,
-    });
-  }
-  /**
-   * ObjectTypeExtension :
-   *  - extend type Name ImplementsInterfaces? Directives[Const]? FieldsDefinition
-   *  - extend type Name ImplementsInterfaces? Directives[Const]
-   *  - extend type Name ImplementsInterfaces
-   */
-
-  parseObjectTypeExtension() {
-    const start = this._lexer.token;
-    this.expectKeyword('extend');
-    this.expectKeyword('type');
-    const name = this.parseName();
-    const interfaces = this.parseImplementsInterfaces();
-    const directives = this.parseConstDirectives();
-    const fields = this.parseFieldsDefinition();
-
-    if (
-      interfaces.length === 0 &&
-      directives.length === 0 &&
-      fields.length === 0
-    ) {
-      throw this.unexpected();
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.OBJECT_TYPE_EXTENSION,
-      name,
-      interfaces,
-      directives,
-      fields,
-    });
-  }
-  /**
-   * InterfaceTypeExtension :
-   *  - extend interface Name ImplementsInterfaces? Directives[Const]? FieldsDefinition
-   *  - extend interface Name ImplementsInterfaces? Directives[Const]
-   *  - extend interface Name ImplementsInterfaces
-   */
-
-  parseInterfaceTypeExtension() {
-    const start = this._lexer.token;
-    this.expectKeyword('extend');
-    this.expectKeyword('interface');
-    const name = this.parseName();
-    const interfaces = this.parseImplementsInterfaces();
-    const directives = this.parseConstDirectives();
-    const fields = this.parseFieldsDefinition();
-
-    if (
-      interfaces.length === 0 &&
-      directives.length === 0 &&
-      fields.length === 0
-    ) {
-      throw this.unexpected();
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.INTERFACE_TYPE_EXTENSION,
-      name,
-      interfaces,
-      directives,
-      fields,
-    });
-  }
-  /**
-   * UnionTypeExtension :
-   *   - extend union Name Directives[Const]? UnionMemberTypes
-   *   - extend union Name Directives[Const]
-   */
-
-  parseUnionTypeExtension() {
-    const start = this._lexer.token;
-    this.expectKeyword('extend');
-    this.expectKeyword('union');
-    const name = this.parseName();
-    const directives = this.parseConstDirectives();
-    const types = this.parseUnionMemberTypes();
-
-    if (directives.length === 0 && types.length === 0) {
-      throw this.unexpected();
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.UNION_TYPE_EXTENSION,
-      name,
-      directives,
-      types,
-    });
-  }
-  /**
-   * EnumTypeExtension :
-   *   - extend enum Name Directives[Const]? EnumValuesDefinition
-   *   - extend enum Name Directives[Const]
-   */
-
-  parseEnumTypeExtension() {
-    const start = this._lexer.token;
-    this.expectKeyword('extend');
-    this.expectKeyword('enum');
-    const name = this.parseName();
-    const directives = this.parseConstDirectives();
-    const values = this.parseEnumValuesDefinition();
-
-    if (directives.length === 0 && values.length === 0) {
-      throw this.unexpected();
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.ENUM_TYPE_EXTENSION,
-      name,
-      directives,
-      values,
-    });
-  }
-  /**
-   * InputObjectTypeExtension :
-   *   - extend input Name Directives[Const]? InputFieldsDefinition
-   *   - extend input Name Directives[Const]
-   */
-
-  parseInputObjectTypeExtension() {
-    const start = this._lexer.token;
-    this.expectKeyword('extend');
-    this.expectKeyword('input');
-    const name = this.parseName();
-    const directives = this.parseConstDirectives();
-    const fields = this.parseInputFieldsDefinition();
-
-    if (directives.length === 0 && fields.length === 0) {
-      throw this.unexpected();
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.INPUT_OBJECT_TYPE_EXTENSION,
-      name,
-      directives,
-      fields,
-    });
-  }
-  /**
-   * ```
-   * DirectiveDefinition :
-   *   - Description? directive @ Name ArgumentsDefinition? `repeatable`? on DirectiveLocations
-   * ```
-   */
-
-  parseDirectiveDefinition() {
-    const start = this._lexer.token;
-    const description = this.parseDescription();
-    this.expectKeyword('directive');
-    this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.AT);
-    const name = this.parseName();
-    const args = this.parseArgumentDefs();
-    const repeatable = this.expectOptionalKeyword('repeatable');
-    this.expectKeyword('on');
-    const locations = this.parseDirectiveLocations();
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.DIRECTIVE_DEFINITION,
-      description,
-      name,
-      arguments: args,
-      repeatable,
-      locations,
-    });
-  }
-  /**
-   * DirectiveLocations :
-   *   - `|`? DirectiveLocation
-   *   - DirectiveLocations | DirectiveLocation
-   */
-
-  parseDirectiveLocations() {
-    return this.delimitedMany(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PIPE, this.parseDirectiveLocation);
-  }
-  /*
-   * DirectiveLocation :
-   *   - ExecutableDirectiveLocation
-   *   - TypeSystemDirectiveLocation
-   *
-   * ExecutableDirectiveLocation : one of
-   *   `QUERY`
-   *   `MUTATION`
-   *   `SUBSCRIPTION`
-   *   `FIELD`
-   *   `FRAGMENT_DEFINITION`
-   *   `FRAGMENT_SPREAD`
-   *   `INLINE_FRAGMENT`
-   *
-   * TypeSystemDirectiveLocation : one of
-   *   `SCHEMA`
-   *   `SCALAR`
-   *   `OBJECT`
-   *   `FIELD_DEFINITION`
-   *   `ARGUMENT_DEFINITION`
-   *   `INTERFACE`
-   *   `UNION`
-   *   `ENUM`
-   *   `ENUM_VALUE`
-   *   `INPUT_OBJECT`
-   *   `INPUT_FIELD_DEFINITION`
-   */
-
-  parseDirectiveLocation() {
-    const start = this._lexer.token;
-    const name = this.parseName();
-
-    if (Object.prototype.hasOwnProperty.call(_directiveLocation_mjs__WEBPACK_IMPORTED_MODULE_2__.DirectiveLocation, name.value)) {
-      return name;
-    }
-
-    throw this.unexpected(start);
-  } // Schema Coordinates
-
-  /**
-   * SchemaCoordinate :
-   *   - Name
-   *   - Name . Name
-   *   - Name . Name ( Name : )
-   *   - \@ Name
-   *   - \@ Name ( Name : )
-   */
-
-  parseSchemaCoordinate() {
-    const start = this._lexer.token;
-    const ofDirective = this.expectOptionalToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.AT);
-    const name = this.parseName();
-    let memberName;
-
-    if (!ofDirective && this.expectOptionalToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.DOT)) {
-      memberName = this.parseName();
-    }
-
-    let argumentName;
-
-    if (
-      (ofDirective || memberName) &&
-      this.expectOptionalToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PAREN_L)
-    ) {
-      argumentName = this.parseName();
-      this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.COLON);
-      this.expectToken(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.PAREN_R);
-    }
-
-    if (ofDirective) {
-      if (argumentName) {
-        return this.node(start, {
-          kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.DIRECTIVE_ARGUMENT_COORDINATE,
-          name,
-          argumentName,
-        });
-      }
-
-      return this.node(start, {
-        kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.DIRECTIVE_COORDINATE,
-        name,
-      });
-    } else if (memberName) {
-      if (argumentName) {
-        return this.node(start, {
-          kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.ARGUMENT_COORDINATE,
-          name,
-          fieldName: memberName,
-          argumentName,
-        });
-      }
-
-      return this.node(start, {
-        kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.MEMBER_COORDINATE,
-        name,
-        memberName,
-      });
-    }
-
-    return this.node(start, {
-      kind: _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__.Kind.TYPE_COORDINATE,
-      name,
-    });
-  } // Core parsing utility functions
-
-  /**
-   * Returns a node that, if configured to do so, sets a "loc" field as a
-   * location object, used to identify the place in the source that created a
-   * given parsed object.
-   */
-
-  node(startToken, node) {
-    if (this._options.noLocation !== true) {
-      node.loc = new _ast_mjs__WEBPACK_IMPORTED_MODULE_1__.Location(
-        startToken,
-        this._lexer.lastToken,
-        this._lexer.source,
-      );
-    }
-
-    return node;
-  }
-  /**
-   * Determines if the next token is of a given kind
-   */
-
-  peek(kind) {
-    return this._lexer.token.kind === kind;
-  }
-  /**
-   * If the next token is of the given kind, return that token after advancing the lexer.
-   * Otherwise, do not change the parser state and throw an error.
-   */
-
-  expectToken(kind) {
-    const token = this._lexer.token;
-
-    if (token.kind === kind) {
-      this.advanceLexer();
-      return token;
-    }
-
-    throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-      this._lexer.source,
-      token.start,
-      `Expected ${getTokenKindDesc(kind)}, found ${getTokenDesc(token)}.`,
-    );
-  }
-  /**
-   * If the next token is of the given kind, return "true" after advancing the lexer.
-   * Otherwise, do not change the parser state and return "false".
-   */
-
-  expectOptionalToken(kind) {
-    const token = this._lexer.token;
-
-    if (token.kind === kind) {
-      this.advanceLexer();
-      return true;
-    }
-
-    return false;
-  }
-  /**
-   * If the next token is a given keyword, advance the lexer.
-   * Otherwise, do not change the parser state and throw an error.
-   */
-
-  expectKeyword(value) {
-    const token = this._lexer.token;
-
-    if (token.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME && token.value === value) {
-      this.advanceLexer();
-    } else {
-      throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-        this._lexer.source,
-        token.start,
-        `Expected "${value}", found ${getTokenDesc(token)}.`,
-      );
-    }
-  }
-  /**
-   * If the next token is a given keyword, return "true" after advancing the lexer.
-   * Otherwise, do not change the parser state and return "false".
-   */
-
-  expectOptionalKeyword(value) {
-    const token = this._lexer.token;
-
-    if (token.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.NAME && token.value === value) {
-      this.advanceLexer();
-      return true;
-    }
-
-    return false;
-  }
-  /**
-   * Helper function for creating an error when an unexpected lexed token is encountered.
-   */
-
-  unexpected(atToken) {
-    const token =
-      atToken !== null && atToken !== void 0 ? atToken : this._lexer.token;
-    return (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-      this._lexer.source,
-      token.start,
-      `Unexpected ${getTokenDesc(token)}.`,
-    );
-  }
-  /**
-   * Returns a possibly empty list of parse nodes, determined by the parseFn.
-   * This list begins with a lex token of openKind and ends with a lex token of closeKind.
-   * Advances the parser to the next lex token after the closing token.
-   */
-
-  any(openKind, parseFn, closeKind) {
-    this.expectToken(openKind);
-    const nodes = [];
-
-    while (!this.expectOptionalToken(closeKind)) {
-      nodes.push(parseFn.call(this));
-    }
-
-    return nodes;
-  }
-  /**
-   * Returns a list of parse nodes, determined by the parseFn.
-   * It can be empty only if open token is missing otherwise it will always return non-empty list
-   * that begins with a lex token of openKind and ends with a lex token of closeKind.
-   * Advances the parser to the next lex token after the closing token.
-   */
-
-  optionalMany(openKind, parseFn, closeKind) {
-    if (this.expectOptionalToken(openKind)) {
-      const nodes = [];
-
-      do {
-        nodes.push(parseFn.call(this));
-      } while (!this.expectOptionalToken(closeKind));
-
-      return nodes;
-    }
-
-    return [];
-  }
-  /**
-   * Returns a non-empty list of parse nodes, determined by the parseFn.
-   * This list begins with a lex token of openKind and ends with a lex token of closeKind.
-   * Advances the parser to the next lex token after the closing token.
-   */
-
-  many(openKind, parseFn, closeKind) {
-    this.expectToken(openKind);
-    const nodes = [];
-
-    do {
-      nodes.push(parseFn.call(this));
-    } while (!this.expectOptionalToken(closeKind));
-
-    return nodes;
-  }
-  /**
-   * Returns a non-empty list of parse nodes, determined by the parseFn.
-   * This list may begin with a lex token of delimiterKind followed by items separated by lex tokens of tokenKind.
-   * Advances the parser to the next lex token after last item in the list.
-   */
-
-  delimitedMany(delimiterKind, parseFn) {
-    this.expectOptionalToken(delimiterKind);
-    const nodes = [];
-
-    do {
-      nodes.push(parseFn.call(this));
-    } while (this.expectOptionalToken(delimiterKind));
-
-    return nodes;
-  }
-
-  advanceLexer() {
-    const { maxTokens } = this._options;
-
-    const token = this._lexer.advance();
-
-    if (token.kind !== _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_7__.TokenKind.EOF) {
-      ++this._tokenCounter;
-
-      if (maxTokens !== undefined && this._tokenCounter > maxTokens) {
-        throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-          this._lexer.source,
-          token.start,
-          `Document contains more that ${maxTokens} tokens. Parsing aborted.`,
-        );
-      }
-    }
-  }
-}
-/**
- * A helper function to describe a token as a string for debugging.
- */
-
-function getTokenDesc(token) {
-  const value = token.value;
-  return getTokenKindDesc(token.kind) + (value != null ? ` "${value}"` : '');
-}
-/**
- * A helper function to describe a token kind as a string for debugging.
- */
-
-function getTokenKindDesc(kind) {
-  return (0,_lexer_mjs__WEBPACK_IMPORTED_MODULE_4__.isPunctuatorTokenKind)(kind) ? `"${kind}"` : kind;
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/printLocation.mjs"
-/*!*********************************************************!*\
-  !*** ./node_modules/graphql/language/printLocation.mjs ***!
-  \*********************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   printLocation: () => (/* binding */ printLocation),
-/* harmony export */   printSourceLocation: () => (/* binding */ printSourceLocation)
-/* harmony export */ });
-/* harmony import */ var _location_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./location.mjs */ "./node_modules/graphql/language/location.mjs");
-
-
-/**
- * Render a helpful description of the location in the GraphQL Source document.
- */
-function printLocation(location) {
-  return printSourceLocation(
-    location.source,
-    (0,_location_mjs__WEBPACK_IMPORTED_MODULE_0__.getLocation)(location.source, location.start),
-  );
-}
-/**
- * Render a helpful description of the location in the GraphQL Source document.
- */
-
-function printSourceLocation(source, sourceLocation) {
-  const firstLineColumnOffset = source.locationOffset.column - 1;
-  const body = ''.padStart(firstLineColumnOffset) + source.body;
-  const lineIndex = sourceLocation.line - 1;
-  const lineOffset = source.locationOffset.line - 1;
-  const lineNum = sourceLocation.line + lineOffset;
-  const columnOffset = sourceLocation.line === 1 ? firstLineColumnOffset : 0;
-  const columnNum = sourceLocation.column + columnOffset;
-  const locationStr = `${source.name}:${lineNum}:${columnNum}\n`;
-  const lines = body.split(/\r\n|[\n\r]/g);
-  const locationLine = lines[lineIndex]; // Special case for minified documents
-
-  if (locationLine.length > 120) {
-    const subLineIndex = Math.floor(columnNum / 80);
-    const subLineColumnNum = columnNum % 80;
-    const subLines = [];
-
-    for (let i = 0; i < locationLine.length; i += 80) {
-      subLines.push(locationLine.slice(i, i + 80));
-    }
-
-    return (
-      locationStr +
-      printPrefixedLines([
-        [`${lineNum} |`, subLines[0]],
-        ...subLines.slice(1, subLineIndex + 1).map((subLine) => ['|', subLine]),
-        ['|', '^'.padStart(subLineColumnNum)],
-        ['|', subLines[subLineIndex + 1]],
-      ])
-    );
-  }
-
-  return (
-    locationStr +
-    printPrefixedLines([
-      // Lines specified like this: ["prefix", "string"],
-      [`${lineNum - 1} |`, lines[lineIndex - 1]],
-      [`${lineNum} |`, locationLine],
-      ['|', '^'.padStart(columnNum)],
-      [`${lineNum + 1} |`, lines[lineIndex + 1]],
-    ])
-  );
-}
-
-function printPrefixedLines(lines) {
-  const existingLines = lines.filter(([_, line]) => line !== undefined);
-  const padLen = Math.max(...existingLines.map(([prefix]) => prefix.length));
-  return existingLines
-    .map(([prefix, line]) => prefix.padStart(padLen) + (line ? ' ' + line : ''))
-    .join('\n');
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/schemaCoordinateLexer.mjs"
-/*!*****************************************************************!*\
-  !*** ./node_modules/graphql/language/schemaCoordinateLexer.mjs ***!
-  \*****************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   SchemaCoordinateLexer: () => (/* binding */ SchemaCoordinateLexer)
-/* harmony export */ });
-/* harmony import */ var _error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../error/syntaxError.mjs */ "./node_modules/graphql/error/syntaxError.mjs");
-/* harmony import */ var _ast_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ast.mjs */ "./node_modules/graphql/language/ast.mjs");
-/* harmony import */ var _characterClasses_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./characterClasses.mjs */ "./node_modules/graphql/language/characterClasses.mjs");
-/* harmony import */ var _lexer_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./lexer.mjs */ "./node_modules/graphql/language/lexer.mjs");
-/* harmony import */ var _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./tokenKind.mjs */ "./node_modules/graphql/language/tokenKind.mjs");
-
-
-
-
-
-/**
- * Given a Source schema coordinate, creates a Lexer for that source.
- * A SchemaCoordinateLexer is a stateful stream generator in that every time
- * it is advanced, it returns the next token in the Source. Assuming the
- * source lexes, the final Token emitted by the lexer will be of kind
- * EOF, after which the lexer will repeatedly return the same EOF token
- * whenever called.
- */
-
-class SchemaCoordinateLexer {
-  /**
-   * The previously focused non-ignored token.
-   */
-
-  /**
-   * The currently focused non-ignored token.
-   */
-
-  /**
-   * The (1-indexed) line containing the current token.
-   * Since a schema coordinate may not contain newline, this value is always 1.
-   */
-  line = 1;
-  /**
-   * The character offset at which the current line begins.
-   * Since a schema coordinate may not contain newline, this value is always 0.
-   */
-
-  lineStart = 0;
-
-  constructor(source) {
-    const startOfFileToken = new _ast_mjs__WEBPACK_IMPORTED_MODULE_1__.Token(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.SOF, 0, 0, 0, 0);
-    this.source = source;
-    this.lastToken = startOfFileToken;
-    this.token = startOfFileToken;
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'SchemaCoordinateLexer';
-  }
-  /**
-   * Advances the token stream to the next non-ignored token.
-   */
-
-  advance() {
-    this.lastToken = this.token;
-    const token = (this.token = this.lookahead());
-    return token;
-  }
-  /**
-   * Looks ahead and returns the next non-ignored token, but does not change
-   * the current Lexer token.
-   */
-
-  lookahead() {
-    let token = this.token;
-
-    if (token.kind !== _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.EOF) {
-      // Read the next token and form a link in the token linked-list.
-      const nextToken = readNextToken(this, token.end); // @ts-expect-error next is only mutable during parsing.
-
-      token.next = nextToken; // @ts-expect-error prev is only mutable during parsing.
-
-      nextToken.prev = token;
-      token = nextToken;
-    }
-
-    return token;
-  }
-}
-/**
- * Gets the next token from the source starting at the given position.
- */
-
-function readNextToken(lexer, start) {
-  const body = lexer.source.body;
-  const bodyLength = body.length;
-  const position = start;
-
-  if (position < bodyLength) {
-    const code = body.charCodeAt(position);
-
-    switch (code) {
-      case 0x002e:
-        // .
-        return (0,_lexer_mjs__WEBPACK_IMPORTED_MODULE_3__.createToken)(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.DOT, position, position + 1);
-
-      case 0x0028:
-        // (
-        return (0,_lexer_mjs__WEBPACK_IMPORTED_MODULE_3__.createToken)(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.PAREN_L, position, position + 1);
-
-      case 0x0029:
-        // )
-        return (0,_lexer_mjs__WEBPACK_IMPORTED_MODULE_3__.createToken)(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.PAREN_R, position, position + 1);
-
-      case 0x003a:
-        // :
-        return (0,_lexer_mjs__WEBPACK_IMPORTED_MODULE_3__.createToken)(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.COLON, position, position + 1);
-
-      case 0x0040:
-        // @
-        return (0,_lexer_mjs__WEBPACK_IMPORTED_MODULE_3__.createToken)(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.AT, position, position + 1);
-    } // Name
-
-    if ((0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_2__.isNameStart)(code)) {
-      return (0,_lexer_mjs__WEBPACK_IMPORTED_MODULE_3__.readName)(lexer, position);
-    }
-
-    throw (0,_error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__.syntaxError)(
-      lexer.source,
-      position,
-      `Invalid character: ${(0,_lexer_mjs__WEBPACK_IMPORTED_MODULE_3__.printCodePointAt)(lexer, position)}.`,
-    );
-  }
-
-  return (0,_lexer_mjs__WEBPACK_IMPORTED_MODULE_3__.createToken)(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__.TokenKind.EOF, bodyLength, bodyLength);
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/source.mjs"
-/*!**************************************************!*\
-  !*** ./node_modules/graphql/language/source.mjs ***!
-  \**************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Source: () => (/* binding */ Source),
-/* harmony export */   isSource: () => (/* binding */ isSource)
-/* harmony export */ });
-/* harmony import */ var _jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../jsutils/devAssert.mjs */ "./node_modules/graphql/jsutils/devAssert.mjs");
-/* harmony import */ var _jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../jsutils/inspect.mjs */ "./node_modules/graphql/jsutils/inspect.mjs");
-/* harmony import */ var _jsutils_instanceOf_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../jsutils/instanceOf.mjs */ "./node_modules/graphql/jsutils/instanceOf.mjs");
-
-
-
-
-/**
- * A representation of source input to GraphQL. The `name` and `locationOffset` parameters are
- * optional, but they are useful for clients who store GraphQL documents in source files.
- * For example, if the GraphQL input starts at line 40 in a file named `Foo.graphql`, it might
- * be useful for `name` to be `"Foo.graphql"` and location to be `{ line: 40, column: 1 }`.
- * The `line` and `column` properties in `locationOffset` are 1-indexed.
- */
-class Source {
-  constructor(
-    body,
-    name = 'GraphQL request',
-    locationOffset = {
-      line: 1,
-      column: 1,
-    },
-  ) {
-    typeof body === 'string' ||
-      (0,_jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__.devAssert)(false, `Body must be a string. Received: ${(0,_jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_1__.inspect)(body)}.`);
-    this.body = body;
-    this.name = name;
-    this.locationOffset = locationOffset;
-    this.locationOffset.line > 0 ||
-      (0,_jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__.devAssert)(
-        false,
-        'line in locationOffset is 1-indexed and must be positive.',
-      );
-    this.locationOffset.column > 0 ||
-      (0,_jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__.devAssert)(
-        false,
-        'column in locationOffset is 1-indexed and must be positive.',
-      );
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'Source';
-  }
-}
-/**
- * Test if the given value is a Source object.
- *
- * @internal
- */
-
-function isSource(source) {
-  return (0,_jsutils_instanceOf_mjs__WEBPACK_IMPORTED_MODULE_2__.instanceOf)(source, Source);
-}
-
-
-/***/ },
-
-/***/ "./node_modules/graphql/language/tokenKind.mjs"
-/*!*****************************************************!*\
-  !*** ./node_modules/graphql/language/tokenKind.mjs ***!
-  \*****************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   TokenKind: () => (/* binding */ TokenKind)
-/* harmony export */ });
-/**
- * An exported enum describing the different kinds of tokens that the
- * lexer emits.
- */
-var TokenKind;
-
-(function (TokenKind) {
-  TokenKind['SOF'] = '<SOF>';
-  TokenKind['EOF'] = '<EOF>';
-  TokenKind['BANG'] = '!';
-  TokenKind['DOLLAR'] = '$';
-  TokenKind['AMP'] = '&';
-  TokenKind['PAREN_L'] = '(';
-  TokenKind['PAREN_R'] = ')';
-  TokenKind['DOT'] = '.';
-  TokenKind['SPREAD'] = '...';
-  TokenKind['COLON'] = ':';
-  TokenKind['EQUALS'] = '=';
-  TokenKind['AT'] = '@';
-  TokenKind['BRACKET_L'] = '[';
-  TokenKind['BRACKET_R'] = ']';
-  TokenKind['BRACE_L'] = '{';
-  TokenKind['PIPE'] = '|';
-  TokenKind['BRACE_R'] = '}';
-  TokenKind['NAME'] = 'Name';
-  TokenKind['INT'] = 'Int';
-  TokenKind['FLOAT'] = 'Float';
-  TokenKind['STRING'] = 'String';
-  TokenKind['BLOCK_STRING'] = 'BlockString';
-  TokenKind['COMMENT'] = 'Comment';
-})(TokenKind || (TokenKind = {}));
-
-
-/**
- * The enum type representing the token kinds values.
- *
- * @deprecated Please use `TokenKind`. Will be remove in v17.
- */
-
-
-/***/ },
-
 /***/ "./node_modules/headers-polyfill/lib/index.mjs"
 /*!*****************************************************!*\
   !*** ./node_modules/headers-polyfill/lib/index.mjs ***!
@@ -7267,6 +3212,3358 @@ function isNodeProcess() {
 
 /***/ },
 
+/***/ "./node_modules/msw/lib/browser/index.mjs"
+/*!************************************************!*\
+  !*** ./node_modules/msw/lib/browser/index.mjs ***!
+  \************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SetupWorkerApi: () => (/* binding */ SetupWorkerApi),
+/* harmony export */   setupWorker: () => (/* binding */ setupWorker)
+/* harmony export */ });
+/* harmony import */ var _core_experimental_define_network_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/experimental/define-network.mjs */ "./node_modules/msw/lib/core/experimental/define-network.mjs");
+/* harmony import */ var _core_experimental_sources_interceptor_source_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/experimental/sources/interceptor-source.mjs */ "./node_modules/msw/lib/core/experimental/sources/interceptor-source.mjs");
+/* harmony import */ var _core_experimental_compat_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/experimental/compat.mjs */ "./node_modules/msw/lib/core/experimental/compat.mjs");
+/* harmony import */ var _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/utils/internal/devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
+/* harmony import */ var _core_experimental_sources_network_source_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../core/experimental/sources/network-source.mjs */ "./node_modules/msw/lib/core/experimental/sources/network-source.mjs");
+/* harmony import */ var _core_handlers_RequestHandler_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../core/handlers/RequestHandler.mjs */ "./node_modules/msw/lib/core/handlers/RequestHandler.mjs");
+/* harmony import */ var _core_experimental_frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../core/experimental/frames/http-frame.mjs */ "./node_modules/msw/lib/core/experimental/frames/http-frame.mjs");
+/* harmony import */ var _core_HttpResponse_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../core/HttpResponse.mjs */ "./node_modules/msw/lib/core/HttpResponse.mjs");
+/* harmony import */ var _core_utils_toResponseInit_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../core/utils/toResponseInit.mjs */ "./node_modules/msw/lib/core/utils/toResponseInit.mjs");
+/* harmony import */ var _core_utils_internal_isObject_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../core/utils/internal/isObject.mjs */ "./node_modules/msw/lib/core/utils/internal/isObject.mjs");
+/* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
+// node_modules/.pnpm/outvariant@1.4.3/node_modules/outvariant/lib/index.mjs
+var POSITIONALS_EXP = /(%?)(%([sdijo]))/g;
+function serializePositional(positional, flag) {
+  switch (flag) {
+    case "s":
+      return positional;
+    case "d":
+    case "i":
+      return Number(positional);
+    case "j":
+      return JSON.stringify(positional);
+    case "o": {
+      if (typeof positional === "string") {
+        return positional;
+      }
+      const json = JSON.stringify(positional);
+      if (json === "{}" || json === "[]" || /^\[object .+?\]$/.test(json)) {
+        return positional;
+      }
+      return json;
+    }
+  }
+}
+function format(message, ...positionals) {
+  if (positionals.length === 0) {
+    return message;
+  }
+  let positionalIndex = 0;
+  let formattedMessage = message.replace(
+    POSITIONALS_EXP,
+    (match, isEscaped, _, flag) => {
+      const positional = positionals[positionalIndex];
+      const value = serializePositional(positional, flag);
+      if (!isEscaped) {
+        positionalIndex++;
+        return value;
+      }
+      return match;
+    }
+  );
+  if (positionalIndex < positionals.length) {
+    formattedMessage += ` ${positionals.slice(positionalIndex).join(" ")}`;
+  }
+  formattedMessage = formattedMessage.replace(/%{2,2}/g, "%");
+  return formattedMessage;
+}
+var STACK_FRAMES_TO_IGNORE = 2;
+function cleanErrorStack(error2) {
+  if (!error2.stack) {
+    return;
+  }
+  const nextStack = error2.stack.split("\n");
+  nextStack.splice(1, STACK_FRAMES_TO_IGNORE);
+  error2.stack = nextStack.join("\n");
+}
+var InvariantError = class extends Error {
+  constructor(message, ...positionals) {
+    super(message);
+    this.message = message;
+    this.name = "Invariant Violation";
+    this.message = format(message, ...positionals);
+    cleanErrorStack(this);
+  }
+};
+var invariant = (predicate, message, ...positionals) => {
+  if (!predicate) {
+    throw new InvariantError(message, ...positionals);
+  }
+};
+invariant.as = (ErrorConstructor, predicate, message, ...positionals) => {
+  if (!predicate) {
+    const formatMessage = positionals.length === 0 ? message : format(message, ...positionals);
+    let error2;
+    try {
+      error2 = Reflect.construct(ErrorConstructor, [
+        formatMessage
+      ]);
+    } catch (err) {
+      error2 = ErrorConstructor(formatMessage);
+    }
+    throw error2;
+  }
+};
+
+// node_modules/.pnpm/is-node-process@1.2.0/node_modules/is-node-process/lib/index.mjs
+function isNodeProcess() {
+  if (typeof navigator !== "undefined" && navigator.product === "ReactNative") {
+    return true;
+  }
+  if (typeof process !== "undefined") {
+    const type = process.type;
+    if (type === "renderer" || type === "worker") {
+      return false;
+    }
+    return !!(process.versions && process.versions.node);
+  }
+  return false;
+}
+
+// node_modules/.pnpm/@open-draft+logger@0.3.0/node_modules/@open-draft/logger/lib/index.mjs
+var __defProp = Object.defineProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var colors_exports = {};
+__export(colors_exports, {
+  blue: () => blue,
+  gray: () => gray,
+  green: () => green,
+  red: () => red,
+  yellow: () => yellow
+});
+function yellow(text) {
+  return `\x1B[33m${text}\x1B[0m`;
+}
+function blue(text) {
+  return `\x1B[34m${text}\x1B[0m`;
+}
+function gray(text) {
+  return `\x1B[90m${text}\x1B[0m`;
+}
+function red(text) {
+  return `\x1B[31m${text}\x1B[0m`;
+}
+function green(text) {
+  return `\x1B[32m${text}\x1B[0m`;
+}
+var IS_NODE = isNodeProcess();
+var Logger = class {
+  constructor(name) {
+    this.name = name;
+    this.prefix = `[${this.name}]`;
+    const LOGGER_NAME = getVariable("DEBUG");
+    const LOGGER_LEVEL = getVariable("LOG_LEVEL");
+    const isLoggingEnabled = LOGGER_NAME === "1" || LOGGER_NAME === "true" || typeof LOGGER_NAME !== "undefined" && this.name.startsWith(LOGGER_NAME);
+    if (isLoggingEnabled) {
+      this.debug = isDefinedAndNotEquals(LOGGER_LEVEL, "debug") ? noop : this.debug;
+      this.info = isDefinedAndNotEquals(LOGGER_LEVEL, "info") ? noop : this.info;
+      this.success = isDefinedAndNotEquals(LOGGER_LEVEL, "success") ? noop : this.success;
+      this.warning = isDefinedAndNotEquals(LOGGER_LEVEL, "warning") ? noop : this.warning;
+      this.error = isDefinedAndNotEquals(LOGGER_LEVEL, "error") ? noop : this.error;
+    } else {
+      this.info = noop;
+      this.success = noop;
+      this.warning = noop;
+      this.error = noop;
+      this.only = noop;
+    }
+  }
+  prefix;
+  extend(domain) {
+    return new Logger(`${this.name}:${domain}`);
+  }
+  /**
+   * Print a debug message.
+   * @example
+   * logger.debug('no duplicates found, creating a document...')
+   */
+  debug(message, ...positionals) {
+    this.logEntry({
+      level: "debug",
+      message: gray(message),
+      positionals,
+      prefix: this.prefix,
+      colors: {
+        prefix: "gray"
+      }
+    });
+  }
+  /**
+   * Print an info message.
+   * @example
+   * logger.info('start parsing...')
+   */
+  info(message, ...positionals) {
+    this.logEntry({
+      level: "info",
+      message,
+      positionals,
+      prefix: this.prefix,
+      colors: {
+        prefix: "blue"
+      }
+    });
+    const performance2 = new PerformanceEntry();
+    return (message2, ...positionals2) => {
+      performance2.measure();
+      this.logEntry({
+        level: "info",
+        message: `${message2} ${gray(`${performance2.deltaTime}ms`)}`,
+        positionals: positionals2,
+        prefix: this.prefix,
+        colors: {
+          prefix: "blue"
+        }
+      });
+    };
+  }
+  /**
+   * Print a success message.
+   * @example
+   * logger.success('successfully created document')
+   */
+  success(message, ...positionals) {
+    this.logEntry({
+      level: "info",
+      message,
+      positionals,
+      prefix: `\u2714 ${this.prefix}`,
+      colors: {
+        timestamp: "green",
+        prefix: "green"
+      }
+    });
+  }
+  /**
+   * Print a warning.
+   * @example
+   * logger.warning('found legacy document format')
+   */
+  warning(message, ...positionals) {
+    this.logEntry({
+      level: "warning",
+      message,
+      positionals,
+      prefix: `\u26A0 ${this.prefix}`,
+      colors: {
+        timestamp: "yellow",
+        prefix: "yellow"
+      }
+    });
+  }
+  /**
+   * Print an error message.
+   * @example
+   * logger.error('something went wrong')
+   */
+  error(message, ...positionals) {
+    this.logEntry({
+      level: "error",
+      message,
+      positionals,
+      prefix: `\u2716 ${this.prefix}`,
+      colors: {
+        timestamp: "red",
+        prefix: "red"
+      }
+    });
+  }
+  /**
+   * Execute the given callback only when the logging is enabled.
+   * This is skipped in its entirety and has no runtime cost otherwise.
+   * This executes regardless of the log level.
+   * @example
+   * logger.only(() => {
+   *   logger.info('additional info')
+   * })
+   */
+  only(callback) {
+    callback();
+  }
+  createEntry(level, message) {
+    return {
+      timestamp: /* @__PURE__ */ new Date(),
+      level,
+      message
+    };
+  }
+  logEntry(args) {
+    const {
+      level,
+      message,
+      prefix,
+      colors: customColors,
+      positionals = []
+    } = args;
+    const entry = this.createEntry(level, message);
+    const timestampColor = customColors?.timestamp || "gray";
+    const prefixColor = customColors?.prefix || "gray";
+    const colorize = {
+      timestamp: colors_exports[timestampColor],
+      prefix: colors_exports[prefixColor]
+    };
+    const write = this.getWriter(level);
+    write(
+      [colorize.timestamp(this.formatTimestamp(entry.timestamp))].concat(prefix != null ? colorize.prefix(prefix) : []).concat(serializeInput(message)).join(" "),
+      ...positionals.map(serializeInput)
+    );
+  }
+  formatTimestamp(timestamp) {
+    return `${timestamp.toLocaleTimeString(
+      "en-GB"
+    )}:${timestamp.getMilliseconds()}`;
+  }
+  getWriter(level) {
+    switch (level) {
+      case "debug":
+      case "success":
+      case "info": {
+        return log;
+      }
+      case "warning": {
+        return warn;
+      }
+      case "error": {
+        return error;
+      }
+    }
+  }
+};
+var PerformanceEntry = class {
+  startTime;
+  endTime;
+  deltaTime;
+  constructor() {
+    this.startTime = performance.now();
+  }
+  measure() {
+    this.endTime = performance.now();
+    const deltaTime = this.endTime - this.startTime;
+    this.deltaTime = deltaTime.toFixed(2);
+  }
+};
+var noop = () => void 0;
+function log(message, ...positionals) {
+  if (IS_NODE) {
+    process.stdout.write(format(message, ...positionals) + "\n");
+    return;
+  }
+  console.log(message, ...positionals);
+}
+function warn(message, ...positionals) {
+  if (IS_NODE) {
+    process.stderr.write(format(message, ...positionals) + "\n");
+    return;
+  }
+  console.warn(message, ...positionals);
+}
+function error(message, ...positionals) {
+  if (IS_NODE) {
+    process.stderr.write(format(message, ...positionals) + "\n");
+    return;
+  }
+  console.error(message, ...positionals);
+}
+function getVariable(variableName) {
+  if (IS_NODE) {
+    return process.env[variableName];
+  }
+  return globalThis[variableName]?.toString();
+}
+function isDefinedAndNotEquals(value, expected) {
+  return value !== void 0 && value !== expected;
+}
+function serializeInput(message) {
+  if (typeof message === "undefined") {
+    return "undefined";
+  }
+  if (message === null) {
+    return "null";
+  }
+  if (typeof message === "string") {
+    return message;
+  }
+  if (typeof message === "object") {
+    return JSON.stringify(message);
+  }
+  return message.toString();
+}
+
+// node_modules/.pnpm/strict-event-emitter@0.5.1/node_modules/strict-event-emitter/lib/index.mjs
+var MemoryLeakError = class extends Error {
+  constructor(emitter, type, count) {
+    super(
+      `Possible EventEmitter memory leak detected. ${count} ${type.toString()} listeners added. Use emitter.setMaxListeners() to increase limit`
+    );
+    this.emitter = emitter;
+    this.type = type;
+    this.count = count;
+    this.name = "MaxListenersExceededWarning";
+  }
+};
+var _Emitter = class {
+  static listenerCount(emitter, eventName) {
+    return emitter.listenerCount(eventName);
+  }
+  constructor() {
+    this.events = /* @__PURE__ */ new Map();
+    this.maxListeners = _Emitter.defaultMaxListeners;
+    this.hasWarnedAboutPotentialMemoryLeak = false;
+  }
+  _emitInternalEvent(internalEventName, eventName, listener) {
+    this.emit(
+      internalEventName,
+      ...[eventName, listener]
+    );
+  }
+  _getListeners(eventName) {
+    return Array.prototype.concat.apply([], this.events.get(eventName)) || [];
+  }
+  _removeListener(listeners, listener) {
+    const index = listeners.indexOf(listener);
+    if (index > -1) {
+      listeners.splice(index, 1);
+    }
+    return [];
+  }
+  _wrapOnceListener(eventName, listener) {
+    const onceListener = (...data) => {
+      this.removeListener(eventName, onceListener);
+      return listener.apply(this, data);
+    };
+    Object.defineProperty(onceListener, "name", { value: listener.name });
+    return onceListener;
+  }
+  setMaxListeners(maxListeners) {
+    this.maxListeners = maxListeners;
+    return this;
+  }
+  /**
+   * Returns the current max listener value for the `Emitter` which is
+   * either set by `emitter.setMaxListeners(n)` or defaults to
+   * `Emitter.defaultMaxListeners`.
+   */
+  getMaxListeners() {
+    return this.maxListeners;
+  }
+  /**
+   * Returns an array listing the events for which the emitter has registered listeners.
+   * The values in the array will be strings or Symbols.
+   */
+  eventNames() {
+    return Array.from(this.events.keys());
+  }
+  /**
+   * Synchronously calls each of the listeners registered for the event named `eventName`,
+   * in the order they were registered, passing the supplied arguments to each.
+   * Returns `true` if the event has listeners, `false` otherwise.
+   *
+   * @example
+   * const emitter = new Emitter<{ hello: [string] }>()
+   * emitter.emit('hello', 'John')
+   */
+  emit(eventName, ...data) {
+    const listeners = this._getListeners(eventName);
+    listeners.forEach((listener) => {
+      listener.apply(this, data);
+    });
+    return listeners.length > 0;
+  }
+  addListener(eventName, listener) {
+    this._emitInternalEvent("newListener", eventName, listener);
+    const nextListeners = this._getListeners(eventName).concat(listener);
+    this.events.set(eventName, nextListeners);
+    if (this.maxListeners > 0 && this.listenerCount(eventName) > this.maxListeners && !this.hasWarnedAboutPotentialMemoryLeak) {
+      this.hasWarnedAboutPotentialMemoryLeak = true;
+      const memoryLeakWarning = new MemoryLeakError(
+        this,
+        eventName,
+        this.listenerCount(eventName)
+      );
+      console.warn(memoryLeakWarning);
+    }
+    return this;
+  }
+  on(eventName, listener) {
+    return this.addListener(eventName, listener);
+  }
+  once(eventName, listener) {
+    return this.addListener(
+      eventName,
+      this._wrapOnceListener(eventName, listener)
+    );
+  }
+  prependListener(eventName, listener) {
+    const listeners = this._getListeners(eventName);
+    if (listeners.length > 0) {
+      const nextListeners = [listener].concat(listeners);
+      this.events.set(eventName, nextListeners);
+    } else {
+      this.events.set(eventName, listeners.concat(listener));
+    }
+    return this;
+  }
+  prependOnceListener(eventName, listener) {
+    return this.prependListener(
+      eventName,
+      this._wrapOnceListener(eventName, listener)
+    );
+  }
+  removeListener(eventName, listener) {
+    const listeners = this._getListeners(eventName);
+    if (listeners.length > 0) {
+      this._removeListener(listeners, listener);
+      this.events.set(eventName, listeners);
+      this._emitInternalEvent("removeListener", eventName, listener);
+    }
+    return this;
+  }
+  /**
+   * Alias for `emitter.removeListener()`.
+   *
+   * @example
+   * emitter.off('hello', listener)
+   */
+  off(eventName, listener) {
+    return this.removeListener(eventName, listener);
+  }
+  removeAllListeners(eventName) {
+    if (eventName) {
+      this.events.delete(eventName);
+    } else {
+      this.events.clear();
+    }
+    return this;
+  }
+  /**
+   * Returns a copy of the array of listeners for the event named `eventName`.
+   */
+  listeners(eventName) {
+    return Array.from(this._getListeners(eventName));
+  }
+  /**
+   * Returns the number of listeners listening to the event named `eventName`.
+   */
+  listenerCount(eventName) {
+    return this._getListeners(eventName).length;
+  }
+  rawListeners(eventName) {
+    return this.listeners(eventName);
+  }
+};
+var Emitter = _Emitter;
+Emitter.defaultMaxListeners = 10;
+
+// node_modules/.pnpm/@mswjs+interceptors@0.41.2/node_modules/@mswjs/interceptors/lib/browser/createRequestId-DQcIlohW.mjs
+var INTERNAL_REQUEST_ID_HEADER_NAME = "x-interceptors-internal-request-id";
+function getGlobalSymbol(symbol) {
+  return globalThis[symbol] || void 0;
+}
+function setGlobalSymbol(symbol, value) {
+  globalThis[symbol] = value;
+}
+function deleteGlobalSymbol(symbol) {
+  delete globalThis[symbol];
+}
+var InterceptorReadyState = /* @__PURE__ */ (function(InterceptorReadyState$1) {
+  InterceptorReadyState$1["INACTIVE"] = "INACTIVE";
+  InterceptorReadyState$1["APPLYING"] = "APPLYING";
+  InterceptorReadyState$1["APPLIED"] = "APPLIED";
+  InterceptorReadyState$1["DISPOSING"] = "DISPOSING";
+  InterceptorReadyState$1["DISPOSED"] = "DISPOSED";
+  return InterceptorReadyState$1;
+})({});
+var Interceptor = class {
+  constructor(symbol) {
+    this.symbol = symbol;
+    this.readyState = InterceptorReadyState.INACTIVE;
+    this.emitter = new Emitter();
+    this.subscriptions = [];
+    this.logger = new Logger(symbol.description);
+    this.emitter.setMaxListeners(0);
+    this.logger.info("constructing the interceptor...");
+  }
+  /**
+  * Determine if this interceptor can be applied
+  * in the current environment.
+  */
+  checkEnvironment() {
+    return true;
+  }
+  /**
+  * Apply this interceptor to the current process.
+  * Returns an already running interceptor instance if it's present.
+  */
+  apply() {
+    const logger = this.logger.extend("apply");
+    logger.info("applying the interceptor...");
+    if (this.readyState === InterceptorReadyState.APPLIED) {
+      logger.info("intercepted already applied!");
+      return;
+    }
+    if (!this.checkEnvironment()) {
+      logger.info("the interceptor cannot be applied in this environment!");
+      return;
+    }
+    this.readyState = InterceptorReadyState.APPLYING;
+    const runningInstance = this.getInstance();
+    if (runningInstance) {
+      logger.info("found a running instance, reusing...");
+      this.on = (event, listener) => {
+        logger.info('proxying the "%s" listener', event);
+        runningInstance.emitter.addListener(event, listener);
+        this.subscriptions.push(() => {
+          runningInstance.emitter.removeListener(event, listener);
+          logger.info('removed proxied "%s" listener!', event);
+        });
+        return this;
+      };
+      this.readyState = InterceptorReadyState.APPLIED;
+      return;
+    }
+    logger.info("no running instance found, setting up a new instance...");
+    this.setup();
+    this.setInstance();
+    this.readyState = InterceptorReadyState.APPLIED;
+  }
+  /**
+  * Setup the module augments and stubs necessary for this interceptor.
+  * This method is not run if there's a running interceptor instance
+  * to prevent instantiating an interceptor multiple times.
+  */
+  setup() {
+  }
+  /**
+  * Listen to the interceptor's public events.
+  */
+  on(event, listener) {
+    const logger = this.logger.extend("on");
+    if (this.readyState === InterceptorReadyState.DISPOSING || this.readyState === InterceptorReadyState.DISPOSED) {
+      logger.info("cannot listen to events, already disposed!");
+      return this;
+    }
+    logger.info('adding "%s" event listener:', event, listener);
+    this.emitter.on(event, listener);
+    return this;
+  }
+  once(event, listener) {
+    this.emitter.once(event, listener);
+    return this;
+  }
+  off(event, listener) {
+    this.emitter.off(event, listener);
+    return this;
+  }
+  removeAllListeners(event) {
+    this.emitter.removeAllListeners(event);
+    return this;
+  }
+  /**
+  * Disposes of any side-effects this interceptor has introduced.
+  */
+  dispose() {
+    const logger = this.logger.extend("dispose");
+    if (this.readyState === InterceptorReadyState.DISPOSED) {
+      logger.info("cannot dispose, already disposed!");
+      return;
+    }
+    logger.info("disposing the interceptor...");
+    this.readyState = InterceptorReadyState.DISPOSING;
+    if (!this.getInstance()) {
+      logger.info("no interceptors running, skipping dispose...");
+      return;
+    }
+    this.clearInstance();
+    logger.info("global symbol deleted:", getGlobalSymbol(this.symbol));
+    if (this.subscriptions.length > 0) {
+      logger.info("disposing of %d subscriptions...", this.subscriptions.length);
+      for (const dispose of this.subscriptions) dispose();
+      this.subscriptions = [];
+      logger.info("disposed of all subscriptions!", this.subscriptions.length);
+    }
+    this.emitter.removeAllListeners();
+    logger.info("destroyed the listener!");
+    this.readyState = InterceptorReadyState.DISPOSED;
+  }
+  getInstance() {
+    const instance = getGlobalSymbol(this.symbol);
+    this.logger.info("retrieved global instance:", instance?.constructor?.name);
+    return instance;
+  }
+  setInstance() {
+    setGlobalSymbol(this.symbol, this);
+    this.logger.info("set global instance!", this.symbol.description);
+  }
+  clearInstance() {
+    deleteGlobalSymbol(this.symbol);
+    this.logger.info("cleared global instance!", this.symbol.description);
+  }
+};
+function createRequestId() {
+  return Math.random().toString(16).slice(2);
+}
+
+// node_modules/.pnpm/@mswjs+interceptors@0.41.2/node_modules/@mswjs/interceptors/lib/browser/resolveWebSocketUrl-C83-x9iE.mjs
+function resolveWebSocketUrl(url) {
+  if (typeof url === "string") return resolveWebSocketUrl(new URL(url, typeof location !== "undefined" ? location.href : void 0));
+  if (url.protocol === "http:") url.protocol = "ws:";
+  else if (url.protocol === "https:") url.protocol = "wss:";
+  if (url.protocol !== "ws:" && url.protocol !== "wss:")
+    throw new SyntaxError(`Failed to construct 'WebSocket': The URL's scheme must be either 'http', 'https', 'ws', or 'wss'. '${url.protocol}' is not allowed.`);
+  if (url.hash !== "") throw new SyntaxError(`Failed to construct 'WebSocket': The URL contains a fragment identifier ('${url.hash}'). Fragment identifiers are not allowed in WebSocket URLs.`);
+  return url.href;
+}
+
+// node_modules/.pnpm/@mswjs+interceptors@0.41.2/node_modules/@mswjs/interceptors/lib/browser/hasConfigurableGlobal-npXitu1-.mjs
+async function emitAsync(emitter, eventName, ...data) {
+  const listeners = emitter.listeners(eventName);
+  if (listeners.length === 0) return;
+  for (const listener of listeners) await listener.apply(emitter, data);
+}
+function hasConfigurableGlobal(propertyName) {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, propertyName);
+  if (typeof descriptor === "undefined") return false;
+  if (typeof descriptor.get === "function" && typeof descriptor.get() === "undefined") return false;
+  if (typeof descriptor.get === "undefined" && descriptor.value == null) return false;
+  if (typeof descriptor.set === "undefined" && !descriptor.configurable) {
+    console.error(`[MSW] Failed to apply interceptor: the global \`${propertyName}\` property is non-configurable. This is likely an issue with your environment. If you are using a framework, please open an issue about this in their repository.`);
+    return false;
+  }
+  return true;
+}
+
+// node_modules/.pnpm/@open-draft+deferred-promise@2.2.0/node_modules/@open-draft/deferred-promise/build/index.mjs
+function createDeferredExecutor() {
+  const executor = (resolve, reject) => {
+    executor.state = "pending";
+    executor.resolve = (data) => {
+      if (executor.state !== "pending") {
+        return;
+      }
+      executor.result = data;
+      const onFulfilled = (value) => {
+        executor.state = "fulfilled";
+        return value;
+      };
+      return resolve(
+        data instanceof Promise ? data : Promise.resolve(data).then(onFulfilled)
+      );
+    };
+    executor.reject = (reason) => {
+      if (executor.state !== "pending") {
+        return;
+      }
+      queueMicrotask(() => {
+        executor.state = "rejected";
+      });
+      return reject(executor.rejectionReason = reason);
+    };
+  };
+  return executor;
+}
+var DeferredPromise = class extends Promise {
+  #executor;
+  resolve;
+  reject;
+  constructor(executor = null) {
+    const deferredExecutor = createDeferredExecutor();
+    super((originalResolve, originalReject) => {
+      deferredExecutor(originalResolve, originalReject);
+      executor?.(deferredExecutor.resolve, deferredExecutor.reject);
+    });
+    this.#executor = deferredExecutor;
+    this.resolve = this.#executor.resolve;
+    this.reject = this.#executor.reject;
+  }
+  get state() {
+    return this.#executor.state;
+  }
+  get rejectionReason() {
+    return this.#executor.rejectionReason;
+  }
+  then(onFulfilled, onRejected) {
+    return this.#decorate(super.then(onFulfilled, onRejected));
+  }
+  catch(onRejected) {
+    return this.#decorate(super.catch(onRejected));
+  }
+  finally(onfinally) {
+    return this.#decorate(super.finally(onfinally));
+  }
+  #decorate(promise) {
+    return Object.defineProperties(promise, {
+      resolve: { configurable: true, value: this.resolve },
+      reject: { configurable: true, value: this.reject }
+    });
+  }
+};
+
+// node_modules/.pnpm/@mswjs+interceptors@0.41.2/node_modules/@mswjs/interceptors/lib/browser/interceptors/WebSocket/index.mjs
+function bindEvent(target, event) {
+  Object.defineProperties(event, {
+    target: {
+      value: target,
+      enumerable: true,
+      writable: true
+    },
+    currentTarget: {
+      value: target,
+      enumerable: true,
+      writable: true
+    }
+  });
+  return event;
+}
+var kCancelable = Symbol("kCancelable");
+var kDefaultPrevented = Symbol("kDefaultPrevented");
+var CancelableMessageEvent = class extends MessageEvent {
+  constructor(type, init) {
+    super(type, init);
+    this[kCancelable] = !!init.cancelable;
+    this[kDefaultPrevented] = false;
+  }
+  get cancelable() {
+    return this[kCancelable];
+  }
+  set cancelable(nextCancelable) {
+    this[kCancelable] = nextCancelable;
+  }
+  get defaultPrevented() {
+    return this[kDefaultPrevented];
+  }
+  set defaultPrevented(nextDefaultPrevented) {
+    this[kDefaultPrevented] = nextDefaultPrevented;
+  }
+  preventDefault() {
+    if (this.cancelable && !this[kDefaultPrevented]) this[kDefaultPrevented] = true;
+  }
+};
+var CloseEvent = class extends Event {
+  constructor(type, init = {}) {
+    super(type, init);
+    this.code = init.code === void 0 ? 0 : init.code;
+    this.reason = init.reason === void 0 ? "" : init.reason;
+    this.wasClean = init.wasClean === void 0 ? false : init.wasClean;
+  }
+};
+var CancelableCloseEvent = class extends CloseEvent {
+  constructor(type, init = {}) {
+    super(type, init);
+    this[kCancelable] = !!init.cancelable;
+    this[kDefaultPrevented] = false;
+  }
+  get cancelable() {
+    return this[kCancelable];
+  }
+  set cancelable(nextCancelable) {
+    this[kCancelable] = nextCancelable;
+  }
+  get defaultPrevented() {
+    return this[kDefaultPrevented];
+  }
+  set defaultPrevented(nextDefaultPrevented) {
+    this[kDefaultPrevented] = nextDefaultPrevented;
+  }
+  preventDefault() {
+    if (this.cancelable && !this[kDefaultPrevented]) this[kDefaultPrevented] = true;
+  }
+};
+var kEmitter$1 = Symbol("kEmitter");
+var kBoundListener$1 = Symbol("kBoundListener");
+var WebSocketClientConnection = class {
+  constructor(socket, transport) {
+    this.socket = socket;
+    this.transport = transport;
+    this.id = createRequestId();
+    this.url = new URL(socket.url);
+    this[kEmitter$1] = new EventTarget();
+    this.transport.addEventListener("outgoing", (event) => {
+      const message = bindEvent(this.socket, new CancelableMessageEvent("message", {
+        data: event.data,
+        origin: event.origin,
+        cancelable: true
+      }));
+      this[kEmitter$1].dispatchEvent(message);
+      if (message.defaultPrevented) event.preventDefault();
+    });
+    this.transport.addEventListener("close", (event) => {
+      this[kEmitter$1].dispatchEvent(bindEvent(this.socket, new CloseEvent("close", event)));
+    });
+  }
+  /**
+  * Listen for the outgoing events from the connected WebSocket client.
+  */
+  addEventListener(type, listener, options) {
+    if (!Reflect.has(listener, kBoundListener$1)) {
+      const boundListener = listener.bind(this.socket);
+      Object.defineProperty(listener, kBoundListener$1, {
+        value: boundListener,
+        enumerable: false,
+        configurable: false
+      });
+    }
+    this[kEmitter$1].addEventListener(type, Reflect.get(listener, kBoundListener$1), options);
+  }
+  /**
+  * Removes the listener for the given event.
+  */
+  removeEventListener(event, listener, options) {
+    this[kEmitter$1].removeEventListener(event, Reflect.get(listener, kBoundListener$1), options);
+  }
+  /**
+  * Send data to the connected client.
+  */
+  send(data) {
+    this.transport.send(data);
+  }
+  /**
+  * Close the WebSocket connection.
+  * @param {number} code A status code (see https://www.rfc-editor.org/rfc/rfc6455#section-7.4.1).
+  * @param {string} reason A custom connection close reason.
+  */
+  close(code, reason) {
+    this.transport.close(code, reason);
+  }
+};
+var WEBSOCKET_CLOSE_CODE_RANGE_ERROR = "InvalidAccessError: close code out of user configurable range";
+var kPassthroughPromise = Symbol("kPassthroughPromise");
+var kOnSend = Symbol("kOnSend");
+var kClose = Symbol("kClose");
+var WebSocketOverride = class extends EventTarget {
+  static {
+    this.CONNECTING = 0;
+  }
+  static {
+    this.OPEN = 1;
+  }
+  static {
+    this.CLOSING = 2;
+  }
+  static {
+    this.CLOSED = 3;
+  }
+  constructor(url, protocols) {
+    super();
+    this.CONNECTING = 0;
+    this.OPEN = 1;
+    this.CLOSING = 2;
+    this.CLOSED = 3;
+    this._onopen = null;
+    this._onmessage = null;
+    this._onerror = null;
+    this._onclose = null;
+    this.url = resolveWebSocketUrl(url);
+    this.protocol = "";
+    this.extensions = "";
+    this.binaryType = "blob";
+    this.readyState = this.CONNECTING;
+    this.bufferedAmount = 0;
+    this[kPassthroughPromise] = new DeferredPromise();
+    queueMicrotask(async () => {
+      if (await this[kPassthroughPromise]) return;
+      this.protocol = typeof protocols === "string" ? protocols : Array.isArray(protocols) && protocols.length > 0 ? protocols[0] : "";
+      if (this.readyState === this.CONNECTING) {
+        this.readyState = this.OPEN;
+        this.dispatchEvent(bindEvent(this, new Event("open")));
+      }
+    });
+  }
+  set onopen(listener) {
+    this.removeEventListener("open", this._onopen);
+    this._onopen = listener;
+    if (listener !== null) this.addEventListener("open", listener);
+  }
+  get onopen() {
+    return this._onopen;
+  }
+  set onmessage(listener) {
+    this.removeEventListener("message", this._onmessage);
+    this._onmessage = listener;
+    if (listener !== null) this.addEventListener("message", listener);
+  }
+  get onmessage() {
+    return this._onmessage;
+  }
+  set onerror(listener) {
+    this.removeEventListener("error", this._onerror);
+    this._onerror = listener;
+    if (listener !== null) this.addEventListener("error", listener);
+  }
+  get onerror() {
+    return this._onerror;
+  }
+  set onclose(listener) {
+    this.removeEventListener("close", this._onclose);
+    this._onclose = listener;
+    if (listener !== null) this.addEventListener("close", listener);
+  }
+  get onclose() {
+    return this._onclose;
+  }
+  /**
+  * @see https://websockets.spec.whatwg.org/#ref-for-dom-websocket-send%E2%91%A0
+  */
+  send(data) {
+    if (this.readyState === this.CONNECTING) {
+      this.close();
+      throw new DOMException("InvalidStateError");
+    }
+    if (this.readyState === this.CLOSING || this.readyState === this.CLOSED) return;
+    this.bufferedAmount += getDataSize(data);
+    queueMicrotask(() => {
+      this.bufferedAmount = 0;
+      this[kOnSend]?.(data);
+    });
+  }
+  close(code = 1e3, reason) {
+    invariant(code, WEBSOCKET_CLOSE_CODE_RANGE_ERROR);
+    invariant(code === 1e3 || code >= 3e3 && code <= 4999, WEBSOCKET_CLOSE_CODE_RANGE_ERROR);
+    this[kClose](code, reason);
+  }
+  [kClose](code = 1e3, reason, wasClean = true) {
+    if (this.readyState === this.CLOSING || this.readyState === this.CLOSED) return;
+    this.readyState = this.CLOSING;
+    queueMicrotask(() => {
+      this.readyState = this.CLOSED;
+      this.dispatchEvent(bindEvent(this, new CloseEvent("close", {
+        code,
+        reason,
+        wasClean
+      })));
+      this._onopen = null;
+      this._onmessage = null;
+      this._onerror = null;
+      this._onclose = null;
+    });
+  }
+  addEventListener(type, listener, options) {
+    return super.addEventListener(type, listener, options);
+  }
+  removeEventListener(type, callback, options) {
+    return super.removeEventListener(type, callback, options);
+  }
+};
+function getDataSize(data) {
+  if (typeof data === "string") return data.length;
+  if (data instanceof Blob) return data.size;
+  return data.byteLength;
+}
+var kEmitter = Symbol("kEmitter");
+var kBoundListener = Symbol("kBoundListener");
+var kSend = Symbol("kSend");
+var WebSocketServerConnection = class {
+  constructor(client, transport, createConnection) {
+    this.client = client;
+    this.transport = transport;
+    this.createConnection = createConnection;
+    this[kEmitter] = new EventTarget();
+    this.mockCloseController = new AbortController();
+    this.realCloseController = new AbortController();
+    this.transport.addEventListener("outgoing", (event) => {
+      if (typeof this.realWebSocket === "undefined") return;
+      queueMicrotask(() => {
+        if (!event.defaultPrevented)
+          this[kSend](event.data);
+      });
+    });
+    this.transport.addEventListener("incoming", this.handleIncomingMessage.bind(this));
+  }
+  /**
+  * The `WebSocket` instance connected to the original server.
+  * Accessing this before calling `server.connect()` will throw.
+  */
+  get socket() {
+    invariant(this.realWebSocket, 'Cannot access "socket" on the original WebSocket server object: the connection is not open. Did you forget to call `server.connect()`?');
+    return this.realWebSocket;
+  }
+  /**
+  * Open connection to the original WebSocket server.
+  */
+  connect() {
+    invariant(!this.realWebSocket || this.realWebSocket.readyState !== WebSocket.OPEN, 'Failed to call "connect()" on the original WebSocket instance: the connection already open');
+    const realWebSocket = this.createConnection();
+    realWebSocket.binaryType = this.client.binaryType;
+    realWebSocket.addEventListener("open", (event) => {
+      this[kEmitter].dispatchEvent(bindEvent(this.realWebSocket, new Event("open", event)));
+    }, { once: true });
+    realWebSocket.addEventListener("message", (event) => {
+      this.transport.dispatchEvent(bindEvent(this.realWebSocket, new MessageEvent("incoming", {
+        data: event.data,
+        origin: event.origin
+      })));
+    });
+    this.client.addEventListener("close", (event) => {
+      this.handleMockClose(event);
+    }, { signal: this.mockCloseController.signal });
+    realWebSocket.addEventListener("close", (event) => {
+      this.handleRealClose(event);
+    }, { signal: this.realCloseController.signal });
+    realWebSocket.addEventListener("error", () => {
+      const errorEvent = bindEvent(realWebSocket, new Event("error", { cancelable: true }));
+      this[kEmitter].dispatchEvent(errorEvent);
+      if (!errorEvent.defaultPrevented) this.client.dispatchEvent(bindEvent(this.client, new Event("error")));
+    });
+    this.realWebSocket = realWebSocket;
+  }
+  /**
+  * Listen for the incoming events from the original WebSocket server.
+  */
+  addEventListener(event, listener, options) {
+    if (!Reflect.has(listener, kBoundListener)) {
+      const boundListener = listener.bind(this.client);
+      Object.defineProperty(listener, kBoundListener, {
+        value: boundListener,
+        enumerable: false
+      });
+    }
+    this[kEmitter].addEventListener(event, Reflect.get(listener, kBoundListener), options);
+  }
+  /**
+  * Remove the listener for the given event.
+  */
+  removeEventListener(event, listener, options) {
+    this[kEmitter].removeEventListener(event, Reflect.get(listener, kBoundListener), options);
+  }
+  /**
+  * Send data to the original WebSocket server.
+  * @example
+  * server.send('hello')
+  * server.send(new Blob(['hello']))
+  * server.send(new TextEncoder().encode('hello'))
+  */
+  send(data) {
+    this[kSend](data);
+  }
+  [kSend](data) {
+    const { realWebSocket } = this;
+    invariant(realWebSocket, 'Failed to call "server.send()" for "%s": the connection is not open. Did you forget to call "server.connect()"?', this.client.url);
+    if (realWebSocket.readyState === WebSocket.CLOSING || realWebSocket.readyState === WebSocket.CLOSED) return;
+    if (realWebSocket.readyState === WebSocket.CONNECTING) {
+      realWebSocket.addEventListener("open", () => {
+        realWebSocket.send(data);
+      }, { once: true });
+      return;
+    }
+    realWebSocket.send(data);
+  }
+  /**
+  * Close the actual server connection.
+  */
+  close() {
+    const { realWebSocket } = this;
+    invariant(realWebSocket, 'Failed to close server connection for "%s": the connection is not open. Did you forget to call "server.connect()"?', this.client.url);
+    this.realCloseController.abort();
+    if (realWebSocket.readyState === WebSocket.CLOSING || realWebSocket.readyState === WebSocket.CLOSED) return;
+    realWebSocket.close();
+    queueMicrotask(() => {
+      this[kEmitter].dispatchEvent(bindEvent(this.realWebSocket, new CancelableCloseEvent("close", {
+        code: 1e3,
+        cancelable: true
+      })));
+    });
+  }
+  handleIncomingMessage(event) {
+    const messageEvent = bindEvent(event.target, new CancelableMessageEvent("message", {
+      data: event.data,
+      origin: event.origin,
+      cancelable: true
+    }));
+    this[kEmitter].dispatchEvent(messageEvent);
+    if (!messageEvent.defaultPrevented) this.client.dispatchEvent(bindEvent(
+      /**
+      * @note Bind the forwarded original server events
+      * to the mock WebSocket instance so it would
+      * dispatch them straight away.
+      */
+      this.client,
+      new MessageEvent("message", {
+        data: event.data,
+        origin: event.origin
+      })
+    ));
+  }
+  handleMockClose(_event) {
+    if (this.realWebSocket) this.realWebSocket.close();
+  }
+  handleRealClose(event) {
+    this.mockCloseController.abort();
+    const closeEvent = bindEvent(this.realWebSocket, new CancelableCloseEvent("close", {
+      code: event.code,
+      reason: event.reason,
+      wasClean: event.wasClean,
+      cancelable: true
+    }));
+    this[kEmitter].dispatchEvent(closeEvent);
+    if (!closeEvent.defaultPrevented) this.client[kClose](event.code, event.reason);
+  }
+};
+var WebSocketClassTransport = class extends EventTarget {
+  constructor(socket) {
+    super();
+    this.socket = socket;
+    this.socket.addEventListener("close", (event) => {
+      this.dispatchEvent(bindEvent(this.socket, new CloseEvent("close", event)));
+    });
+    this.socket[kOnSend] = (data) => {
+      this.dispatchEvent(bindEvent(this.socket, new CancelableMessageEvent("outgoing", {
+        data,
+        origin: this.socket.url,
+        cancelable: true
+      })));
+    };
+  }
+  addEventListener(type, callback, options) {
+    return super.addEventListener(type, callback, options);
+  }
+  dispatchEvent(event) {
+    return super.dispatchEvent(event);
+  }
+  send(data) {
+    queueMicrotask(() => {
+      if (this.socket.readyState === this.socket.CLOSING || this.socket.readyState === this.socket.CLOSED) return;
+      const dispatchEvent = () => {
+        this.socket.dispatchEvent(bindEvent(
+          /**
+          * @note Setting this event's "target" to the
+          * WebSocket override instance is important.
+          * This way it can tell apart original incoming events
+          * (must be forwarded to the transport) from the
+          * mocked message events like the one below
+          * (must be dispatched on the client instance).
+          */
+          this.socket,
+          new MessageEvent("message", {
+            data,
+            origin: this.socket.url
+          })
+        ));
+      };
+      if (this.socket.readyState === this.socket.CONNECTING) this.socket.addEventListener("open", () => {
+        dispatchEvent();
+      }, { once: true });
+      else dispatchEvent();
+    });
+  }
+  close(code, reason) {
+    this.socket[kClose](code, reason);
+  }
+};
+var WebSocketInterceptor = class WebSocketInterceptor2 extends Interceptor {
+  static {
+    this.symbol = Symbol("websocket");
+  }
+  constructor() {
+    super(WebSocketInterceptor2.symbol);
+  }
+  checkEnvironment() {
+    return hasConfigurableGlobal("WebSocket");
+  }
+  setup() {
+    const originalWebSocketDescriptor = Object.getOwnPropertyDescriptor(globalThis, "WebSocket");
+    const WebSocketProxy = new Proxy(globalThis.WebSocket, { construct: (target, args, newTarget) => {
+      const [url, protocols] = args;
+      const createConnection = () => {
+        return Reflect.construct(target, args, newTarget);
+      };
+      const socket = new WebSocketOverride(url, protocols);
+      const transport = new WebSocketClassTransport(socket);
+      queueMicrotask(async () => {
+        try {
+          const server = new WebSocketServerConnection(socket, transport, createConnection);
+          const hasConnectionListeners = this.emitter.listenerCount("connection") > 0;
+          await emitAsync(this.emitter, "connection", {
+            client: new WebSocketClientConnection(socket, transport),
+            server,
+            info: { protocols }
+          });
+          if (hasConnectionListeners) socket[kPassthroughPromise].resolve(false);
+          else {
+            socket[kPassthroughPromise].resolve(true);
+            server.connect();
+            server.addEventListener("open", () => {
+              socket.dispatchEvent(bindEvent(socket, new Event("open")));
+              if (server["realWebSocket"]) socket.protocol = server["realWebSocket"].protocol;
+            });
+          }
+        } catch (error2) {
+          if (error2 instanceof Error) {
+            socket.dispatchEvent(new Event("error"));
+            if (socket.readyState !== WebSocket.CLOSING && socket.readyState !== WebSocket.CLOSED) socket[kClose](1011, error2.message, false);
+            console.error(error2);
+          }
+        }
+      });
+      return socket;
+    } });
+    Object.defineProperty(globalThis, "WebSocket", {
+      value: WebSocketProxy,
+      configurable: true
+    });
+    this.subscriptions.push(() => {
+      Object.defineProperty(globalThis, "WebSocket", originalWebSocketDescriptor);
+    });
+  }
+};
+
+// src/browser/setup-worker.ts
+
+
+
+
+
+// src/browser/utils/supports.ts
+function supportsServiceWorker() {
+  return typeof navigator !== "undefined" && "serviceWorker" in navigator && typeof location !== "undefined" && location.protocol !== "file:";
+}
+function supportsReadableStreamTransfer() {
+  try {
+    const stream = new ReadableStream({
+      start: (controller) => controller.close()
+    });
+    const message = new MessageChannel();
+    message.port1.postMessage(stream, [stream]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// node_modules/.pnpm/@mswjs+interceptors@0.41.2/node_modules/@mswjs/interceptors/lib/browser/getRawRequest-BTaNLFr0.mjs
+var IS_PATCHED_MODULE = Symbol("isPatchedModule");
+var InterceptorError = class InterceptorError2 extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "InterceptorError";
+    Object.setPrototypeOf(this, InterceptorError2.prototype);
+  }
+};
+var RequestController = class RequestController2 {
+  static {
+    this.PENDING = 0;
+  }
+  static {
+    this.PASSTHROUGH = 1;
+  }
+  static {
+    this.RESPONSE = 2;
+  }
+  static {
+    this.ERROR = 3;
+  }
+  constructor(request, source) {
+    this.request = request;
+    this.source = source;
+    this.readyState = RequestController2.PENDING;
+    this.handled = new DeferredPromise();
+  }
+  get #handled() {
+    return this.handled;
+  }
+  /**
+  * Perform this request as-is.
+  */
+  async passthrough() {
+    invariant.as(InterceptorError, this.readyState === RequestController2.PENDING, 'Failed to passthrough the "%s %s" request: the request has already been handled', this.request.method, this.request.url);
+    this.readyState = RequestController2.PASSTHROUGH;
+    await this.source.passthrough();
+    this.#handled.resolve();
+  }
+  /**
+  * Respond to this request with the given `Response` instance.
+  *
+  * @example
+  * controller.respondWith(new Response())
+  * controller.respondWith(Response.json({ id }))
+  * controller.respondWith(Response.error())
+  */
+  respondWith(response) {
+    invariant.as(InterceptorError, this.readyState === RequestController2.PENDING, 'Failed to respond to the "%s %s" request with "%d %s": the request has already been handled (%d)', this.request.method, this.request.url, response.status, response.statusText || "OK", this.readyState);
+    this.readyState = RequestController2.RESPONSE;
+    this.#handled.resolve();
+    this.source.respondWith(response);
+  }
+  /**
+  * Error this request with the given reason.
+  *
+  * @example
+  * controller.errorWith()
+  * controller.errorWith(new Error('Oops!'))
+  * controller.errorWith({ message: 'Oops!'})
+  */
+  errorWith(reason) {
+    invariant.as(InterceptorError, this.readyState === RequestController2.PENDING, 'Failed to error the "%s %s" request with "%s": the request has already been handled (%d)', this.request.method, this.request.url, reason?.toString(), this.readyState);
+    this.readyState = RequestController2.ERROR;
+    this.source.errorWith(reason);
+    this.#handled.resolve();
+  }
+};
+function canParseUrl(url) {
+  try {
+    new URL(url);
+    return true;
+  } catch (_error) {
+    return false;
+  }
+}
+function getValueBySymbol(symbolName, source) {
+  const symbol = Object.getOwnPropertySymbols(source).find((symbol$1) => {
+    return symbol$1.description === symbolName;
+  });
+  if (symbol) return Reflect.get(source, symbol);
+}
+var FetchResponse = class FetchResponse2 extends Response {
+  static {
+    this.STATUS_CODES_WITHOUT_BODY = [
+      101,
+      103,
+      204,
+      205,
+      304
+    ];
+  }
+  static {
+    this.STATUS_CODES_WITH_REDIRECT = [
+      301,
+      302,
+      303,
+      307,
+      308
+    ];
+  }
+  static isConfigurableStatusCode(status) {
+    return status >= 200 && status <= 599;
+  }
+  static isRedirectResponse(status) {
+    return FetchResponse2.STATUS_CODES_WITH_REDIRECT.includes(status);
+  }
+  /**
+  * Returns a boolean indicating whether the given response status
+  * code represents a response that can have a body.
+  */
+  static isResponseWithBody(status) {
+    return !FetchResponse2.STATUS_CODES_WITHOUT_BODY.includes(status);
+  }
+  static setUrl(url, response) {
+    if (!url || url === "about:" || !canParseUrl(url)) return;
+    const state = getValueBySymbol("state", response);
+    if (state) state.urlList.push(new URL(url));
+    else Object.defineProperty(response, "url", {
+      value: url,
+      enumerable: true,
+      configurable: true,
+      writable: false
+    });
+  }
+  /**
+  * Parses the given raw HTTP headers into a Fetch API `Headers` instance.
+  */
+  static parseRawHeaders(rawHeaders) {
+    const headers = new Headers();
+    for (let line = 0; line < rawHeaders.length; line += 2) headers.append(rawHeaders[line], rawHeaders[line + 1]);
+    return headers;
+  }
+  constructor(body, init = {}) {
+    const status = init.status ?? 200;
+    const safeStatus = FetchResponse2.isConfigurableStatusCode(status) ? status : 200;
+    const finalBody = FetchResponse2.isResponseWithBody(status) ? body : null;
+    super(finalBody, {
+      status: safeStatus,
+      statusText: init.statusText,
+      headers: init.headers
+    });
+    if (status !== safeStatus) {
+      const state = getValueBySymbol("state", this);
+      if (state) state.status = status;
+      else Object.defineProperty(this, "status", {
+        value: status,
+        enumerable: true,
+        configurable: true,
+        writable: false
+      });
+    }
+    FetchResponse2.setUrl(init.url, this);
+  }
+};
+var kRawRequest = Symbol("kRawRequest");
+function setRawRequest(request, rawRequest) {
+  Reflect.set(request, kRawRequest, rawRequest);
+}
+
+// node_modules/.pnpm/@mswjs+interceptors@0.41.2/node_modules/@mswjs/interceptors/lib/browser/bufferUtils-BiiO6HZv.mjs
+var encoder = new TextEncoder();
+function encodeBuffer(text) {
+  return encoder.encode(text);
+}
+function decodeBuffer(buffer, encoding) {
+  return new TextDecoder(encoding).decode(buffer);
+}
+function toArrayBuffer(array) {
+  return array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
+}
+
+// src/browser/sources/service-worker-source.ts
+
+
+
+
+
+
+
+// node_modules/.pnpm/until-async@3.0.2/node_modules/until-async/lib/index.js
+async function until(callback) {
+  try {
+    return [null, await callback().catch((error2) => {
+      throw error2;
+    })];
+  } catch (error2) {
+    return [error2, null];
+  }
+}
+
+// src/browser/utils/get-worker-instance.ts
+
+
+// src/browser/utils/getAbsoluteWorkerUrl.ts
+function getAbsoluteWorkerUrl(workerUrl) {
+  return new URL(workerUrl, location.href).href;
+}
+
+// src/browser/utils/get-worker-by-registration.ts
+function getWorkerByRegistration(registration, absoluteWorkerUrl, findWorker) {
+  const allStates = [
+    registration.active,
+    registration.installing,
+    registration.waiting
+  ];
+  const relevantStates = allStates.filter((state) => {
+    return state != null;
+  });
+  const worker = relevantStates.find((worker2) => {
+    return findWorker(worker2.scriptURL, absoluteWorkerUrl);
+  });
+  return worker || null;
+}
+
+// src/browser/utils/get-worker-instance.ts
+var getWorkerInstance = async (url, options = {}, findWorker) => {
+  const absoluteWorkerUrl = getAbsoluteWorkerUrl(url);
+  const mockRegistrations = await navigator.serviceWorker.getRegistrations().then(
+    (registrations) => registrations.filter(
+      (registration) => getWorkerByRegistration(registration, absoluteWorkerUrl, findWorker)
+    )
+  );
+  if (!navigator.serviceWorker.controller && mockRegistrations.length > 0) {
+    location.reload();
+  }
+  const [existingRegistration] = mockRegistrations;
+  if (existingRegistration) {
+    existingRegistration.update();
+    return [
+      getWorkerByRegistration(
+        existingRegistration,
+        absoluteWorkerUrl,
+        findWorker
+      ),
+      existingRegistration
+    ];
+  }
+  const [registrationError, registrationResult] = await until(async () => {
+    const registration = await navigator.serviceWorker.register(url, options);
+    return [
+      // Compare existing worker registration by its worker URL,
+      // to prevent irrelevant workers to resolve here (such as Codesandbox worker).
+      getWorkerByRegistration(registration, absoluteWorkerUrl, findWorker),
+      registration
+    ];
+  });
+  if (registrationError) {
+    const isWorkerMissing = registrationError.message.includes("(404)");
+    if (isWorkerMissing) {
+      const scopeUrl = new URL(options?.scope || "/", location.href);
+      throw new Error(
+        _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.formatMessage(`Failed to register a Service Worker for scope ('${scopeUrl.href}') with script ('${absoluteWorkerUrl}'): Service Worker script does not exist at the given path.
+
+Did you forget to run "npx msw init <PUBLIC_DIR>"?
+
+Learn more about creating the Service Worker script: https://mswjs.io/docs/cli/init`)
+      );
+    }
+    throw new Error(
+      _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.formatMessage(
+        "Failed to register the Service Worker:\n\n%s",
+        registrationError.message
+      )
+    );
+  }
+  return registrationResult;
+};
+
+// node_modules/.pnpm/rettime@0.10.1/node_modules/rettime/build/lens-list.mjs
+var LensList = class {
+  #list;
+  #lens;
+  constructor() {
+    this.#list = [];
+    this.#lens = /* @__PURE__ */ new Map();
+  }
+  get [Symbol.iterator]() {
+    return this.#list[Symbol.iterator].bind(this.#list);
+  }
+  entries() {
+    return this.#lens.entries();
+  }
+  /**
+  * Return an order-sensitive list of values by the given key.
+  */
+  get(key) {
+    return this.#lens.get(key) || [];
+  }
+  /**
+  * Return an order-sensitive list of all values.
+  */
+  getAll() {
+    return this.#list.map(([, value]) => value);
+  }
+  /**
+  * Append a new value to the given key.
+  */
+  append(key, value) {
+    this.#list.push([key, value]);
+    this.#openLens(key, (list) => list.push(value));
+  }
+  /**
+  * Prepend a new value to the given key.
+  */
+  prepend(key, value) {
+    this.#list.unshift([key, value]);
+    this.#openLens(key, (list) => list.unshift(value));
+  }
+  /**
+  * Delete the value belonging to the given key.
+  */
+  delete(key, value) {
+    if (this.size === 0) return;
+    this.#list = this.#list.filter((item) => item[1] !== value);
+    for (const [existingKey, values] of this.#lens) if (existingKey === key && values.includes(value)) values.splice(values.indexOf(value), 1);
+  }
+  /**
+  * Delete all values belogning to the given key.
+  */
+  deleteAll(key) {
+    if (this.size === 0) return;
+    this.#list = this.#list.filter((item) => item[0] !== key);
+    this.#lens.delete(key);
+  }
+  get size() {
+    return this.#list.length;
+  }
+  clear() {
+    if (this.size === 0) return;
+    this.#list.length = 0;
+    this.#lens.clear();
+  }
+  #openLens(key, setter) {
+    setter(this.#lens.get(key) || this.#lens.set(key, []).get(key));
+  }
+};
+
+// node_modules/.pnpm/rettime@0.10.1/node_modules/rettime/build/index.mjs
+var kDefaultPrevented2 = Symbol("kDefaultPrevented");
+var kPropagationStopped = Symbol("kPropagationStopped");
+var kImmediatePropagationStopped = Symbol("kImmediatePropagationStopped");
+var TypedEvent = class extends MessageEvent {
+  /**
+  * @note Keep a placeholder property with the return type
+  * because the type must be set somewhere in order to be
+  * correctly associated and inferred from the event.
+  */
+  #returnType;
+  [kDefaultPrevented2];
+  [kPropagationStopped];
+  [kImmediatePropagationStopped];
+  constructor(...args) {
+    super(args[0], args[1]);
+    this[kDefaultPrevented2] = false;
+  }
+  get defaultPrevented() {
+    return this[kDefaultPrevented2];
+  }
+  preventDefault() {
+    super.preventDefault();
+    this[kDefaultPrevented2] = true;
+  }
+  stopImmediatePropagation() {
+    super.stopImmediatePropagation();
+    this[kImmediatePropagationStopped] = true;
+  }
+};
+var kListenerOptions = Symbol("kListenerOptions");
+var Emitter2 = class {
+  #listeners;
+  constructor() {
+    this.#listeners = new LensList();
+  }
+  /**
+  * Adds a listener for the given event type.
+  */
+  on(type, listener, options) {
+    this.#addListener(type, listener, options);
+    return this;
+  }
+  /**
+  * Adds a one-time listener for the given event type.
+  */
+  once(type, listener, options) {
+    return this.on(type, listener, {
+      ...options || {},
+      once: true
+    });
+  }
+  /**
+  * Prepends a listener for the given event type.
+  */
+  earlyOn(type, listener, options) {
+    this.#addListener(type, listener, options, "prepend");
+    return this;
+  }
+  /**
+  * Prepends a one-time listener for the given event type.
+  */
+  earlyOnce(type, listener, options) {
+    return this.earlyOn(type, listener, {
+      ...options || {},
+      once: true
+    });
+  }
+  /**
+  * Emits the given typed event.
+  *
+  * @returns {boolean} Returns `true` if the event had any listeners, `false` otherwise.
+  */
+  emit(event) {
+    if (this.#listeners.size === 0) return false;
+    const hasListeners = this.listenerCount(event.type) > 0;
+    const proxiedEvent = this.#proxyEvent(event);
+    for (const listener of this.#matchListeners(event.type)) {
+      if (proxiedEvent.event[kPropagationStopped] != null && proxiedEvent.event[kPropagationStopped] !== this) {
+        proxiedEvent.revoke();
+        return false;
+      }
+      if (proxiedEvent.event[kImmediatePropagationStopped]) break;
+      this.#callListener(proxiedEvent.event, listener);
+    }
+    proxiedEvent.revoke();
+    return hasListeners;
+  }
+  /**
+  * Emits the given typed event and returns a promise that resolves
+  * when all the listeners for that event have settled.
+  *
+  * @returns {Promise<Array<Emitter.ListenerReturnType>>} A promise that resolves
+  * with the return values of all listeners.
+  */
+  async emitAsPromise(event) {
+    if (this.#listeners.size === 0) return [];
+    const pendingListeners = [];
+    const proxiedEvent = this.#proxyEvent(event);
+    for (const listener of this.#matchListeners(event.type)) {
+      if (proxiedEvent.event[kPropagationStopped] != null && proxiedEvent.event[kPropagationStopped] !== this) {
+        proxiedEvent.revoke();
+        return [];
+      }
+      if (proxiedEvent.event[kImmediatePropagationStopped]) break;
+      const returnValue = await Promise.resolve(this.#callListener(proxiedEvent.event, listener));
+      if (!this.#isTypelessListener(listener)) pendingListeners.push(returnValue);
+    }
+    proxiedEvent.revoke();
+    return Promise.allSettled(pendingListeners).then((results) => {
+      return results.map((result) => result.status === "fulfilled" ? result.value : result.reason);
+    });
+  }
+  /**
+  * Emits the given event and returns a generator that yields
+  * the result of each listener in the order of their registration.
+  * This way, you stop exhausting the listeners once you get the expected value.
+  */
+  *emitAsGenerator(event) {
+    if (this.#listeners.size === 0) return;
+    const proxiedEvent = this.#proxyEvent(event);
+    for (const listener of this.#matchListeners(event.type)) {
+      if (proxiedEvent.event[kPropagationStopped] != null && proxiedEvent.event[kPropagationStopped] !== this) {
+        proxiedEvent.revoke();
+        return;
+      }
+      if (proxiedEvent.event[kImmediatePropagationStopped]) break;
+      const returnValue = this.#callListener(proxiedEvent.event, listener);
+      if (!this.#isTypelessListener(listener)) yield returnValue;
+    }
+    proxiedEvent.revoke();
+  }
+  /**
+  * Removes a listener for the given event type.
+  */
+  removeListener(type, listener) {
+    this.#listeners.delete(type, listener);
+  }
+  /**
+  * Removes all listeners for the given event type.
+  * If no event type is provided, removes all existing listeners.
+  */
+  removeAllListeners(type) {
+    if (type == null) {
+      this.#listeners.clear();
+      return;
+    }
+    this.#listeners.deleteAll(type);
+  }
+  /**
+  * Returns the list of listeners for the given event type.
+  * If no even type is provided, returns all listeners.
+  */
+  listeners(type) {
+    if (type == null) return this.#listeners.getAll();
+    return this.#listeners.get(type);
+  }
+  /**
+  * Returns the number of listeners for the given event type.
+  * If no even type is provided, returns the total number of listeners.
+  */
+  listenerCount(type) {
+    if (type == null) return this.#listeners.size;
+    return this.listeners(type).length;
+  }
+  #addListener(type, listener, options, insertMode = "append") {
+    if (insertMode === "prepend") this.#listeners.prepend(type, listener);
+    else this.#listeners.append(type, listener);
+    if (options) {
+      Object.defineProperty(listener, kListenerOptions, {
+        value: options,
+        enumerable: false,
+        writable: false
+      });
+      if (options.signal) options.signal.addEventListener("abort", () => {
+        this.removeListener(type, listener);
+      }, { once: true });
+    }
+  }
+  #proxyEvent(event) {
+    const { stopPropagation } = event;
+    event.stopPropagation = new Proxy(event.stopPropagation, { apply: (target, thisArg, argArray) => {
+      event[kPropagationStopped] = this;
+      return Reflect.apply(target, thisArg, argArray);
+    } });
+    return {
+      event,
+      revoke() {
+        event.stopPropagation = stopPropagation;
+      }
+    };
+  }
+  #callListener(event, listener) {
+    const returnValue = listener.call(this, event);
+    if (listener[kListenerOptions]?.once) {
+      const key = this.#isTypelessListener(listener) ? "*" : event.type;
+      this.#listeners.delete(key, listener);
+    }
+    return returnValue;
+  }
+  /**
+  * Return a list of all event listeners relevant for the given event type.
+  * This includes the explicit event listeners and also typeless event listeners.
+  */
+  *#matchListeners(type) {
+    for (const [key, listener] of this.#listeners) if (key === "*" || key === type) yield listener;
+  }
+  #isTypelessListener(listener) {
+    return this.#listeners.get("*").includes(listener);
+  }
+};
+
+// src/browser/utils/workerChannel.ts
+
+var SUPPORTS_SERVICE_WORKER = supportsServiceWorker();
+var WorkerEvent = class extends TypedEvent {
+  #workerEvent;
+  constructor(workerEvent) {
+    const type = workerEvent.data.type;
+    const data = workerEvent.data.payload;
+    super(
+      // @ts-expect-error Troublesome `TypedEvent` extension.
+      type,
+      { data }
+    );
+    this.#workerEvent = workerEvent;
+  }
+  get ports() {
+    return this.#workerEvent.ports;
+  }
+  /**
+   * Reply directly to this event using its `MessagePort`.
+   */
+  postMessage(type, ...rest) {
+    this.#workerEvent.ports[0].postMessage(
+      { type, data: rest[0] },
+      { transfer: rest[1] }
+    );
+  }
+};
+var WorkerChannel = class extends Emitter2 {
+  constructor(options) {
+    super();
+    this.options = options;
+    if (!SUPPORTS_SERVICE_WORKER) {
+      return;
+    }
+    navigator.serviceWorker.addEventListener("message", async (event) => {
+      const worker = await this.options.worker;
+      if (event.source != null && event.source !== worker) {
+        return;
+      }
+      if (event.data && (0,_core_utils_internal_isObject_mjs__WEBPACK_IMPORTED_MODULE_9__.isObject)(event.data) && "type" in event.data) {
+        this.emit(new WorkerEvent(event));
+      }
+    });
+  }
+  /**
+   * Send data to the Service Worker controlling this client.
+   * This triggers the `message` event listener on ServiceWorkerGlobalScope.
+   */
+  postMessage(type) {
+    invariant(
+      SUPPORTS_SERVICE_WORKER,
+      "Failed to post message on a WorkerChannel: the Service Worker API is unavailable in this context. This is likely an issue with MSW. Please report it on GitHub: https://github.com/mswjs/msw/issues"
+    );
+    this.options.worker.then((worker) => {
+      worker.postMessage(type);
+    });
+  }
+};
+
+// src/browser/utils/pruneGetRequestBody.ts
+function pruneGetRequestBody(request) {
+  if (["HEAD", "GET"].includes(request.method)) {
+    return void 0;
+  }
+  return request.body;
+}
+
+// src/browser/utils/deserializeRequest.ts
+function deserializeRequest(serializedRequest) {
+  return new Request(serializedRequest.url, {
+    ...serializedRequest,
+    body: pruneGetRequestBody(serializedRequest)
+  });
+}
+
+// src/browser/utils/validate-worker-scope.ts
+
+function validateWorkerScope(registration) {
+  if (!location.href.startsWith(registration.scope)) {
+    _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.warn(
+      `Cannot intercept requests on this page because it's outside of the worker's scope ("${registration.scope}"). If you wish to mock API requests on this page, you must resolve this scope issue.
+
+- (Recommended) Register the worker at the root level ("/") of your application.
+- Set the "Service-Worker-Allowed" response header to allow out-of-scope workers.`
+    );
+  }
+}
+
+// src/browser/sources/service-worker-source.ts
+var ServiceWorkerSource = class extends _core_experimental_sources_network_source_mjs__WEBPACK_IMPORTED_MODULE_4__.NetworkSource {
+  constructor(options) {
+    super();
+    this.options = options;
+    invariant(
+      supportsServiceWorker(),
+      "Failed to use Service Worker as the network source: the Service Worker API is not supported in this environment"
+    );
+    this.#frames = /* @__PURE__ */ new Map();
+    this.workerPromise = new DeferredPromise();
+    this.#channel = new WorkerChannel({
+      worker: this.workerPromise.then(([worker]) => worker)
+    });
+  }
+  #frames;
+  #channel;
+  #clientPromise;
+  #keepAliveInterval;
+  #stoppedAt;
+  workerPromise;
+  async enable() {
+    this.#stoppedAt = void 0;
+    if (this.workerPromise.state !== "pending") {
+      _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.warn(
+        'Found a redundant "worker.start()" call. Note that starting the worker while mocking is already enabled will have no effect. Consider removing this "worker.start()" call.'
+      );
+      return this.workerPromise.then(([, registration2]) => registration2);
+    }
+    this.#channel.removeAllListeners();
+    const [worker, registration] = await this.#startWorker();
+    if (worker.state !== "activated") {
+      const controller = new AbortController();
+      const activationPromise = new DeferredPromise();
+      activationPromise.then(() => controller.abort());
+      worker.addEventListener(
+        "statechange",
+        () => {
+          if (worker.state === "activated") {
+            activationPromise.resolve();
+          }
+        },
+        { signal: controller.signal }
+      );
+      await activationPromise;
+    }
+    this.#channel.postMessage("MOCK_ACTIVATE");
+    const clientConfirmationPromise = new DeferredPromise();
+    this.#clientPromise = clientConfirmationPromise;
+    this.#channel.once("MOCKING_ENABLED", (event) => {
+      clientConfirmationPromise.resolve(event.data.client);
+    });
+    await clientConfirmationPromise;
+    if (!this.options.quiet) {
+      this.#printStartMessage();
+    }
+    return registration;
+  }
+  disable() {
+    if (typeof this.#stoppedAt !== "undefined") {
+      _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.warn(
+        `Found a redundant "worker.stop()" call. Notice that stopping the worker after it has already been stopped has no effect. Consider removing this "worker.stop()" call.`
+      );
+      return;
+    }
+    this.#stoppedAt = Date.now();
+    this.#frames.clear();
+    this.workerPromise = new DeferredPromise();
+    if (!this.options.quiet) {
+      this.#printStopMessage();
+    }
+  }
+  async #startWorker() {
+    if (this.#keepAliveInterval) {
+      clearInterval(this.#keepAliveInterval);
+    }
+    const workerUrl = this.options.serviceWorker.url;
+    const [worker, registration] = await getWorkerInstance(
+      workerUrl,
+      this.options.serviceWorker.options,
+      this.options.findWorker || this.#defaultFindWorker
+    );
+    if (worker == null) {
+      const missingWorkerMessage = this.options?.findWorker ? _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.formatMessage(
+        `Failed to locate the Service Worker registration using a custom "findWorker" predicate.
+
+Please ensure that the custom predicate properly locates the Service Worker registration at "%s".
+More details: https://mswjs.io/docs/api/setup-worker/start#findworker
+     `,
+        workerUrl
+      ) : _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.formatMessage(
+        `Failed to locate the Service Worker registration.
+
+This most likely means that the worker script URL "%s" cannot resolve against the actual public hostname (%s). This may happen if your application runs behind a proxy, or has a dynamic hostname.
+
+Please consider using a custom "serviceWorker.url" option to point to the actual worker script location, or a custom "findWorker" option to resolve the Service Worker registration manually. More details: https://mswjs.io/docs/api/setup-worker/start`,
+        workerUrl,
+        location.host
+      );
+      throw new Error(missingWorkerMessage);
+    }
+    this.workerPromise.resolve([worker, registration]);
+    this.#channel.on("REQUEST", this.#handleRequest.bind(this));
+    this.#channel.on("RESPONSE", this.#handleResponse.bind(this));
+    window.addEventListener("beforeunload", () => {
+      if (worker.state !== "redundant") {
+        this.#channel.postMessage("CLIENT_CLOSED");
+      }
+      clearInterval(this.#keepAliveInterval);
+      window.postMessage({ type: "msw/worker:stop" });
+    });
+    await this.#checkWorkerIntegrity().catch((error2) => {
+      _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.error(
+        "Error while checking the worker script integrity. Please report this on GitHub (https://github.com/mswjs/msw/issues) and include the original error below."
+      );
+      console.error(error2);
+    });
+    this.#keepAliveInterval = window.setInterval(() => {
+      this.#channel.postMessage("KEEPALIVE_REQUEST");
+    }, 5e3);
+    if (!this.options.quiet) {
+      validateWorkerScope(registration);
+    }
+    return [worker, registration];
+  }
+  async #handleRequest(event) {
+    if (this.#stoppedAt && event.data.interceptedAt > this.#stoppedAt) {
+      return event.postMessage("PASSTHROUGH");
+    }
+    const request = deserializeRequest(event.data);
+    _core_handlers_RequestHandler_mjs__WEBPACK_IMPORTED_MODULE_5__.RequestHandler.cache.set(request, request.clone());
+    const frame = new ServiceWorkerHttpNetworkFrame({
+      event,
+      request
+    });
+    this.#frames.set(event.data.id, frame);
+    await this.queue(frame);
+  }
+  async #handleResponse(event) {
+    const { request, response, isMockedResponse } = event.data;
+    if (response.type?.includes("opaque")) {
+      this.#frames.delete(request.id);
+      return;
+    }
+    const frame = this.#frames.get(request.id);
+    this.#frames.delete(request.id);
+    if (frame == null) {
+      return;
+    }
+    const fetchRequest = deserializeRequest(request);
+    const fetchResponse = response.status === 0 ? Response.error() : new FetchResponse(
+      /**
+       * Responses may be streams here, but when we create a response object
+       * with null-body status codes, like 204, 205, 304 Response will
+       * throw when passed a non-null body, so ensure it's null here
+       * for those codes
+       */
+      FetchResponse.isResponseWithBody(response.status) ? response.body : null,
+      {
+        ...response,
+        /**
+         * Set response URL if it's not set already.
+         * @see https://github.com/mswjs/msw/issues/2030
+         * @see https://developer.mozilla.org/en-US/docs/Web/API/Response/url
+         */
+        url: request.url
+      }
+    );
+    frame.events.emit(
+      new _core_experimental_frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_6__.ResponseEvent(
+        isMockedResponse ? "response:mocked" : "response:bypass",
+        {
+          requestId: frame.data.id,
+          request: fetchRequest,
+          response: fetchResponse,
+          isMockedResponse
+        }
+      )
+    );
+  }
+  #defaultFindWorker = (workerUrl, mockServiceWorkerUrl) => {
+    return workerUrl === mockServiceWorkerUrl;
+  };
+  async #checkWorkerIntegrity() {
+    const integrityCheckPromise = new DeferredPromise();
+    this.#channel.postMessage("INTEGRITY_CHECK_REQUEST");
+    this.#channel.once("INTEGRITY_CHECK_RESPONSE", (event) => {
+      const { checksum, packageVersion } = event.data;
+      if (checksum !== "4db4a41e972cec1b64cc569c66952d82") {
+        _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.warn(
+          `The currently registered Service Worker has been generated by a different version of MSW (${packageVersion}) and may not be fully compatible with the installed version.
+
+It's recommended you update your worker script by running this command:
+
+  \u2022 npx msw init <PUBLIC_DIR>
+
+You can also automate this process and make the worker script update automatically upon the library installations. Read more: https://mswjs.io/docs/cli/init.`
+        );
+      }
+      integrityCheckPromise.resolve();
+    });
+    return integrityCheckPromise;
+  }
+  async #printStartMessage() {
+    if (this.workerPromise.state === "rejected") {
+      return;
+    }
+    invariant(
+      this.#clientPromise != null,
+      "[ServiceWorkerSource] Failed to print a start message: client confirmation not received"
+    );
+    const client = await this.#clientPromise;
+    const [worker, registration] = await this.workerPromise;
+    console.groupCollapsed(
+      `%c${_core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.formatMessage("Mocking enabled.")}`,
+      "color:orangered;font-weight:bold;"
+    );
+    console.log(
+      "%cDocumentation: %chttps://mswjs.io/docs",
+      "font-weight:bold",
+      "font-weight:normal"
+    );
+    console.log("Found an issue? https://github.com/mswjs/msw/issues");
+    console.log("Worker script URL:", worker.scriptURL);
+    console.log("Worker scope:", registration.scope);
+    if (client) {
+      console.log("Client ID: %s (%s)", client.id, client.frameType);
+    }
+    console.groupEnd();
+  }
+  #printStopMessage() {
+    console.log(
+      `%c${_core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.formatMessage("Mocking disabled.")}`,
+      "color:orangered;font-weight:bold;"
+    );
+  }
+};
+var ServiceWorkerHttpNetworkFrame = class extends _core_experimental_frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_6__.HttpNetworkFrame {
+  #event;
+  constructor(options) {
+    super({ request: options.request });
+    this.#event = options.event;
+  }
+  passthrough() {
+    this.#event.postMessage("PASSTHROUGH");
+  }
+  respondWith(response) {
+    if (response) {
+      this.#respondWith(response);
+    }
+  }
+  errorWith(reason) {
+    if (reason instanceof Response) {
+      return this.respondWith(reason);
+    }
+    _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.warn(
+      `Uncaught exception in the request handler for "%s %s". This exception has been gracefully handled as a 500 response, however, it's strongly recommended to resolve this error, as it indicates a mistake in your code. If you wish to mock an error response, please see this guide: https://mswjs.io/docs/http/mocking-responses/error-responses`,
+      this.data.request.method,
+      this.data.request.url
+    );
+    const error2 = reason instanceof Error ? reason : new Error(reason?.toString() || "Request failure");
+    this.respondWith(
+      _core_HttpResponse_mjs__WEBPACK_IMPORTED_MODULE_7__.HttpResponse.json(
+        {
+          name: error2.name,
+          message: error2.message,
+          stack: error2.stack
+        },
+        {
+          status: 500,
+          statusText: "Request Handler Error"
+        }
+      )
+    );
+  }
+  async #respondWith(response) {
+    let responseBody;
+    let transfer;
+    const responseInit = (0,_core_utils_toResponseInit_mjs__WEBPACK_IMPORTED_MODULE_8__.toResponseInit)(response);
+    if (supportsReadableStreamTransfer()) {
+      responseBody = response.body;
+      transfer = response.body == null ? void 0 : [response.body];
+    } else {
+      responseBody = response.body == null ? null : await response.clone().arrayBuffer();
+    }
+    this.#event.postMessage(
+      "MOCK_RESPONSE",
+      {
+        ...responseInit,
+        body: responseBody
+      },
+      transfer
+    );
+  }
+};
+
+// node_modules/.pnpm/@open-draft+until@2.1.0/node_modules/@open-draft/until/lib/index.mjs
+var until2 = async (promise) => {
+  try {
+    const data = await promise().catch((error2) => {
+      throw error2;
+    });
+    return { error: null, data };
+  } catch (error2) {
+    return { error: error2, data: null };
+  }
+};
+
+// node_modules/.pnpm/@mswjs+interceptors@0.41.2/node_modules/@mswjs/interceptors/lib/browser/handleRequest-D7kpTI5U.mjs
+function isObject2(value, loose = false) {
+  return loose ? Object.prototype.toString.call(value).startsWith("[object ") : Object.prototype.toString.call(value) === "[object Object]";
+}
+function isPropertyAccessible(obj, key) {
+  try {
+    obj[key];
+    return true;
+  } catch {
+    return false;
+  }
+}
+function createServerErrorResponse(body) {
+  return new Response(JSON.stringify(body instanceof Error ? {
+    name: body.name,
+    message: body.message,
+    stack: body.stack
+  } : body), {
+    status: 500,
+    statusText: "Unhandled Exception",
+    headers: { "Content-Type": "application/json" }
+  });
+}
+function isResponseError(response) {
+  return response != null && response instanceof Response && isPropertyAccessible(response, "type") && response.type === "error";
+}
+function isResponseLike(value) {
+  return isObject2(value, true) && isPropertyAccessible(value, "status") && isPropertyAccessible(value, "statusText") && isPropertyAccessible(value, "bodyUsed");
+}
+function isNodeLikeError(error2) {
+  if (error2 == null) return false;
+  if (!(error2 instanceof Error)) return false;
+  return "code" in error2 && "errno" in error2;
+}
+async function handleRequest(options) {
+  const handleResponse = async (response) => {
+    if (response instanceof Error) {
+      await options.controller.errorWith(response);
+      return true;
+    }
+    if (isResponseError(response)) {
+      await options.controller.respondWith(response);
+      return true;
+    }
+    if (isResponseLike(response)) {
+      await options.controller.respondWith(response);
+      return true;
+    }
+    if (isObject2(response)) {
+      await options.controller.errorWith(response);
+      return true;
+    }
+    return false;
+  };
+  const handleResponseError = async (error2) => {
+    if (error2 instanceof InterceptorError) throw result.error;
+    if (isNodeLikeError(error2)) {
+      await options.controller.errorWith(error2);
+      return true;
+    }
+    if (error2 instanceof Response) return await handleResponse(error2);
+    return false;
+  };
+  const requestAbortPromise = new DeferredPromise();
+  if (options.request.signal) {
+    if (options.request.signal.aborted) {
+      await options.controller.errorWith(options.request.signal.reason);
+      return;
+    }
+    options.request.signal.addEventListener("abort", () => {
+      requestAbortPromise.reject(options.request.signal.reason);
+    }, { once: true });
+  }
+  const result = await until2(async () => {
+    const requestListenersPromise = emitAsync(options.emitter, "request", {
+      requestId: options.requestId,
+      request: options.request,
+      controller: options.controller
+    });
+    await Promise.race([
+      requestAbortPromise,
+      requestListenersPromise,
+      options.controller.handled
+    ]);
+  });
+  if (requestAbortPromise.state === "rejected") {
+    await options.controller.errorWith(requestAbortPromise.rejectionReason);
+    return;
+  }
+  if (result.error) {
+    if (await handleResponseError(result.error)) return;
+    if (options.emitter.listenerCount("unhandledException") > 0) {
+      const unhandledExceptionController = new RequestController(options.request, {
+        passthrough() {
+        },
+        async respondWith(response) {
+          await handleResponse(response);
+        },
+        async errorWith(reason) {
+          await options.controller.errorWith(reason);
+        }
+      });
+      await emitAsync(options.emitter, "unhandledException", {
+        error: result.error,
+        request: options.request,
+        requestId: options.requestId,
+        controller: unhandledExceptionController
+      });
+      if (unhandledExceptionController.readyState !== RequestController.PENDING) return;
+    }
+    await options.controller.respondWith(createServerErrorResponse(result.error));
+    return;
+  }
+  if (options.controller.readyState === RequestController.PENDING) return await options.controller.passthrough();
+  return options.controller.handled;
+}
+
+// node_modules/.pnpm/@mswjs+interceptors@0.41.2/node_modules/@mswjs/interceptors/lib/browser/fetch-DdKEdDOR.mjs
+function createNetworkError(cause) {
+  return Object.assign(/* @__PURE__ */ new TypeError("Failed to fetch"), { cause });
+}
+var REQUEST_BODY_HEADERS = [
+  "content-encoding",
+  "content-language",
+  "content-location",
+  "content-type",
+  "content-length"
+];
+var kRedirectCount = Symbol("kRedirectCount");
+async function followFetchRedirect(request, response) {
+  if (response.status !== 303 && request.body != null) return Promise.reject(createNetworkError());
+  const requestUrl = new URL(request.url);
+  let locationUrl;
+  try {
+    locationUrl = new URL(response.headers.get("location"), request.url);
+  } catch (error2) {
+    return Promise.reject(createNetworkError(error2));
+  }
+  if (!(locationUrl.protocol === "http:" || locationUrl.protocol === "https:")) return Promise.reject(createNetworkError("URL scheme must be a HTTP(S) scheme"));
+  if (Reflect.get(request, kRedirectCount) > 20) return Promise.reject(createNetworkError("redirect count exceeded"));
+  Object.defineProperty(request, kRedirectCount, { value: (Reflect.get(request, kRedirectCount) || 0) + 1 });
+  if (request.mode === "cors" && (locationUrl.username || locationUrl.password) && !sameOrigin(requestUrl, locationUrl)) return Promise.reject(createNetworkError('cross origin not allowed for request mode "cors"'));
+  const requestInit = {};
+  if ([301, 302].includes(response.status) && request.method === "POST" || response.status === 303 && !["HEAD", "GET"].includes(request.method)) {
+    requestInit.method = "GET";
+    requestInit.body = null;
+    REQUEST_BODY_HEADERS.forEach((headerName) => {
+      request.headers.delete(headerName);
+    });
+  }
+  if (!sameOrigin(requestUrl, locationUrl)) {
+    request.headers.delete("authorization");
+    request.headers.delete("proxy-authorization");
+    request.headers.delete("cookie");
+    request.headers.delete("host");
+  }
+  requestInit.headers = request.headers;
+  const finalResponse = await fetch(new Request(locationUrl, requestInit));
+  Object.defineProperty(finalResponse, "redirected", {
+    value: true,
+    configurable: true
+  });
+  return finalResponse;
+}
+function sameOrigin(left, right) {
+  if (left.origin === right.origin && left.origin === "null") return true;
+  if (left.protocol === right.protocol && left.hostname === right.hostname && left.port === right.port) return true;
+  return false;
+}
+var BrotliDecompressionStream = class extends TransformStream {
+  constructor() {
+    console.warn("[Interceptors]: Brotli decompression of response streams is not supported in the browser");
+    super({ transform(chunk, controller) {
+      controller.enqueue(chunk);
+    } });
+  }
+};
+var PipelineStream = class extends TransformStream {
+  constructor(transformStreams, ...strategies) {
+    super({}, ...strategies);
+    const readable = [super.readable, ...transformStreams].reduce((readable$1, transform) => readable$1.pipeThrough(transform));
+    Object.defineProperty(this, "readable", { get() {
+      return readable;
+    } });
+  }
+};
+function parseContentEncoding(contentEncoding) {
+  return contentEncoding.toLowerCase().split(",").map((coding) => coding.trim());
+}
+function createDecompressionStream(contentEncoding) {
+  if (contentEncoding === "") return null;
+  const codings = parseContentEncoding(contentEncoding);
+  if (codings.length === 0) return null;
+  return new PipelineStream(codings.reduceRight((transformers, coding) => {
+    if (coding === "gzip" || coding === "x-gzip") return transformers.concat(new DecompressionStream("gzip"));
+    else if (coding === "deflate") return transformers.concat(new DecompressionStream("deflate"));
+    else if (coding === "br") return transformers.concat(new BrotliDecompressionStream());
+    else transformers.length = 0;
+    return transformers;
+  }, []));
+}
+function decompressResponse(response) {
+  if (response.body === null) return null;
+  const decompressionStream = createDecompressionStream(response.headers.get("content-encoding") || "");
+  if (!decompressionStream) return null;
+  response.body.pipeTo(decompressionStream.writable);
+  return decompressionStream.readable;
+}
+var FetchInterceptor = class FetchInterceptor2 extends Interceptor {
+  static {
+    this.symbol = Symbol("fetch");
+  }
+  constructor() {
+    super(FetchInterceptor2.symbol);
+  }
+  checkEnvironment() {
+    return hasConfigurableGlobal("fetch");
+  }
+  async setup() {
+    const pureFetch = globalThis.fetch;
+    invariant(!pureFetch[IS_PATCHED_MODULE], 'Failed to patch the "fetch" module: already patched.');
+    globalThis.fetch = async (input, init) => {
+      const requestId = createRequestId();
+      const resolvedInput = typeof input === "string" && typeof location !== "undefined" && !canParseUrl(input) ? new URL(input, location.href) : input;
+      const request = new Request(resolvedInput, init);
+      if (input instanceof Request) setRawRequest(request, input);
+      const responsePromise = new DeferredPromise();
+      const controller = new RequestController(request, {
+        passthrough: async () => {
+          this.logger.info("request has not been handled, passthrough...");
+          const requestCloneForResponseEvent = request.clone();
+          const { error: responseError, data: originalResponse } = await until2(() => pureFetch(request));
+          if (responseError) return responsePromise.reject(responseError);
+          this.logger.info("original fetch performed", originalResponse);
+          if (this.emitter.listenerCount("response") > 0) {
+            this.logger.info('emitting the "response" event...');
+            const responseClone = originalResponse.clone();
+            await emitAsync(this.emitter, "response", {
+              response: responseClone,
+              isMockedResponse: false,
+              request: requestCloneForResponseEvent,
+              requestId
+            });
+          }
+          responsePromise.resolve(originalResponse);
+        },
+        respondWith: async (rawResponse) => {
+          if (isResponseError(rawResponse)) {
+            this.logger.info("request has errored!", { response: rawResponse });
+            responsePromise.reject(createNetworkError(rawResponse));
+            return;
+          }
+          this.logger.info("received mocked response!", { rawResponse });
+          const decompressedStream = decompressResponse(rawResponse);
+          const response = decompressedStream === null ? rawResponse : new FetchResponse(decompressedStream, rawResponse);
+          FetchResponse.setUrl(request.url, response);
+          if (FetchResponse.isRedirectResponse(response.status)) {
+            if (request.redirect === "error") {
+              responsePromise.reject(createNetworkError("unexpected redirect"));
+              return;
+            }
+            if (request.redirect === "follow") {
+              followFetchRedirect(request, response).then((response$1) => {
+                responsePromise.resolve(response$1);
+              }, (reason) => {
+                responsePromise.reject(reason);
+              });
+              return;
+            }
+          }
+          if (this.emitter.listenerCount("response") > 0) {
+            this.logger.info('emitting the "response" event...');
+            await emitAsync(this.emitter, "response", {
+              response: response.clone(),
+              isMockedResponse: true,
+              request,
+              requestId
+            });
+          }
+          responsePromise.resolve(response);
+        },
+        errorWith: (reason) => {
+          this.logger.info("request has been aborted!", { reason });
+          responsePromise.reject(reason);
+        }
+      });
+      this.logger.info("[%s] %s", request.method, request.url);
+      this.logger.info("awaiting for the mocked response...");
+      this.logger.info('emitting the "request" event for %s listener(s)...', this.emitter.listenerCount("request"));
+      await handleRequest({
+        request,
+        requestId,
+        emitter: this.emitter,
+        controller
+      });
+      return responsePromise;
+    };
+    Object.defineProperty(globalThis.fetch, IS_PATCHED_MODULE, {
+      enumerable: true,
+      configurable: true,
+      value: true
+    });
+    this.subscriptions.push(() => {
+      Object.defineProperty(globalThis.fetch, IS_PATCHED_MODULE, { value: void 0 });
+      globalThis.fetch = pureFetch;
+      this.logger.info('restored native "globalThis.fetch"!', globalThis.fetch.name);
+    });
+  }
+};
+
+// node_modules/.pnpm/@mswjs+interceptors@0.41.2/node_modules/@mswjs/interceptors/lib/browser/XMLHttpRequest-BvxZV0WU.mjs
+function concatArrayBuffer(left, right) {
+  const result = new Uint8Array(left.byteLength + right.byteLength);
+  result.set(left, 0);
+  result.set(right, left.byteLength);
+  return result;
+}
+var EventPolyfill = class {
+  constructor(type, options) {
+    this.NONE = 0;
+    this.CAPTURING_PHASE = 1;
+    this.AT_TARGET = 2;
+    this.BUBBLING_PHASE = 3;
+    this.type = "";
+    this.srcElement = null;
+    this.currentTarget = null;
+    this.eventPhase = 0;
+    this.isTrusted = true;
+    this.composed = false;
+    this.cancelable = true;
+    this.defaultPrevented = false;
+    this.bubbles = true;
+    this.lengthComputable = true;
+    this.loaded = 0;
+    this.total = 0;
+    this.cancelBubble = false;
+    this.returnValue = true;
+    this.type = type;
+    this.target = options?.target || null;
+    this.currentTarget = options?.currentTarget || null;
+    this.timeStamp = Date.now();
+  }
+  composedPath() {
+    return [];
+  }
+  initEvent(type, bubbles, cancelable) {
+    this.type = type;
+    this.bubbles = !!bubbles;
+    this.cancelable = !!cancelable;
+  }
+  preventDefault() {
+    this.defaultPrevented = true;
+  }
+  stopPropagation() {
+  }
+  stopImmediatePropagation() {
+  }
+};
+var ProgressEventPolyfill = class extends EventPolyfill {
+  constructor(type, init) {
+    super(type);
+    this.lengthComputable = init?.lengthComputable || false;
+    this.composed = init?.composed || false;
+    this.loaded = init?.loaded || 0;
+    this.total = init?.total || 0;
+  }
+};
+var SUPPORTS_PROGRESS_EVENT = typeof ProgressEvent !== "undefined";
+function createEvent(target, type, init) {
+  const progressEvents = [
+    "error",
+    "progress",
+    "loadstart",
+    "loadend",
+    "load",
+    "timeout",
+    "abort"
+  ];
+  const ProgressEventClass = SUPPORTS_PROGRESS_EVENT ? ProgressEvent : ProgressEventPolyfill;
+  return progressEvents.includes(type) ? new ProgressEventClass(type, {
+    lengthComputable: true,
+    loaded: init?.loaded || 0,
+    total: init?.total || 0
+  }) : new EventPolyfill(type, {
+    target,
+    currentTarget: target
+  });
+}
+function findPropertySource(target, propertyName) {
+  if (!(propertyName in target)) return null;
+  if (Object.prototype.hasOwnProperty.call(target, propertyName)) return target;
+  const prototype = Reflect.getPrototypeOf(target);
+  return prototype ? findPropertySource(prototype, propertyName) : null;
+}
+function createProxy(target, options) {
+  return new Proxy(target, optionsToProxyHandler(options));
+}
+function optionsToProxyHandler(options) {
+  const { constructorCall, methodCall, getProperty, setProperty } = options;
+  const handler = {};
+  if (typeof constructorCall !== "undefined") handler.construct = function(target, args, newTarget) {
+    const next = Reflect.construct.bind(null, target, args, newTarget);
+    return constructorCall.call(newTarget, args, next);
+  };
+  handler.set = function(target, propertyName, nextValue) {
+    const next = () => {
+      const propertySource = findPropertySource(target, propertyName) || target;
+      const ownDescriptors = Reflect.getOwnPropertyDescriptor(propertySource, propertyName);
+      if (typeof ownDescriptors?.set !== "undefined") {
+        ownDescriptors.set.apply(target, [nextValue]);
+        return true;
+      }
+      return Reflect.defineProperty(propertySource, propertyName, {
+        writable: true,
+        enumerable: true,
+        configurable: true,
+        value: nextValue
+      });
+    };
+    if (typeof setProperty !== "undefined") return setProperty.call(target, [propertyName, nextValue], next);
+    return next();
+  };
+  handler.get = function(target, propertyName, receiver) {
+    const next = () => target[propertyName];
+    const value = typeof getProperty !== "undefined" ? getProperty.call(target, [propertyName, receiver], next) : next();
+    if (typeof value === "function") return (...args) => {
+      const next$1 = value.bind(target, ...args);
+      if (typeof methodCall !== "undefined") return methodCall.call(target, [propertyName, args], next$1);
+      return next$1();
+    };
+    return value;
+  };
+  return handler;
+}
+function isDomParserSupportedType(type) {
+  return [
+    "application/xhtml+xml",
+    "application/xml",
+    "image/svg+xml",
+    "text/html",
+    "text/xml"
+  ].some((supportedType) => {
+    return type.startsWith(supportedType);
+  });
+}
+function parseJson(data) {
+  try {
+    return JSON.parse(data);
+  } catch (_) {
+    return null;
+  }
+}
+function createResponse(request, body) {
+  return new FetchResponse(FetchResponse.isResponseWithBody(request.status) ? body : null, {
+    url: request.responseURL,
+    status: request.status,
+    statusText: request.statusText,
+    headers: createHeadersFromXMLHttpRequestHeaders(request.getAllResponseHeaders())
+  });
+}
+function createHeadersFromXMLHttpRequestHeaders(headersString) {
+  const headers = new Headers();
+  const lines = headersString.split(/[\r\n]+/);
+  for (const line of lines) {
+    if (line.trim() === "") continue;
+    const [name, ...parts] = line.split(": ");
+    const value = parts.join(": ");
+    headers.append(name, value);
+  }
+  return headers;
+}
+async function getBodyByteLength(input) {
+  const explicitContentLength = input.headers.get("content-length");
+  if (explicitContentLength != null && explicitContentLength !== "") return Number(explicitContentLength);
+  return (await input.arrayBuffer()).byteLength;
+}
+var kIsRequestHandled = Symbol("kIsRequestHandled");
+var IS_NODE2 = isNodeProcess();
+var kFetchRequest = Symbol("kFetchRequest");
+var XMLHttpRequestController = class {
+  constructor(initialRequest, logger) {
+    this.initialRequest = initialRequest;
+    this.logger = logger;
+    this.method = "GET";
+    this.url = null;
+    this[kIsRequestHandled] = false;
+    this.events = /* @__PURE__ */ new Map();
+    this.uploadEvents = /* @__PURE__ */ new Map();
+    this.requestId = createRequestId();
+    this.requestHeaders = new Headers();
+    this.responseBuffer = new Uint8Array();
+    this.request = createProxy(initialRequest, {
+      setProperty: ([propertyName, nextValue], invoke) => {
+        switch (propertyName) {
+          case "ontimeout": {
+            const eventName = propertyName.slice(2);
+            this.request.addEventListener(eventName, nextValue);
+            return invoke();
+          }
+          default:
+            return invoke();
+        }
+      },
+      methodCall: ([methodName, args], invoke) => {
+        switch (methodName) {
+          case "open": {
+            const [method, url] = args;
+            if (typeof url === "undefined") {
+              this.method = "GET";
+              this.url = toAbsoluteUrl(method);
+            } else {
+              this.method = method;
+              this.url = toAbsoluteUrl(url);
+            }
+            this.logger = this.logger.extend(`${this.method} ${this.url.href}`);
+            this.logger.info("open", this.method, this.url.href);
+            return invoke();
+          }
+          case "addEventListener": {
+            const [eventName, listener] = args;
+            this.registerEvent(eventName, listener);
+            this.logger.info("addEventListener", eventName, listener);
+            return invoke();
+          }
+          case "setRequestHeader": {
+            const [name, value] = args;
+            this.requestHeaders.set(name, value);
+            this.logger.info("setRequestHeader", name, value);
+            return invoke();
+          }
+          case "send": {
+            const [body] = args;
+            this.request.addEventListener("load", () => {
+              if (typeof this.onResponse !== "undefined") {
+                const fetchResponse = createResponse(
+                  this.request,
+                  /**
+                  * The `response` property is the right way to read
+                  * the ambiguous response body, as the request's "responseType" may differ.
+                  * @see https://xhr.spec.whatwg.org/#the-response-attribute
+                  */
+                  this.request.response
+                );
+                this.onResponse.call(this, {
+                  response: fetchResponse,
+                  isMockedResponse: this[kIsRequestHandled],
+                  request: fetchRequest,
+                  requestId: this.requestId
+                });
+              }
+            });
+            const requestBody = typeof body === "string" ? encodeBuffer(body) : body;
+            const fetchRequest = this.toFetchApiRequest(requestBody);
+            this[kFetchRequest] = fetchRequest.clone();
+            queueMicrotask(() => {
+              (this.onRequest?.call(this, {
+                request: fetchRequest,
+                requestId: this.requestId
+              }) || Promise.resolve()).finally(() => {
+                if (!this[kIsRequestHandled]) {
+                  this.logger.info("request callback settled but request has not been handled (readystate %d), performing as-is...", this.request.readyState);
+                  if (IS_NODE2) this.request.setRequestHeader(INTERNAL_REQUEST_ID_HEADER_NAME, this.requestId);
+                  return invoke();
+                }
+              });
+            });
+            break;
+          }
+          default:
+            return invoke();
+        }
+      }
+    });
+    define(this.request, "upload", createProxy(this.request.upload, {
+      setProperty: ([propertyName, nextValue], invoke) => {
+        switch (propertyName) {
+          case "onloadstart":
+          case "onprogress":
+          case "onaboart":
+          case "onerror":
+          case "onload":
+          case "ontimeout":
+          case "onloadend": {
+            const eventName = propertyName.slice(2);
+            this.registerUploadEvent(eventName, nextValue);
+          }
+        }
+        return invoke();
+      },
+      methodCall: ([methodName, args], invoke) => {
+        switch (methodName) {
+          case "addEventListener": {
+            const [eventName, listener] = args;
+            this.registerUploadEvent(eventName, listener);
+            this.logger.info("upload.addEventListener", eventName, listener);
+            return invoke();
+          }
+        }
+      }
+    }));
+  }
+  registerEvent(eventName, listener) {
+    const nextEvents = (this.events.get(eventName) || []).concat(listener);
+    this.events.set(eventName, nextEvents);
+    this.logger.info('registered event "%s"', eventName, listener);
+  }
+  registerUploadEvent(eventName, listener) {
+    const nextEvents = (this.uploadEvents.get(eventName) || []).concat(listener);
+    this.uploadEvents.set(eventName, nextEvents);
+    this.logger.info('registered upload event "%s"', eventName, listener);
+  }
+  /**
+  * Responds to the current request with the given
+  * Fetch API `Response` instance.
+  */
+  async respondWith(response) {
+    this[kIsRequestHandled] = true;
+    if (this[kFetchRequest]) {
+      const totalRequestBodyLength = await getBodyByteLength(this[kFetchRequest]);
+      this.trigger("loadstart", this.request.upload, {
+        loaded: 0,
+        total: totalRequestBodyLength
+      });
+      this.trigger("progress", this.request.upload, {
+        loaded: totalRequestBodyLength,
+        total: totalRequestBodyLength
+      });
+      this.trigger("load", this.request.upload, {
+        loaded: totalRequestBodyLength,
+        total: totalRequestBodyLength
+      });
+      this.trigger("loadend", this.request.upload, {
+        loaded: totalRequestBodyLength,
+        total: totalRequestBodyLength
+      });
+    }
+    this.logger.info("responding with a mocked response: %d %s", response.status, response.statusText);
+    define(this.request, "status", response.status);
+    define(this.request, "statusText", response.statusText);
+    define(this.request, "responseURL", this.url.href);
+    this.request.getResponseHeader = new Proxy(this.request.getResponseHeader, { apply: (_, __, args) => {
+      this.logger.info("getResponseHeader", args[0]);
+      if (this.request.readyState < this.request.HEADERS_RECEIVED) {
+        this.logger.info("headers not received yet, returning null");
+        return null;
+      }
+      const headerValue = response.headers.get(args[0]);
+      this.logger.info('resolved response header "%s" to', args[0], headerValue);
+      return headerValue;
+    } });
+    this.request.getAllResponseHeaders = new Proxy(this.request.getAllResponseHeaders, { apply: () => {
+      this.logger.info("getAllResponseHeaders");
+      if (this.request.readyState < this.request.HEADERS_RECEIVED) {
+        this.logger.info("headers not received yet, returning empty string");
+        return "";
+      }
+      const allHeaders = Array.from(response.headers.entries()).map(([headerName, headerValue]) => {
+        return `${headerName}: ${headerValue}`;
+      }).join("\r\n");
+      this.logger.info("resolved all response headers to", allHeaders);
+      return allHeaders;
+    } });
+    Object.defineProperties(this.request, {
+      response: {
+        enumerable: true,
+        configurable: false,
+        get: () => this.response
+      },
+      responseText: {
+        enumerable: true,
+        configurable: false,
+        get: () => this.responseText
+      },
+      responseXML: {
+        enumerable: true,
+        configurable: false,
+        get: () => this.responseXML
+      }
+    });
+    const totalResponseBodyLength = await getBodyByteLength(response.clone());
+    this.logger.info("calculated response body length", totalResponseBodyLength);
+    this.trigger("loadstart", this.request, {
+      loaded: 0,
+      total: totalResponseBodyLength
+    });
+    this.setReadyState(this.request.HEADERS_RECEIVED);
+    this.setReadyState(this.request.LOADING);
+    const finalizeResponse = () => {
+      this.logger.info("finalizing the mocked response...");
+      this.setReadyState(this.request.DONE);
+      this.trigger("load", this.request, {
+        loaded: this.responseBuffer.byteLength,
+        total: totalResponseBodyLength
+      });
+      this.trigger("loadend", this.request, {
+        loaded: this.responseBuffer.byteLength,
+        total: totalResponseBodyLength
+      });
+    };
+    if (response.body) {
+      this.logger.info("mocked response has body, streaming...");
+      const reader = response.body.getReader();
+      const readNextResponseBodyChunk = async () => {
+        const { value, done } = await reader.read();
+        if (done) {
+          this.logger.info("response body stream done!");
+          finalizeResponse();
+          return;
+        }
+        if (value) {
+          this.logger.info("read response body chunk:", value);
+          this.responseBuffer = concatArrayBuffer(this.responseBuffer, value);
+          this.trigger("progress", this.request, {
+            loaded: this.responseBuffer.byteLength,
+            total: totalResponseBodyLength
+          });
+        }
+        readNextResponseBodyChunk();
+      };
+      readNextResponseBodyChunk();
+    } else finalizeResponse();
+  }
+  responseBufferToText() {
+    return decodeBuffer(this.responseBuffer);
+  }
+  get response() {
+    this.logger.info("getResponse (responseType: %s)", this.request.responseType);
+    if (this.request.readyState !== this.request.DONE) return null;
+    switch (this.request.responseType) {
+      case "json": {
+        const responseJson = parseJson(this.responseBufferToText());
+        this.logger.info("resolved response JSON", responseJson);
+        return responseJson;
+      }
+      case "arraybuffer": {
+        const arrayBuffer = toArrayBuffer(this.responseBuffer);
+        this.logger.info("resolved response ArrayBuffer", arrayBuffer);
+        return arrayBuffer;
+      }
+      case "blob": {
+        const mimeType = this.request.getResponseHeader("Content-Type") || "text/plain";
+        const responseBlob = new Blob([this.responseBufferToText()], { type: mimeType });
+        this.logger.info("resolved response Blob (mime type: %s)", responseBlob, mimeType);
+        return responseBlob;
+      }
+      default: {
+        const responseText = this.responseBufferToText();
+        this.logger.info('resolving "%s" response type as text', this.request.responseType, responseText);
+        return responseText;
+      }
+    }
+  }
+  get responseText() {
+    invariant(this.request.responseType === "" || this.request.responseType === "text", "InvalidStateError: The object is in invalid state.");
+    if (this.request.readyState !== this.request.LOADING && this.request.readyState !== this.request.DONE) return "";
+    const responseText = this.responseBufferToText();
+    this.logger.info('getResponseText: "%s"', responseText);
+    return responseText;
+  }
+  get responseXML() {
+    invariant(this.request.responseType === "" || this.request.responseType === "document", "InvalidStateError: The object is in invalid state.");
+    if (this.request.readyState !== this.request.DONE) return null;
+    const contentType = this.request.getResponseHeader("Content-Type") || "";
+    if (typeof DOMParser === "undefined") {
+      console.warn("Cannot retrieve XMLHttpRequest response body as XML: DOMParser is not defined. You are likely using an environment that is not browser or does not polyfill browser globals correctly.");
+      return null;
+    }
+    if (isDomParserSupportedType(contentType)) return new DOMParser().parseFromString(this.responseBufferToText(), contentType);
+    return null;
+  }
+  errorWith(error2) {
+    this[kIsRequestHandled] = true;
+    this.logger.info("responding with an error");
+    this.setReadyState(this.request.DONE);
+    this.trigger("error", this.request);
+    this.trigger("loadend", this.request);
+  }
+  /**
+  * Transitions this request's `readyState` to the given one.
+  */
+  setReadyState(nextReadyState) {
+    this.logger.info("setReadyState: %d -> %d", this.request.readyState, nextReadyState);
+    if (this.request.readyState === nextReadyState) {
+      this.logger.info("ready state identical, skipping transition...");
+      return;
+    }
+    define(this.request, "readyState", nextReadyState);
+    this.logger.info("set readyState to: %d", nextReadyState);
+    if (nextReadyState !== this.request.UNSENT) {
+      this.logger.info('triggering "readystatechange" event...');
+      this.trigger("readystatechange", this.request);
+    }
+  }
+  /**
+  * Triggers given event on the `XMLHttpRequest` instance.
+  */
+  trigger(eventName, target, options) {
+    const callback = target[`on${eventName}`];
+    const event = createEvent(target, eventName, options);
+    this.logger.info('trigger "%s"', eventName, options || "");
+    if (typeof callback === "function") {
+      this.logger.info('found a direct "%s" callback, calling...', eventName);
+      callback.call(target, event);
+    }
+    const events = target instanceof XMLHttpRequestUpload ? this.uploadEvents : this.events;
+    for (const [registeredEventName, listeners] of events) if (registeredEventName === eventName) {
+      this.logger.info('found %d listener(s) for "%s" event, calling...', listeners.length, eventName);
+      listeners.forEach((listener) => listener.call(target, event));
+    }
+  }
+  /**
+  * Converts this `XMLHttpRequest` instance into a Fetch API `Request` instance.
+  */
+  toFetchApiRequest(body) {
+    this.logger.info("converting request to a Fetch API Request...");
+    const resolvedBody = body instanceof Document ? body.documentElement.innerText : body;
+    const fetchRequest = new Request(this.url.href, {
+      method: this.method,
+      headers: this.requestHeaders,
+      credentials: this.request.withCredentials ? "include" : "same-origin",
+      body: ["GET", "HEAD"].includes(this.method.toUpperCase()) ? null : resolvedBody
+    });
+    define(fetchRequest, "headers", createProxy(fetchRequest.headers, { methodCall: ([methodName, args], invoke) => {
+      switch (methodName) {
+        case "append":
+        case "set": {
+          const [headerName, headerValue] = args;
+          this.request.setRequestHeader(headerName, headerValue);
+          break;
+        }
+        case "delete": {
+          const [headerName] = args;
+          console.warn(`XMLHttpRequest: Cannot remove a "${headerName}" header from the Fetch API representation of the "${fetchRequest.method} ${fetchRequest.url}" request. XMLHttpRequest headers cannot be removed.`);
+          break;
+        }
+      }
+      return invoke();
+    } }));
+    setRawRequest(fetchRequest, this.request);
+    this.logger.info("converted request to a Fetch API Request!", fetchRequest);
+    return fetchRequest;
+  }
+};
+function toAbsoluteUrl(url) {
+  if (typeof location === "undefined") return new URL(url);
+  return new URL(url.toString(), location.href);
+}
+function define(target, property, value) {
+  Reflect.defineProperty(target, property, {
+    writable: true,
+    enumerable: true,
+    value
+  });
+}
+function createXMLHttpRequestProxy({ emitter, logger }) {
+  return new Proxy(globalThis.XMLHttpRequest, { construct(target, args, newTarget) {
+    logger.info("constructed new XMLHttpRequest");
+    const originalRequest = Reflect.construct(target, args, newTarget);
+    const prototypeDescriptors = Object.getOwnPropertyDescriptors(target.prototype);
+    for (const propertyName in prototypeDescriptors) Reflect.defineProperty(originalRequest, propertyName, prototypeDescriptors[propertyName]);
+    const xhrRequestController = new XMLHttpRequestController(originalRequest, logger);
+    xhrRequestController.onRequest = async function({ request, requestId }) {
+      const controller = new RequestController(request, {
+        passthrough: () => {
+          this.logger.info("no mocked response received, performing request as-is...");
+        },
+        respondWith: async (response) => {
+          if (isResponseError(response)) {
+            this.errorWith(/* @__PURE__ */ new TypeError("Network error"));
+            return;
+          }
+          await this.respondWith(response);
+        },
+        errorWith: (reason) => {
+          this.logger.info("request errored!", { error: reason });
+          if (reason instanceof Error) this.errorWith(reason);
+        }
+      });
+      this.logger.info("awaiting mocked response...");
+      this.logger.info('emitting the "request" event for %s listener(s)...', emitter.listenerCount("request"));
+      await handleRequest({
+        request,
+        requestId,
+        controller,
+        emitter
+      });
+    };
+    xhrRequestController.onResponse = async function({ response, isMockedResponse, request, requestId }) {
+      this.logger.info('emitting the "response" event for %s listener(s)...', emitter.listenerCount("response"));
+      emitter.emit("response", {
+        response,
+        isMockedResponse,
+        request,
+        requestId
+      });
+    };
+    return xhrRequestController.request;
+  } });
+}
+var XMLHttpRequestInterceptor = class XMLHttpRequestInterceptor2 extends Interceptor {
+  static {
+    this.interceptorSymbol = Symbol("xhr");
+  }
+  constructor() {
+    super(XMLHttpRequestInterceptor2.interceptorSymbol);
+  }
+  checkEnvironment() {
+    return hasConfigurableGlobal("XMLHttpRequest");
+  }
+  setup() {
+    const logger = this.logger.extend("setup");
+    logger.info('patching "XMLHttpRequest" module...');
+    const PureXMLHttpRequest = globalThis.XMLHttpRequest;
+    invariant(!PureXMLHttpRequest[IS_PATCHED_MODULE], 'Failed to patch the "XMLHttpRequest" module: already patched.');
+    globalThis.XMLHttpRequest = createXMLHttpRequestProxy({
+      emitter: this.emitter,
+      logger: this.logger
+    });
+    logger.info('native "XMLHttpRequest" module patched!', globalThis.XMLHttpRequest.name);
+    Object.defineProperty(globalThis.XMLHttpRequest, IS_PATCHED_MODULE, {
+      enumerable: true,
+      configurable: true,
+      value: true
+    });
+    this.subscriptions.push(() => {
+      Object.defineProperty(globalThis.XMLHttpRequest, IS_PATCHED_MODULE, { value: void 0 });
+      globalThis.XMLHttpRequest = PureXMLHttpRequest;
+      logger.info('native "XMLHttpRequest" module restored!', globalThis.XMLHttpRequest.name);
+    });
+  }
+};
+
+// src/browser/sources/fallback-http-source.ts
+
+
+var FallbackHttpSource = class extends _core_experimental_sources_interceptor_source_mjs__WEBPACK_IMPORTED_MODULE_1__.InterceptorSource {
+  constructor(options) {
+    super({
+      interceptors: [new XMLHttpRequestInterceptor(), new FetchInterceptor()]
+    });
+    this.options = options;
+  }
+  enable() {
+    super.enable();
+    if (!this.options.quiet) {
+      this.#printStartMessage();
+    }
+  }
+  disable() {
+    super.disable();
+    if (!this.options.quiet) {
+      this.#printStopMessage();
+    }
+  }
+  #printStartMessage() {
+    console.groupCollapsed(
+      `%c${_core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.formatMessage("Mocking enabled (fallback mode).")}`,
+      "color:orangered;font-weight:bold;"
+    );
+    console.log(
+      "%cDocumentation: %chttps://mswjs.io/docs",
+      "font-weight:bold",
+      "font-weight:normal"
+    );
+    console.log("Found an issue? https://github.com/mswjs/msw/issues");
+    console.groupEnd();
+  }
+  #printStopMessage() {
+    console.log(
+      `%c${_core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.formatMessage("Mocking disabled.")}`,
+      "color:orangered;font-weight:bold;"
+    );
+  }
+};
+
+// src/browser/setup-worker.ts
+var DEFAULT_WORKER_URL = "/mockServiceWorker.js";
+function setupWorker(...handlers) {
+  invariant(
+    !isNodeProcess(),
+    _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.formatMessage(
+      "Failed to execute `setupWorker` in a non-browser environment"
+    )
+  );
+  const network = (0,_core_experimental_define_network_mjs__WEBPACK_IMPORTED_MODULE_0__.defineNetwork)({
+    sources: [],
+    handlers
+  });
+  return {
+    async start(options) {
+      if (options?.waitUntilReady != null) {
+        _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.warn(
+          `The "waitUntilReady" option has been deprecated. Please remove it from this "worker.start()" call. Follow the recommended Browser integration (https://mswjs.io/docs/integrations/browser) to eliminate any race conditions between the Service Worker registration and any requests made by your application on initial render.`
+        );
+      }
+      if (network.readyState === _core_experimental_define_network_mjs__WEBPACK_IMPORTED_MODULE_0__.NetworkReadyState.ENABLED) {
+        _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.warn(
+          'Found a redundant "worker.start()" call. Note that starting the worker while mocking is already enabled will have no effect. Consider removing this "worker.start()" call.'
+        );
+        return;
+      }
+      const httpSource = supportsServiceWorker() ? new ServiceWorkerSource({
+        serviceWorker: {
+          url: options?.serviceWorker?.url?.toString() || DEFAULT_WORKER_URL,
+          options: options?.serviceWorker?.options
+        },
+        findWorker: options?.findWorker,
+        quiet: options?.quiet
+      }) : new FallbackHttpSource({
+        quiet: options?.quiet
+      });
+      network.configure({
+        sources: [
+          httpSource,
+          new _core_experimental_sources_interceptor_source_mjs__WEBPACK_IMPORTED_MODULE_1__.InterceptorSource({
+            interceptors: [new WebSocketInterceptor()]
+          })
+        ],
+        onUnhandledFrame: (0,_core_experimental_compat_mjs__WEBPACK_IMPORTED_MODULE_2__.fromLegacyOnUnhandledRequest)(() => {
+          return options?.onUnhandledRequest || "warn";
+        }),
+        context: {
+          quiet: options?.quiet
+        }
+      });
+      await network.enable();
+      if (httpSource instanceof ServiceWorkerSource) {
+        const [, registration] = await httpSource.workerPromise;
+        return registration;
+      }
+    },
+    stop() {
+      if (network.readyState === _core_experimental_define_network_mjs__WEBPACK_IMPORTED_MODULE_0__.NetworkReadyState.DISABLED) {
+        _core_utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_3__.devUtils.warn(
+          `Found a redundant "worker.stop()" call. Notice that stopping the worker after it has already been stopped has no effect. Consider removing this "worker.stop()" call.`
+        );
+        return;
+      }
+      network.disable();
+      window.postMessage({ type: "msw/worker:stop" });
+    },
+    events: network.events,
+    use: network.use.bind(network),
+    resetHandlers: network.resetHandlers.bind(network),
+    restoreHandlers: network.restoreHandlers.bind(network),
+    listHandlers: network.listHandlers.bind(network)
+  };
+}
+var SetupWorkerApi = class {
+  start;
+  stop;
+  use;
+  resetHandlers;
+  restoreHandlers;
+  listHandlers;
+  events;
+  constructor() {
+    const worker = setupWorker();
+    this.start = worker.start.bind(worker);
+    this.stop = worker.stop.bind(worker);
+    this.use = worker.use.bind(worker);
+    this.resetHandlers = worker.resetHandlers.bind(worker);
+    this.restoreHandlers = worker.restoreHandlers.bind(worker);
+    this.listHandlers = worker.listHandlers.bind(worker);
+    this.events = worker.events;
+  }
+};
+
+//# sourceMappingURL=index.mjs.map
+
+/***/ },
+
 /***/ "./node_modules/msw/lib/core/HttpResponse.mjs"
 /*!****************************************************!*\
   !*** ./node_modules/msw/lib/core/HttpResponse.mjs ***!
@@ -7436,107 +6733,516 @@ class HttpResponse extends _mswjs_interceptors__WEBPACK_IMPORTED_MODULE_0__.Fetc
 
 /***/ },
 
-/***/ "./node_modules/msw/lib/core/bypass.mjs"
-/*!**********************************************!*\
-  !*** ./node_modules/msw/lib/core/bypass.mjs ***!
-  \**********************************************/
+/***/ "./node_modules/msw/lib/core/experimental/compat.mjs"
+/*!***********************************************************!*\
+  !*** ./node_modules/msw/lib/core/experimental/compat.mjs ***!
+  \***********************************************************/
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   bypass: () => (/* binding */ bypass)
+/* harmony export */   fromLegacyOnUnhandledRequest: () => (/* binding */ fromLegacyOnUnhandledRequest)
 /* harmony export */ });
 /* harmony import */ var outvariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! outvariant */ "./node_modules/outvariant/lib/index.mjs");
+/* harmony import */ var _on_unhandled_frame_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./on-unhandled-frame.mjs */ "./node_modules/msw/lib/core/experimental/on-unhandled-frame.mjs");
+/* harmony import */ var _frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./frames/http-frame.mjs */ "./node_modules/msw/lib/core/experimental/frames/http-frame.mjs");
+/* harmony import */ var _frames_websocket_frame_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./frames/websocket-frame.mjs */ "./node_modules/msw/lib/core/experimental/frames/websocket-frame.mjs");
 
-function bypass(input, init) {
-  const request = new Request(
-    // If given a Request instance, clone it not to exhaust
-    // the original request's body.
-    input instanceof Request ? input.clone() : input,
-    init
-  );
-  (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
-    !request.bodyUsed,
-    'Failed to create a bypassed request to "%s %s": given request instance already has its body read. Make sure to clone the intercepted request if you wish to read its body before bypassing it.',
-    request.method,
-    request.url
-  );
-  const requestClone = request.clone();
-  requestClone.headers.append("accept", "msw/passthrough");
-  return requestClone;
+
+
+
+function fromLegacyOnUnhandledRequest(getLegacyValue) {
+  return ({ frame, defaults }) => {
+    const legacyOnUnhandledRequestStrategy = getLegacyValue();
+    if (legacyOnUnhandledRequestStrategy == null) {
+      return;
+    }
+    if (typeof legacyOnUnhandledRequestStrategy === "function") {
+      const request = frame instanceof _frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_2__.HttpNetworkFrame ? frame.data.request : frame instanceof _frames_websocket_frame_mjs__WEBPACK_IMPORTED_MODULE_3__.WebSocketNetworkFrame ? new Request(frame.data.connection.client.url, {
+        headers: {
+          connection: "upgrade",
+          upgrade: "websocket"
+        }
+      }) : null;
+      (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
+        request != null,
+        'Failed to coerce a network frame to a legacy `onUnhandledRequest` strategy: unknown frame protocol "%s"',
+        frame.protocol
+      );
+      return legacyOnUnhandledRequestStrategy(request, {
+        warning: defaults.warn,
+        error: defaults.error
+      });
+    }
+    return (0,_on_unhandled_frame_mjs__WEBPACK_IMPORTED_MODULE_1__.executeUnhandledFrameHandle)(frame, legacyOnUnhandledRequestStrategy);
+  };
 }
 
-//# sourceMappingURL=bypass.mjs.map
+//# sourceMappingURL=compat.mjs.map
 
 /***/ },
 
-/***/ "./node_modules/msw/lib/core/delay.mjs"
-/*!*********************************************!*\
-  !*** ./node_modules/msw/lib/core/delay.mjs ***!
-  \*********************************************/
+/***/ "./node_modules/msw/lib/core/experimental/define-network.mjs"
+/*!*******************************************************************!*\
+  !*** ./node_modules/msw/lib/core/experimental/define-network.mjs ***!
+  \*******************************************************************/
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   MAX_SERVER_RESPONSE_TIME: () => (/* binding */ MAX_SERVER_RESPONSE_TIME),
-/* harmony export */   MIN_SERVER_RESPONSE_TIME: () => (/* binding */ MIN_SERVER_RESPONSE_TIME),
-/* harmony export */   NODE_SERVER_RESPONSE_TIME: () => (/* binding */ NODE_SERVER_RESPONSE_TIME),
-/* harmony export */   SET_TIMEOUT_MAX_ALLOWED_INT: () => (/* binding */ SET_TIMEOUT_MAX_ALLOWED_INT),
-/* harmony export */   delay: () => (/* binding */ delay)
+/* harmony export */   NetworkReadyState: () => (/* binding */ NetworkReadyState),
+/* harmony export */   defineNetwork: () => (/* binding */ defineNetwork)
 /* harmony export */ });
-/* harmony import */ var is_node_process__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! is-node-process */ "./node_modules/is-node-process/lib/index.mjs");
-/* harmony import */ var _utils_internal_hasRefCounted_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/internal/hasRefCounted.mjs */ "./node_modules/msw/lib/core/utils/internal/hasRefCounted.mjs");
+/* harmony import */ var outvariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! outvariant */ "./node_modules/outvariant/lib/index.mjs");
+/* harmony import */ var rettime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rettime */ "./node_modules/rettime/build/index.mjs");
+/* harmony import */ var _handlers_controller_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./handlers-controller.mjs */ "./node_modules/msw/lib/core/experimental/handlers-controller.mjs");
+/* harmony import */ var _utils_internal_toReadonlyArray_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/internal/toReadonlyArray.mjs */ "./node_modules/msw/lib/core/utils/internal/toReadonlyArray.mjs");
 
 
-const SET_TIMEOUT_MAX_ALLOWED_INT = 2147483647;
-const MIN_SERVER_RESPONSE_TIME = 100;
-const MAX_SERVER_RESPONSE_TIME = 400;
-const NODE_SERVER_RESPONSE_TIME = 5;
-function getRealisticResponseTime() {
-  if ((0,is_node_process__WEBPACK_IMPORTED_MODULE_0__.isNodeProcess)()) {
-    return NODE_SERVER_RESPONSE_TIME;
+
+
+function colorlessPromiseAll(values) {
+  const promises = [];
+  for (const value of values) {
+    if (value instanceof Promise) {
+      promises.push(value);
+    }
   }
-  return Math.floor(
-    Math.random() * (MAX_SERVER_RESPONSE_TIME - MIN_SERVER_RESPONSE_TIME) + MIN_SERVER_RESPONSE_TIME
-  );
+  if (promises.length > 0) {
+    return Promise.all(promises).then(() => {
+    });
+  }
 }
-async function delay(durationOrMode) {
-  let delayTime;
-  if (typeof durationOrMode === "string") {
-    switch (durationOrMode) {
-      case "infinite": {
-        delayTime = SET_TIMEOUT_MAX_ALLOWED_INT;
-        break;
+var NetworkReadyState = /* @__PURE__ */ ((NetworkReadyState2) => {
+  NetworkReadyState2[NetworkReadyState2["DISABLED"] = 0] = "DISABLED";
+  NetworkReadyState2[NetworkReadyState2["ENABLED"] = 1] = "ENABLED";
+  return NetworkReadyState2;
+})(NetworkReadyState || {});
+function defineNetwork(options) {
+  let readyState = 0 /* DISABLED */;
+  const events = new rettime__WEBPACK_IMPORTED_MODULE_1__.Emitter();
+  const deriveHandlersController = (handlers) => {
+    return handlers instanceof _handlers_controller_mjs__WEBPACK_IMPORTED_MODULE_2__.HandlersController ? handlers : new _handlers_controller_mjs__WEBPACK_IMPORTED_MODULE_2__.InMemoryHandlersController(handlers || []);
+  };
+  let resolvedOptions = {
+    ...options
+  };
+  let handlersController = deriveHandlersController(resolvedOptions.handlers);
+  let listenersController;
+  return {
+    get readyState() {
+      return readyState;
+    },
+    events,
+    configure(options2) {
+      (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(readyState === 0 /* DISABLED */, "");
+      if (options2.handlers && !Object.is(options2.handlers, resolvedOptions.handlers)) {
+        handlersController = deriveHandlersController(options2.handlers);
       }
-      case "real": {
-        delayTime = getRealisticResponseTime();
-        break;
+      resolvedOptions = {
+        ...resolvedOptions,
+        ...options2
+      };
+    },
+    enable() {
+      (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
+        readyState === 0 /* DISABLED */,
+        'Failed to call "enable" on the network: already enabled'
+      );
+      listenersController = new AbortController();
+      readyState = 1 /* ENABLED */;
+      const result = resolvedOptions.sources.map((source) => {
+        source.on("frame", async ({ frame }) => {
+          frame.events.on("*", (event) => events.emit(event), {
+            signal: listenersController.signal
+          });
+          const handlers = frame.getHandlers(handlersController);
+          await frame.resolve(
+            handlers,
+            resolvedOptions.onUnhandledFrame || "warn",
+            resolvedOptions.context
+          );
+        });
+        return source.enable();
+      });
+      return colorlessPromiseAll(result);
+    },
+    disable() {
+      (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
+        readyState === 1 /* ENABLED */,
+        'Failed to call "disable" on the network: already disabled'
+      );
+      listenersController.abort();
+      readyState = 0 /* DISABLED */;
+      return colorlessPromiseAll(
+        resolvedOptions.sources.map((source) => source.disable())
+      );
+    },
+    use(...handlers) {
+      handlersController.use(handlers);
+    },
+    resetHandlers(...handlers) {
+      handlersController.reset(handlers);
+    },
+    restoreHandlers() {
+      for (const handler of handlersController.currentHandlers()) {
+        if ("isUsed" in handler) {
+          handler.isUsed = false;
+        }
       }
-      default: {
-        throw new Error(
-          `Failed to delay a response: unknown delay mode "${durationOrMode}". Please make sure you provide one of the supported modes ("real", "infinite") or a number.`
+    },
+    listHandlers() {
+      return (0,_utils_internal_toReadonlyArray_mjs__WEBPACK_IMPORTED_MODULE_3__.toReadonlyArray)(handlersController.currentHandlers());
+    }
+  };
+}
+
+//# sourceMappingURL=define-network.mjs.map
+
+/***/ },
+
+/***/ "./node_modules/msw/lib/core/experimental/frames/http-frame.mjs"
+/*!**********************************************************************!*\
+  !*** ./node_modules/msw/lib/core/experimental/frames/http-frame.mjs ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   HttpNetworkFrame: () => (/* binding */ HttpNetworkFrame),
+/* harmony export */   RequestEvent: () => (/* binding */ RequestEvent),
+/* harmony export */   ResponseEvent: () => (/* binding */ ResponseEvent),
+/* harmony export */   UnhandledExceptionEvent: () => (/* binding */ UnhandledExceptionEvent)
+/* harmony export */ });
+/* harmony import */ var rettime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rettime */ "./node_modules/rettime/build/index.mjs");
+/* harmony import */ var until_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! until-async */ "./node_modules/until-async/lib/index.js");
+/* harmony import */ var _mswjs_interceptors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @mswjs/interceptors */ "./node_modules/@mswjs/interceptors/lib/browser/index.mjs");
+/* harmony import */ var _network_frame_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./network-frame.mjs */ "./node_modules/msw/lib/core/experimental/frames/network-frame.mjs");
+/* harmony import */ var _utils_request_toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/request/toPublicUrl.mjs */ "./node_modules/msw/lib/core/utils/request/toPublicUrl.mjs");
+/* harmony import */ var _utils_executeHandlers_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/executeHandlers.mjs */ "./node_modules/msw/lib/core/utils/executeHandlers.mjs");
+/* harmony import */ var _utils_request_storeResponseCookies_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/request/storeResponseCookies.mjs */ "./node_modules/msw/lib/core/utils/request/storeResponseCookies.mjs");
+/* harmony import */ var _request_utils_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../request-utils.mjs */ "./node_modules/msw/lib/core/experimental/request-utils.mjs");
+/* harmony import */ var _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../utils/internal/devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
+/* harmony import */ var _on_unhandled_frame_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../on-unhandled-frame.mjs */ "./node_modules/msw/lib/core/experimental/on-unhandled-frame.mjs");
+
+
+
+
+
+
+
+
+
+
+class RequestEvent extends rettime__WEBPACK_IMPORTED_MODULE_0__.TypedEvent {
+  requestId;
+  request;
+  constructor(type, data) {
+    super(...[type, {}]);
+    this.requestId = data.requestId;
+    this.request = data.request;
+  }
+}
+class ResponseEvent extends rettime__WEBPACK_IMPORTED_MODULE_0__.TypedEvent {
+  requestId;
+  request;
+  response;
+  constructor(type, data) {
+    super(...[type, {}]);
+    this.requestId = data.requestId;
+    this.request = data.request;
+    this.response = data.response;
+  }
+}
+class UnhandledExceptionEvent extends rettime__WEBPACK_IMPORTED_MODULE_0__.TypedEvent {
+  error;
+  requestId;
+  request;
+  constructor(type, data) {
+    super(...[type, {}]);
+    this.error = data.error;
+    this.requestId = data.requestId;
+    this.request = data.request;
+  }
+}
+class HttpNetworkFrame extends _network_frame_mjs__WEBPACK_IMPORTED_MODULE_3__.NetworkFrame {
+  constructor(options) {
+    const id = options.id || (0,_mswjs_interceptors__WEBPACK_IMPORTED_MODULE_2__.createRequestId)();
+    super("http", { id, request: options.request });
+  }
+  getHandlers(controller) {
+    return controller.getHandlersByKind("request");
+  }
+  async getUnhandledMessage() {
+    const { request } = this.data;
+    const url = new URL(request.url);
+    const publicUrl = (0,_utils_request_toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_4__.toPublicUrl)(url) + url.search;
+    const requestBody = request.body == null ? null : await request.clone().text();
+    const details = `
+
+  \u2022 ${request.method} ${publicUrl}
+
+${requestBody ? `  \u2022 Request body: ${requestBody}
+
+` : ""}`;
+    const message = `intercepted a request without a matching request handler:${details}If you still wish to intercept this unhandled request, please create a request handler for it.
+Read more: https://mswjs.io/docs/http/intercepting-requests`;
+    return message;
+  }
+  async resolve(handlers, onUnhandledFrame, resolutionContext) {
+    const { id: requestId, request } = this.data;
+    const requestCloneForLogs = resolutionContext?.quiet ? null : request.clone();
+    this.events.emit(new RequestEvent("request:start", { requestId, request }));
+    if ((0,_request_utils_mjs__WEBPACK_IMPORTED_MODULE_7__.shouldBypassRequest)(request)) {
+      this.events.emit(new RequestEvent("request:end", { requestId, request }));
+      this.passthrough();
+      return null;
+    }
+    const [lookupError, lookupResult] = await (0,until_async__WEBPACK_IMPORTED_MODULE_1__.until)(() => {
+      return (0,_utils_executeHandlers_mjs__WEBPACK_IMPORTED_MODULE_5__.executeHandlers)({
+        requestId,
+        request,
+        handlers,
+        resolutionContext: {
+          baseUrl: resolutionContext?.baseUrl?.toString(),
+          quiet: resolutionContext?.quiet
+        }
+      });
+    });
+    if (lookupError != null) {
+      if (!this.events.emit(
+        new UnhandledExceptionEvent("unhandledException", {
+          error: lookupError,
+          requestId,
+          request
+        })
+      )) {
+        console.error(lookupError);
+        _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_8__.devUtils.error(
+          'Encountered an unhandled exception during the handler lookup for "%s %s". Please see the original error above.',
+          request.method,
+          request.url
         );
       }
+      this.errorWith(lookupError);
+      return null;
     }
-  } else if (typeof durationOrMode === "undefined") {
-    delayTime = getRealisticResponseTime();
-  } else {
-    if (durationOrMode > SET_TIMEOUT_MAX_ALLOWED_INT) {
-      throw new Error(
-        `Failed to delay a response: provided delay duration (${durationOrMode}) exceeds the maximum allowed duration for "setTimeout" (${SET_TIMEOUT_MAX_ALLOWED_INT}). This will cause the response to be returned immediately. Please use a number within the allowed range to delay the response by exact duration, or consider the "infinite" delay mode to delay the response indefinitely.`
+    if (lookupResult == null) {
+      this.events.emit(
+        new RequestEvent("request:unhandled", {
+          requestId,
+          request
+        })
       );
+      await (0,_on_unhandled_frame_mjs__WEBPACK_IMPORTED_MODULE_9__.executeUnhandledFrameHandle)(this, onUnhandledFrame).then(
+        () => this.passthrough(),
+        (error) => this.errorWith(error)
+      );
+      this.events.emit(
+        new RequestEvent("request:end", {
+          requestId,
+          request
+        })
+      );
+      return false;
     }
-    delayTime = durationOrMode;
+    const { response, handler, parsedResult } = lookupResult;
+    this.events.emit(
+      new RequestEvent("request:match", {
+        requestId,
+        request
+      })
+    );
+    if (response == null) {
+      this.events.emit(
+        new RequestEvent("request:end", {
+          requestId,
+          request
+        })
+      );
+      this.passthrough();
+      return null;
+    }
+    if ((0,_request_utils_mjs__WEBPACK_IMPORTED_MODULE_7__.isPassthroughResponse)(response)) {
+      this.events.emit(
+        new RequestEvent("request:end", {
+          requestId,
+          request
+        })
+      );
+      this.passthrough();
+      return null;
+    }
+    await (0,_utils_request_storeResponseCookies_mjs__WEBPACK_IMPORTED_MODULE_6__.storeResponseCookies)(request, response);
+    this.respondWith(response.clone());
+    this.events.emit(
+      new RequestEvent("request:end", {
+        requestId,
+        request
+      })
+    );
+    if (!resolutionContext?.quiet) {
+      handler.log({
+        request: requestCloneForLogs,
+        response,
+        parsedResult
+      });
+    }
+    return true;
   }
-  return new Promise((resolve) => {
-    const timeoutId = setTimeout(resolve, delayTime);
-    if (delayTime === SET_TIMEOUT_MAX_ALLOWED_INT && (0,is_node_process__WEBPACK_IMPORTED_MODULE_0__.isNodeProcess)() && (0,_utils_internal_hasRefCounted_mjs__WEBPACK_IMPORTED_MODULE_1__.hasRefCounted)(timeoutId)) {
-      timeoutId.unref();
-    }
-  });
 }
 
-//# sourceMappingURL=delay.mjs.map
+//# sourceMappingURL=http-frame.mjs.map
+
+/***/ },
+
+/***/ "./node_modules/msw/lib/core/experimental/frames/network-frame.mjs"
+/*!*************************************************************************!*\
+  !*** ./node_modules/msw/lib/core/experimental/frames/network-frame.mjs ***!
+  \*************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NetworkFrame: () => (/* binding */ NetworkFrame)
+/* harmony export */ });
+/* harmony import */ var rettime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rettime */ "./node_modules/rettime/build/index.mjs");
+
+class NetworkFrame {
+  constructor(protocol, data) {
+    this.protocol = protocol;
+    this.data = data;
+    this.events = new rettime__WEBPACK_IMPORTED_MODULE_0__.Emitter();
+  }
+  events;
+}
+
+//# sourceMappingURL=network-frame.mjs.map
+
+/***/ },
+
+/***/ "./node_modules/msw/lib/core/experimental/frames/websocket-frame.mjs"
+/*!***************************************************************************!*\
+  !*** ./node_modules/msw/lib/core/experimental/frames/websocket-frame.mjs ***!
+  \***************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   WebSocketNetworkFrame: () => (/* binding */ WebSocketNetworkFrame)
+/* harmony export */ });
+/* harmony import */ var rettime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rettime */ "./node_modules/rettime/build/index.mjs");
+/* harmony import */ var _handlers_WebSocketHandler_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../handlers/WebSocketHandler.mjs */ "./node_modules/msw/lib/core/handlers/WebSocketHandler.mjs");
+/* harmony import */ var _network_frame_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./network-frame.mjs */ "./node_modules/msw/lib/core/experimental/frames/network-frame.mjs");
+/* harmony import */ var _on_unhandled_frame_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../on-unhandled-frame.mjs */ "./node_modules/msw/lib/core/experimental/on-unhandled-frame.mjs");
+/* harmony import */ var _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/internal/devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
+
+
+
+
+
+class WebSocketConnectionEvent extends rettime__WEBPACK_IMPORTED_MODULE_0__.TypedEvent {
+  url;
+  protocols;
+  constructor(type, data) {
+    super(...[type, {}]);
+    this.url = data.url;
+    this.protocols = data.protocols;
+  }
+}
+class UnhandledWebSocketExceptionEvent extends rettime__WEBPACK_IMPORTED_MODULE_0__.TypedEvent {
+  url;
+  protocols;
+  error;
+  constructor(type, data) {
+    super(...[type, {}]);
+    this.url = data.url;
+    this.protocols = data.protocols;
+    this.error = data.error;
+  }
+}
+class WebSocketNetworkFrame extends _network_frame_mjs__WEBPACK_IMPORTED_MODULE_2__.NetworkFrame {
+  constructor(options) {
+    super("ws", {
+      connection: options.connection
+    });
+  }
+  getHandlers(controller) {
+    return controller.getHandlersByKind("websocket");
+  }
+  async resolve(handlers, onUnhandledFrame, resolutionContext) {
+    const { connection } = this.data;
+    this.events.emit(
+      new WebSocketConnectionEvent("connection", {
+        url: connection.client.url,
+        protocols: connection.info.protocols
+      })
+    );
+    if (handlers.length === 0) {
+      await (0,_on_unhandled_frame_mjs__WEBPACK_IMPORTED_MODULE_3__.executeUnhandledFrameHandle)(this, onUnhandledFrame).then(
+        () => this.passthrough(),
+        (error) => this.errorWith(error)
+      );
+      return false;
+    }
+    let hasMatchingHandlers = false;
+    for (const handler of handlers) {
+      const handlerConnection = await handler.run(connection, {
+        baseUrl: resolutionContext?.baseUrl?.toString(),
+        /**
+         * @note Do not emit the "connection" event when running the handler.
+         * Use the run only to get the resolved connection object.
+         */
+        [_handlers_WebSocketHandler_mjs__WEBPACK_IMPORTED_MODULE_1__.kAutoConnect]: false
+      });
+      if (!handlerConnection) {
+        continue;
+      }
+      hasMatchingHandlers = true;
+      const removeLogger = !resolutionContext?.quiet ? handler.log(connection) : void 0;
+      try {
+        if (!handler[_handlers_WebSocketHandler_mjs__WEBPACK_IMPORTED_MODULE_1__.kConnect](handlerConnection)) {
+          removeLogger?.();
+        }
+      } catch (error) {
+        if (!this.events.emit(
+          new UnhandledWebSocketExceptionEvent("unhandledException", {
+            error,
+            url: connection.client.url,
+            protocols: connection.info.protocols
+          })
+        )) {
+          console.error(error);
+          _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_4__.devUtils.error(
+            'Encountered an unhandled exception during the handler lookup for "%s". Please see the original error above.',
+            connection.client.url
+          );
+        }
+        throw error;
+      }
+    }
+    if (!hasMatchingHandlers) {
+      await (0,_on_unhandled_frame_mjs__WEBPACK_IMPORTED_MODULE_3__.executeUnhandledFrameHandle)(this, onUnhandledFrame).then(
+        () => this.passthrough(),
+        (error) => this.errorWith(error)
+      );
+      return false;
+    }
+    return true;
+  }
+  async getUnhandledMessage() {
+    const { connection } = this.data;
+    const details = `
+
+  \u2022 ${connection.client.url}
+
+`;
+    return `intercepted a WebSocket connection without a matching event handler:${details}If you still wish to intercept this unhandled connection, please create an event handler for it.
+Read more: https://mswjs.io/docs/websocket`;
+  }
+}
+
+//# sourceMappingURL=websocket-frame.mjs.map
 
 /***/ },
 
@@ -7654,405 +7360,310 @@ class InMemoryHandlersController extends HandlersController {
 
 /***/ },
 
-/***/ "./node_modules/msw/lib/core/experimental/setup-api.mjs"
-/*!**************************************************************!*\
-  !*** ./node_modules/msw/lib/core/experimental/setup-api.mjs ***!
-  \**************************************************************/
+/***/ "./node_modules/msw/lib/core/experimental/on-unhandled-frame.mjs"
+/*!***********************************************************************!*\
+  !*** ./node_modules/msw/lib/core/experimental/on-unhandled-frame.mjs ***!
+  \***********************************************************************/
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   SetupApi: () => (/* binding */ SetupApi)
+/* harmony export */   executeUnhandledFrameHandle: () => (/* binding */ executeUnhandledFrameHandle)
 /* harmony export */ });
-/* harmony import */ var rettime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rettime */ "./node_modules/rettime/build/index.mjs");
-/* harmony import */ var _handlers_controller_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./handlers-controller.mjs */ "./node_modules/msw/lib/core/experimental/handlers-controller.mjs");
-/* harmony import */ var _utils_internal_Disposable_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/internal/Disposable.mjs */ "./node_modules/msw/lib/core/utils/internal/Disposable.mjs");
-/* harmony import */ var _utils_internal_toReadonlyArray_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/internal/toReadonlyArray.mjs */ "./node_modules/msw/lib/core/utils/internal/toReadonlyArray.mjs");
+/* harmony import */ var outvariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! outvariant */ "./node_modules/outvariant/lib/index.mjs");
+/* harmony import */ var _isCommonAssetRequest_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../isCommonAssetRequest.mjs */ "./node_modules/msw/lib/core/isCommonAssetRequest.mjs");
+/* harmony import */ var _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/internal/devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
+/* harmony import */ var _frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./frames/http-frame.mjs */ "./node_modules/msw/lib/core/experimental/frames/http-frame.mjs");
 
 
 
 
-class SetupApi extends _utils_internal_Disposable_mjs__WEBPACK_IMPORTED_MODULE_2__.Disposable {
-  handlersController;
-  emitter;
-  publicEmitter;
-  events;
-  constructor(...initialHandlers) {
-    super();
-    this.handlersController = new _handlers_controller_mjs__WEBPACK_IMPORTED_MODULE_1__.InMemoryHandlersController(initialHandlers);
-    this.emitter = new rettime__WEBPACK_IMPORTED_MODULE_0__.Emitter();
-    this.publicEmitter = new rettime__WEBPACK_IMPORTED_MODULE_0__.Emitter();
-    this.events = this.emitter;
-    this.subscriptions.push(() => {
-      this.emitter.removeAllListeners();
-      this.publicEmitter.removeAllListeners();
-    });
-  }
-  use(...runtimeHandlers) {
-    this.handlersController.use(runtimeHandlers);
-  }
-  restoreHandlers() {
-    this.handlersController.currentHandlers().forEach((handler) => {
-      if ("isUsed" in handler) {
-        handler.isUsed = false;
+async function executeUnhandledFrameHandle(frame, handle) {
+  const printStrategyMessage = async (strategy) => {
+    if (strategy === "bypass") {
+      return;
+    }
+    const message = await frame.getUnhandledMessage();
+    switch (strategy) {
+      case "warn": {
+        return _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_2__.devUtils.warn("Warning: %s", message);
+      }
+      case "error": {
+        return _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_2__.devUtils.error("Error: %s", message);
+      }
+    }
+  };
+  const applyStrategy = async (strategy) => {
+    outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant.as(
+      _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_2__.InternalError,
+      strategy === "bypass" || strategy === "warn" || strategy === "error",
+      /**
+       * @fixme Rename "onUnhandledRequest" to "onUnhandledFrame" in the error message
+       * with the next major release.
+       */
+      _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_2__.devUtils.formatMessage(
+        'Failed to react to an unhandled network frame: unknown strategy "%s". Please provide one of the supported strategies ("bypass", "warn", "error") or a custom callback function as the value of the "onUnhandledRequest" option.',
+        strategy
+      )
+    );
+    if (strategy === "bypass") {
+      return;
+    }
+    await printStrategyMessage(strategy);
+    if (strategy === "error") {
+      return Promise.reject(
+        new _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_2__.InternalError(
+          _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_2__.devUtils.formatMessage(
+            'Cannot bypass a request when using the "error" strategy for the "onUnhandledRequest" option.'
+          )
+        )
+      );
+    }
+  };
+  if (typeof handle === "function") {
+    return handle({
+      frame,
+      defaults: {
+        warn: printStrategyMessage.bind(null, "warn"),
+        /**
+         * @note The defaults only print the corresponding messages now.
+         * They do not affect the frame resolution (e.g. do not error the frame).
+         * That is only for backward compatibility reasons. In the future, these should
+         * be an alias to `applyStrategy.bind(null, 'error')` instead.
+         */
+        error: printStrategyMessage.bind(null, "error")
       }
     });
   }
-  resetHandlers(...nextHandlers) {
-    this.handlersController.reset(nextHandlers);
+  if (frame instanceof _frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_3__.HttpNetworkFrame && (0,_isCommonAssetRequest_mjs__WEBPACK_IMPORTED_MODULE_1__.isCommonAssetRequest)(frame.data.request)) {
+    return;
   }
-  listHandlers() {
-    return (0,_utils_internal_toReadonlyArray_mjs__WEBPACK_IMPORTED_MODULE_3__.toReadonlyArray)(this.handlersController.currentHandlers());
-  }
+  return applyStrategy(handle);
 }
 
-//# sourceMappingURL=setup-api.mjs.map
+//# sourceMappingURL=on-unhandled-frame.mjs.map
 
 /***/ },
 
-/***/ "./node_modules/msw/lib/core/getResponse.mjs"
-/*!***************************************************!*\
-  !*** ./node_modules/msw/lib/core/getResponse.mjs ***!
-  \***************************************************/
+/***/ "./node_modules/msw/lib/core/experimental/request-utils.mjs"
+/*!******************************************************************!*\
+  !*** ./node_modules/msw/lib/core/experimental/request-utils.mjs ***!
+  \******************************************************************/
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getResponse: () => (/* binding */ getResponse)
+/* harmony export */   REQUEST_INTENTION_HEADER_NAME: () => (/* binding */ REQUEST_INTENTION_HEADER_NAME),
+/* harmony export */   RequestIntention: () => (/* binding */ RequestIntention),
+/* harmony export */   deleteRequestPassthroughHeader: () => (/* binding */ deleteRequestPassthroughHeader),
+/* harmony export */   isPassthroughResponse: () => (/* binding */ isPassthroughResponse),
+/* harmony export */   shouldBypassRequest: () => (/* binding */ shouldBypassRequest)
+/* harmony export */ });
+const REQUEST_INTENTION_HEADER_NAME = "x-msw-intention";
+var RequestIntention = /* @__PURE__ */ ((RequestIntention2) => {
+  RequestIntention2["passthrough"] = "passthrough";
+  return RequestIntention2;
+})(RequestIntention || {});
+function shouldBypassRequest(request) {
+  return !!request.headers.get("accept")?.includes("msw/passthrough");
+}
+function isPassthroughResponse(response) {
+  return response.status === 302 && response.headers.get(REQUEST_INTENTION_HEADER_NAME) === "passthrough" /* passthrough */;
+}
+function deleteRequestPassthroughHeader(request) {
+  const acceptHeader = request.headers.get("accept");
+  if (acceptHeader) {
+    const nextAcceptHeader = acceptHeader.replace(/(,\s+)?msw\/passthrough/, "");
+    if (nextAcceptHeader) {
+      request.headers.set("accept", nextAcceptHeader);
+    } else {
+      request.headers.delete("accept");
+    }
+  }
+}
+
+//# sourceMappingURL=request-utils.mjs.map
+
+/***/ },
+
+/***/ "./node_modules/msw/lib/core/experimental/sources/interceptor-source.mjs"
+/*!*******************************************************************************!*\
+  !*** ./node_modules/msw/lib/core/experimental/sources/interceptor-source.mjs ***!
+  \*******************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InterceptorSource: () => (/* binding */ InterceptorSource)
 /* harmony export */ });
 /* harmony import */ var _mswjs_interceptors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @mswjs/interceptors */ "./node_modules/@mswjs/interceptors/lib/browser/index.mjs");
-/* harmony import */ var _utils_executeHandlers_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/executeHandlers.mjs */ "./node_modules/msw/lib/core/utils/executeHandlers.mjs");
+/* harmony import */ var _network_source_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./network-source.mjs */ "./node_modules/msw/lib/core/experimental/sources/network-source.mjs");
+/* harmony import */ var _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/internal/devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
+/* harmony import */ var _frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../frames/http-frame.mjs */ "./node_modules/msw/lib/core/experimental/frames/http-frame.mjs");
+/* harmony import */ var _frames_websocket_frame_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../frames/websocket-frame.mjs */ "./node_modules/msw/lib/core/experimental/frames/websocket-frame.mjs");
+/* harmony import */ var _request_utils_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../request-utils.mjs */ "./node_modules/msw/lib/core/experimental/request-utils.mjs");
 
 
-const getResponse = async (handlers, request, resolutionContext) => {
-  const result = await (0,_utils_executeHandlers_mjs__WEBPACK_IMPORTED_MODULE_1__.executeHandlers)({
+
+
+
+
+class InterceptorSource extends _network_source_mjs__WEBPACK_IMPORTED_MODULE_1__.NetworkSource {
+  #interceptor;
+  #frames;
+  constructor(options) {
+    super();
+    this.#interceptor = new _mswjs_interceptors__WEBPACK_IMPORTED_MODULE_0__.BatchInterceptor({
+      name: "interceptor-source",
+      interceptors: options.interceptors
+    });
+    this.#frames = /* @__PURE__ */ new Map();
+  }
+  enable() {
+    this.#interceptor.apply();
+    this.#interceptor.on("request", this.#handleRequest.bind(this)).on("response", this.#handleResponse.bind(this)).on("connection", this.#handleWebSocketConnection.bind(this));
+  }
+  disable() {
+    super.disable();
+    this.#interceptor.dispose();
+    this.#frames.clear();
+  }
+  async #handleRequest({
+    requestId,
     request,
-    requestId: (0,_mswjs_interceptors__WEBPACK_IMPORTED_MODULE_0__.createRequestId)(),
-    handlers,
-    resolutionContext
-  });
-  return result?.response;
-};
-
-//# sourceMappingURL=getResponse.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/graphql.mjs"
-/*!***********************************************!*\
-  !*** ./node_modules/msw/lib/core/graphql.mjs ***!
-  \***********************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   graphql: () => (/* binding */ graphql)
-/* harmony export */ });
-/* harmony import */ var _handlers_GraphQLHandler_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./handlers/GraphQLHandler.mjs */ "./node_modules/msw/lib/core/handlers/GraphQLHandler.mjs");
-
-function createScopedGraphQLHandler(operationType, url) {
-  return (predicate, resolver, options = {}) => {
-    return new _handlers_GraphQLHandler_mjs__WEBPACK_IMPORTED_MODULE_0__.GraphQLHandler(operationType, predicate, url, resolver, options);
-  };
-}
-function createGraphQLOperationHandler(url) {
-  return (resolver, options) => {
-    return new _handlers_GraphQLHandler_mjs__WEBPACK_IMPORTED_MODULE_0__.GraphQLHandler("all", new RegExp(".*"), url, resolver, options);
-  };
-}
-const graphql = {
-  /**
-   * Intercepts a GraphQL query by a given name.
-   *
-   * @example
-   * graphql.query('GetUser', () => {
-   *   return HttpResponse.json({ data: { user: { name: 'John' } } })
-   * })
-   *
-   * @see {@link https://mswjs.io/docs/api/graphql#graphqlqueryqueryname-resolver `graphql.query()` API reference}
-   */
-  query: createScopedGraphQLHandler("query", "*"),
-  /**
-   * Intercepts a GraphQL mutation by its name.
-   *
-   * @example
-   * graphql.mutation('SavePost', () => {
-   *   return HttpResponse.json({ data: { post: { id: 'abc-123 } } })
-   * })
-   *
-   * @see {@link https://mswjs.io/docs/api/graphql#graphqlmutationmutationname-resolver `graphql.query()` API reference}
-   *
-   */
-  mutation: createScopedGraphQLHandler("mutation", "*"),
-  /**
-   * Intercepts any GraphQL operation, regardless of its type or name.
-   *
-   * @example
-   * graphql.operation(() => {
-   *   return HttpResponse.json({ data: { name: 'John' } })
-   * })
-   *
-   * @see {@link https://mswjs.io/docs/api/graphql#graphqloperationresolver `graphql.operation()` API reference}
-   */
-  operation: createGraphQLOperationHandler("*"),
-  /**
-   * Intercepts GraphQL operations scoped by the given URL.
-   *
-   * @example
-   * const github = graphql.link('https://api.github.com/graphql')
-   * github.query('GetRepo', resolver)
-   *
-   * @see {@link https://mswjs.io/docs/api/graphql#graphqllinkurl `graphql.link()` API reference}
-   */
-  link(url) {
-    return {
-      operation: createGraphQLOperationHandler(url),
-      query: createScopedGraphQLHandler("query", url),
-      mutation: createScopedGraphQLHandler(
-        "mutation",
-        url
-      )
-    };
+    controller
+  }) {
+    const httpFrame = new InterceptorHttpNetworkFrame({
+      id: requestId,
+      request,
+      controller
+    });
+    this.#frames.set(requestId, httpFrame);
+    await this.queue(httpFrame);
   }
-};
-
-//# sourceMappingURL=graphql.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/handlers/GraphQLHandler.mjs"
-/*!***************************************************************!*\
-  !*** ./node_modules/msw/lib/core/handlers/GraphQLHandler.mjs ***!
-  \***************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   GraphQLHandler: () => (/* binding */ GraphQLHandler),
-/* harmony export */   isDocumentNode: () => (/* binding */ isDocumentNode)
-/* harmony export */ });
-/* harmony import */ var outvariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! outvariant */ "./node_modules/outvariant/lib/index.mjs");
-/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! graphql */ "./node_modules/graphql/language/parser.mjs");
-/* harmony import */ var _RequestHandler_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RequestHandler.mjs */ "./node_modules/msw/lib/core/handlers/RequestHandler.mjs");
-/* harmony import */ var _utils_logging_getTimestamp_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/logging/getTimestamp.mjs */ "./node_modules/msw/lib/core/utils/logging/getTimestamp.mjs");
-/* harmony import */ var _utils_logging_getStatusCodeColor_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/logging/getStatusCodeColor.mjs */ "./node_modules/msw/lib/core/utils/logging/getStatusCodeColor.mjs");
-/* harmony import */ var _utils_logging_serializeRequest_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/logging/serializeRequest.mjs */ "./node_modules/msw/lib/core/utils/logging/serializeRequest.mjs");
-/* harmony import */ var _utils_logging_serializeResponse_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/logging/serializeResponse.mjs */ "./node_modules/msw/lib/core/utils/logging/serializeResponse.mjs");
-/* harmony import */ var _utils_matching_matchRequestUrl_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/matching/matchRequestUrl.mjs */ "./node_modules/msw/lib/core/utils/matching/matchRequestUrl.mjs");
-/* harmony import */ var _utils_internal_parseGraphQLRequest_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/internal/parseGraphQLRequest.mjs */ "./node_modules/msw/lib/core/utils/internal/parseGraphQLRequest.mjs");
-/* harmony import */ var _utils_request_toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/request/toPublicUrl.mjs */ "./node_modules/msw/lib/core/utils/request/toPublicUrl.mjs");
-/* harmony import */ var _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/internal/devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
-/* harmony import */ var _utils_request_getRequestCookies_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../utils/request/getRequestCookies.mjs */ "./node_modules/msw/lib/core/utils/request/getRequestCookies.mjs");
-/* harmony import */ var _HttpResponse_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../HttpResponse.mjs */ "./node_modules/msw/lib/core/HttpResponse.mjs");
-/* harmony import */ var _utils_request_getAllAcceptedMimeTypes_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../utils/request/getAllAcceptedMimeTypes.mjs */ "./node_modules/msw/lib/core/utils/request/getAllAcceptedMimeTypes.mjs");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function isDocumentNode(value) {
-  if (value == null) {
-    return false;
-  }
-  return typeof value === "object" && "kind" in value && "definitions" in value;
-}
-function isDocumentTypeDecoration(value) {
-  return value instanceof String;
-}
-class GraphQLHandler extends _RequestHandler_mjs__WEBPACK_IMPORTED_MODULE_2__.RequestHandler {
-  endpoint;
-  static parsedRequestCache = /* @__PURE__ */ new WeakMap();
-  static #parseOperationName(predicate, operationType) {
-    const getOperationName = (node) => {
-      (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
-        node.operationType === operationType,
-        'Failed to create a GraphQL handler: provided a DocumentNode with a mismatched operation type (expected "%s" but got "%s").',
-        operationType,
-        node.operationType
-      );
-      (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
-        node.operationName,
-        "Failed to create a GraphQL handler: provided a DocumentNode without operation name"
-      );
-      return node.operationName;
-    };
-    if (isDocumentNode(predicate)) {
-      return getOperationName((0,_utils_internal_parseGraphQLRequest_mjs__WEBPACK_IMPORTED_MODULE_8__.parseDocumentNode)(predicate));
+  async #handleResponse({
+    requestId,
+    request,
+    response,
+    isMockedResponse
+  }) {
+    const httpFrame = this.#frames.get(requestId);
+    this.#frames.delete(requestId);
+    if (httpFrame == null) {
+      return;
     }
-    if (isDocumentTypeDecoration(predicate)) {
-      const documentNode = (0,graphql__WEBPACK_IMPORTED_MODULE_1__.parse)(predicate.toString());
-      (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
-        isDocumentNode(documentNode),
-        "Failed to create a GraphQL handler: given TypedDocumentString (%s) does not produce a valid DocumentNode",
-        predicate
-      );
-      return getOperationName((0,_utils_internal_parseGraphQLRequest_mjs__WEBPACK_IMPORTED_MODULE_8__.parseDocumentNode)(documentNode));
-    }
-    return predicate;
-  }
-  constructor(operationType, predicate, endpoint, resolver, options) {
-    const operationName = GraphQLHandler.#parseOperationName(
-      predicate,
-      operationType
-    );
-    const displayOperationName = typeof operationName === "function" ? "[custom predicate]" : operationName;
-    const header = operationType === "all" ? `${operationType} (origin: ${endpoint.toString()})` : `${operationType}${displayOperationName ? ` ${displayOperationName}` : ""} (origin: ${endpoint.toString()})`;
-    super({
-      info: {
-        header,
-        operationType,
-        operationName: GraphQLHandler.#parseOperationName(
-          predicate,
-          operationType
+    queueMicrotask(() => {
+      httpFrame.events.emit(
+        new _frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_3__.ResponseEvent(
+          isMockedResponse ? "response:mocked" : "response:bypass",
+          {
+            requestId,
+            request,
+            response
+          }
         )
-      },
-      resolver,
-      options
-    });
-    this.endpoint = endpoint;
-  }
-  /**
-   * Parses the request body, once per request, cached across all
-   * GraphQL handlers. This is done to avoid multiple parsing of the
-   * request body, which each requires a clone of the request.
-   */
-  async parseGraphQLRequestOrGetFromCache(request) {
-    if (!GraphQLHandler.parsedRequestCache.has(request)) {
-      GraphQLHandler.parsedRequestCache.set(
-        request,
-        await (0,_utils_internal_parseGraphQLRequest_mjs__WEBPACK_IMPORTED_MODULE_8__.parseGraphQLRequest)(request).catch((error) => {
-          console.error(error);
-          return void 0;
-        })
       );
-    }
-    return GraphQLHandler.parsedRequestCache.get(request);
-  }
-  async parse(args) {
-    const match = (0,_utils_matching_matchRequestUrl_mjs__WEBPACK_IMPORTED_MODULE_7__.matchRequestUrl)(new URL(args.request.url), this.endpoint);
-    const cookies = (0,_utils_request_getRequestCookies_mjs__WEBPACK_IMPORTED_MODULE_11__.getAllRequestCookies)(args.request);
-    if (!match.matches) {
-      return {
-        match,
-        cookies
-      };
-    }
-    const parsedResult = await this.parseGraphQLRequestOrGetFromCache(
-      args.request
-    );
-    if (typeof parsedResult === "undefined") {
-      return {
-        match,
-        cookies
-      };
-    }
-    return {
-      match,
-      cookies,
-      query: parsedResult.query,
-      operationType: parsedResult.operationType,
-      operationName: parsedResult.operationName,
-      variables: parsedResult.variables
-    };
-  }
-  async predicate(args) {
-    if (args.parsedResult.operationType === void 0) {
-      return false;
-    }
-    if (!args.parsedResult.operationName && this.info.operationType !== "all") {
-      const publicUrl = (0,_utils_request_toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_9__.toPublicUrl)(args.request.url);
-      _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_10__.devUtils.warn(`Failed to intercept a GraphQL request at "${args.request.method} ${publicUrl}": anonymous GraphQL operations are not supported.
-
-Consider naming this operation or using "graphql.operation()" request handler to intercept GraphQL requests regardless of their operation name/type. Read more: https://mswjs.io/docs/api/graphql/#graphqloperationresolver`);
-      return false;
-    }
-    const hasMatchingOperationType = this.info.operationType === "all" || args.parsedResult.operationType === this.info.operationType;
-    const hasMatchingOperationName = await this.matchOperationName({
-      request: args.request,
-      parsedResult: args.parsedResult
     });
-    return args.parsedResult.match.matches && hasMatchingOperationType && hasMatchingOperationName;
   }
-  async run(args) {
-    const result = await super.run(args);
-    if (result?.response == null) {
-      return result;
-    }
-    if (!(_HttpResponse_mjs__WEBPACK_IMPORTED_MODULE_12__.kDefaultContentType in result.response)) {
-      return result;
-    }
-    const acceptedMimeTypes = (0,_utils_request_getAllAcceptedMimeTypes_mjs__WEBPACK_IMPORTED_MODULE_13__.getAllAcceptedMimeTypes)(
-      args.request.headers.get("accept")
+  async #handleWebSocketConnection(connection) {
+    await this.queue(
+      new InterceptorWebSocketNetworkFrame({
+        connection
+      })
     );
-    if (acceptedMimeTypes.length === 0) {
-      return result;
-    }
-    const graphqlResponseIndex = acceptedMimeTypes.indexOf(
-      "application/graphql-response+json"
-    );
-    const jsonIndex = acceptedMimeTypes.indexOf("application/json");
-    if (graphqlResponseIndex !== -1 && (jsonIndex === -1 || graphqlResponseIndex <= jsonIndex)) {
-      result.response.headers.set(
-        "content-type",
-        "application/graphql-response+json"
-      );
-    }
-    return result;
   }
-  async matchOperationName(args) {
-    if (typeof this.info.operationName === "function") {
-      const customPredicateResult = await this.info.operationName({
-        request: args.request,
-        ...this.extendResolverArgs({
-          request: args.request,
-          parsedResult: args.parsedResult
-        })
+}
+class InterceptorHttpNetworkFrame extends _frames_http_frame_mjs__WEBPACK_IMPORTED_MODULE_3__.HttpNetworkFrame {
+  #controller;
+  constructor(options) {
+    super({
+      id: options.id,
+      request: options.request
+    });
+    this.#controller = options.controller;
+  }
+  passthrough() {
+    (0,_request_utils_mjs__WEBPACK_IMPORTED_MODULE_5__.deleteRequestPassthroughHeader)(this.data.request);
+  }
+  respondWith(response) {
+    if (response) {
+      this.#controller.respondWith(response);
+    }
+  }
+  errorWith(reason) {
+    if (reason instanceof Response) {
+      return this.respondWith(reason);
+    }
+    if (reason instanceof _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_2__.InternalError) {
+      this.#controller.errorWith(reason);
+    }
+    throw reason;
+  }
+}
+class InterceptorWebSocketNetworkFrame extends _frames_websocket_frame_mjs__WEBPACK_IMPORTED_MODULE_4__.WebSocketNetworkFrame {
+  constructor(args) {
+    super({ connection: args.connection });
+  }
+  errorWith(reason) {
+    if (reason instanceof Error) {
+      const { client } = this.data.connection;
+      const errorEvent = new Event("error");
+      Object.defineProperty(errorEvent, "cause", {
+        enumerable: true,
+        configurable: false,
+        value: reason
       });
-      return typeof customPredicateResult === "boolean" ? customPredicateResult : customPredicateResult.matches;
+      client.socket.dispatchEvent(errorEvent);
     }
-    if (this.info.operationName instanceof RegExp) {
-      return this.info.operationName.test(args.parsedResult.operationName || "");
-    }
-    return args.parsedResult.operationName === this.info.operationName;
   }
-  extendResolverArgs(args) {
-    return {
-      query: args.parsedResult.query || "",
-      operationType: args.parsedResult.operationType,
-      operationName: args.parsedResult.operationName || "",
-      variables: args.parsedResult.variables || {},
-      cookies: args.parsedResult.cookies
-    };
-  }
-  async log(args) {
-    const loggedRequest = await (0,_utils_logging_serializeRequest_mjs__WEBPACK_IMPORTED_MODULE_5__.serializeRequest)(args.request);
-    const loggedResponse = await (0,_utils_logging_serializeResponse_mjs__WEBPACK_IMPORTED_MODULE_6__.serializeResponse)(args.response);
-    const statusColor = (0,_utils_logging_getStatusCodeColor_mjs__WEBPACK_IMPORTED_MODULE_4__.getStatusCodeColor)(loggedResponse.status);
-    const requestInfo = args.parsedResult.operationName ? `${args.parsedResult.operationType} ${args.parsedResult.operationName}` : `anonymous ${args.parsedResult.operationType}`;
-    console.groupCollapsed(
-      _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_10__.devUtils.formatMessage(
-        `${(0,_utils_logging_getTimestamp_mjs__WEBPACK_IMPORTED_MODULE_3__.getTimestamp)()} ${requestInfo} (%c${loggedResponse.status} ${loggedResponse.statusText}%c)`
-      ),
-      `color:${statusColor}`,
-      "color:inherit"
-    );
-    console.log("Request:", loggedRequest);
-    console.log("Handler:", this);
-    console.log("Response:", loggedResponse);
-    console.groupEnd();
+  passthrough() {
+    this.data.connection.server.connect();
   }
 }
 
-//# sourceMappingURL=GraphQLHandler.mjs.map
+//# sourceMappingURL=interceptor-source.mjs.map
+
+/***/ },
+
+/***/ "./node_modules/msw/lib/core/experimental/sources/network-source.mjs"
+/*!***************************************************************************!*\
+  !*** ./node_modules/msw/lib/core/experimental/sources/network-source.mjs ***!
+  \***************************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   NetworkSource: () => (/* binding */ NetworkSource)
+/* harmony export */ });
+/* harmony import */ var rettime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rettime */ "./node_modules/rettime/build/index.mjs");
+
+class NetworkFrameEvent extends rettime__WEBPACK_IMPORTED_MODULE_0__.TypedEvent {
+  frame;
+  constructor(type, frame) {
+    super(...[type, {}]);
+    this.frame = frame;
+  }
+}
+class NetworkSource {
+  emitter;
+  constructor() {
+    this.emitter = new rettime__WEBPACK_IMPORTED_MODULE_0__.Emitter();
+  }
+  async queue(frame) {
+    await this.emitter.emitAsPromise(
+      // @ts-expect-error Trouble handling a conditional type parameter.
+      new NetworkFrameEvent("frame", frame)
+    );
+  }
+  on(type, listener, options) {
+    this.emitter.on(type, listener, options);
+  }
+  disable() {
+    this.emitter.removeAllListeners();
+  }
+}
+
+//# sourceMappingURL=network-source.mjs.map
 
 /***/ },
 
@@ -8539,81 +8150,6 @@ const http = {
 
 /***/ },
 
-/***/ "./node_modules/msw/lib/core/index.mjs"
-/*!*********************************************!*\
-  !*** ./node_modules/msw/lib/core/index.mjs ***!
-  \*********************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   GraphQLHandler: () => (/* reexport safe */ _handlers_GraphQLHandler_mjs__WEBPACK_IMPORTED_MODULE_6__.GraphQLHandler),
-/* harmony export */   HttpHandler: () => (/* reexport safe */ _handlers_HttpHandler_mjs__WEBPACK_IMPORTED_MODULE_4__.HttpHandler),
-/* harmony export */   HttpMethods: () => (/* reexport safe */ _handlers_HttpHandler_mjs__WEBPACK_IMPORTED_MODULE_4__.HttpMethods),
-/* harmony export */   HttpResponse: () => (/* reexport safe */ _HttpResponse_mjs__WEBPACK_IMPORTED_MODULE_15__.HttpResponse),
-/* harmony export */   RequestHandler: () => (/* reexport safe */ _handlers_RequestHandler_mjs__WEBPACK_IMPORTED_MODULE_2__.RequestHandler),
-/* harmony export */   SetupApi: () => (/* reexport safe */ _experimental_setup_api_mjs__WEBPACK_IMPORTED_MODULE_1__.SetupApi),
-/* harmony export */   WebSocketHandler: () => (/* reexport safe */ _handlers_WebSocketHandler_mjs__WEBPACK_IMPORTED_MODULE_8__.WebSocketHandler),
-/* harmony export */   bypass: () => (/* reexport safe */ _bypass_mjs__WEBPACK_IMPORTED_MODULE_17__.bypass),
-/* harmony export */   cleanUrl: () => (/* reexport safe */ _utils_url_cleanUrl_mjs__WEBPACK_IMPORTED_MODULE_14__.cleanUrl),
-/* harmony export */   delay: () => (/* reexport safe */ _delay_mjs__WEBPACK_IMPORTED_MODULE_16__.delay),
-/* harmony export */   getResponse: () => (/* reexport safe */ _getResponse_mjs__WEBPACK_IMPORTED_MODULE_13__.getResponse),
-/* harmony export */   graphql: () => (/* reexport safe */ _graphql_mjs__WEBPACK_IMPORTED_MODULE_5__.graphql),
-/* harmony export */   handleRequest: () => (/* reexport safe */ _utils_handleRequest_mjs__WEBPACK_IMPORTED_MODULE_11__.handleRequest),
-/* harmony export */   http: () => (/* reexport safe */ _http_mjs__WEBPACK_IMPORTED_MODULE_3__.http),
-/* harmony export */   isCommonAssetRequest: () => (/* reexport safe */ _isCommonAssetRequest_mjs__WEBPACK_IMPORTED_MODULE_19__.isCommonAssetRequest),
-/* harmony export */   matchRequestUrl: () => (/* reexport safe */ _utils_matching_matchRequestUrl_mjs__WEBPACK_IMPORTED_MODULE_10__.matchRequestUrl),
-/* harmony export */   onUnhandledRequest: () => (/* reexport safe */ _utils_request_onUnhandledRequest_mjs__WEBPACK_IMPORTED_MODULE_12__.onUnhandledRequest),
-/* harmony export */   passthrough: () => (/* reexport safe */ _passthrough_mjs__WEBPACK_IMPORTED_MODULE_18__.passthrough),
-/* harmony export */   sse: () => (/* reexport safe */ _sse_mjs__WEBPACK_IMPORTED_MODULE_9__.sse),
-/* harmony export */   ws: () => (/* reexport safe */ _ws_mjs__WEBPACK_IMPORTED_MODULE_7__.ws)
-/* harmony export */ });
-/* harmony import */ var _utils_internal_checkGlobals_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils/internal/checkGlobals.mjs */ "./node_modules/msw/lib/core/utils/internal/checkGlobals.mjs");
-/* harmony import */ var _experimental_setup_api_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./experimental/setup-api.mjs */ "./node_modules/msw/lib/core/experimental/setup-api.mjs");
-/* harmony import */ var _handlers_RequestHandler_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./handlers/RequestHandler.mjs */ "./node_modules/msw/lib/core/handlers/RequestHandler.mjs");
-/* harmony import */ var _http_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./http.mjs */ "./node_modules/msw/lib/core/http.mjs");
-/* harmony import */ var _handlers_HttpHandler_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./handlers/HttpHandler.mjs */ "./node_modules/msw/lib/core/handlers/HttpHandler.mjs");
-/* harmony import */ var _graphql_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./graphql.mjs */ "./node_modules/msw/lib/core/graphql.mjs");
-/* harmony import */ var _handlers_GraphQLHandler_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./handlers/GraphQLHandler.mjs */ "./node_modules/msw/lib/core/handlers/GraphQLHandler.mjs");
-/* harmony import */ var _ws_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./ws.mjs */ "./node_modules/msw/lib/core/ws.mjs");
-/* harmony import */ var _handlers_WebSocketHandler_mjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./handlers/WebSocketHandler.mjs */ "./node_modules/msw/lib/core/handlers/WebSocketHandler.mjs");
-/* harmony import */ var _sse_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sse.mjs */ "./node_modules/msw/lib/core/sse.mjs");
-/* harmony import */ var _utils_matching_matchRequestUrl_mjs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./utils/matching/matchRequestUrl.mjs */ "./node_modules/msw/lib/core/utils/matching/matchRequestUrl.mjs");
-/* harmony import */ var _utils_handleRequest_mjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./utils/handleRequest.mjs */ "./node_modules/msw/lib/core/utils/handleRequest.mjs");
-/* harmony import */ var _utils_request_onUnhandledRequest_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./utils/request/onUnhandledRequest.mjs */ "./node_modules/msw/lib/core/utils/request/onUnhandledRequest.mjs");
-/* harmony import */ var _getResponse_mjs__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./getResponse.mjs */ "./node_modules/msw/lib/core/getResponse.mjs");
-/* harmony import */ var _utils_url_cleanUrl_mjs__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./utils/url/cleanUrl.mjs */ "./node_modules/msw/lib/core/utils/url/cleanUrl.mjs");
-/* harmony import */ var _HttpResponse_mjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./HttpResponse.mjs */ "./node_modules/msw/lib/core/HttpResponse.mjs");
-/* harmony import */ var _delay_mjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./delay.mjs */ "./node_modules/msw/lib/core/delay.mjs");
-/* harmony import */ var _bypass_mjs__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./bypass.mjs */ "./node_modules/msw/lib/core/bypass.mjs");
-/* harmony import */ var _passthrough_mjs__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./passthrough.mjs */ "./node_modules/msw/lib/core/passthrough.mjs");
-/* harmony import */ var _isCommonAssetRequest_mjs__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./isCommonAssetRequest.mjs */ "./node_modules/msw/lib/core/isCommonAssetRequest.mjs");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(0,_utils_internal_checkGlobals_mjs__WEBPACK_IMPORTED_MODULE_0__.checkGlobals)();
-
-//# sourceMappingURL=index.mjs.map
-
-/***/ },
-
 /***/ "./node_modules/msw/lib/core/isCommonAssetRequest.mjs"
 /*!************************************************************!*\
   !*** ./node_modules/msw/lib/core/isCommonAssetRequest.mjs ***!
@@ -8644,636 +8180,6 @@ function isCommonAssetRequest(request) {
 }
 
 //# sourceMappingURL=isCommonAssetRequest.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/passthrough.mjs"
-/*!***************************************************!*\
-  !*** ./node_modules/msw/lib/core/passthrough.mjs ***!
-  \***************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   passthrough: () => (/* binding */ passthrough)
-/* harmony export */ });
-function passthrough() {
-  return new Response(null, {
-    status: 302,
-    statusText: "Passthrough",
-    headers: {
-      "x-msw-intention": "passthrough"
-    }
-  });
-}
-
-//# sourceMappingURL=passthrough.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/sse.mjs"
-/*!*******************************************!*\
-  !*** ./node_modules/msw/lib/core/sse.mjs ***!
-  \*******************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   sse: () => (/* binding */ sse)
-/* harmony export */ });
-/* harmony import */ var outvariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! outvariant */ "./node_modules/outvariant/lib/index.mjs");
-/* harmony import */ var strict_event_emitter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! strict-event-emitter */ "./node_modules/strict-event-emitter/lib/index.mjs");
-/* harmony import */ var _handlers_HttpHandler_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./handlers/HttpHandler.mjs */ "./node_modules/msw/lib/core/handlers/HttpHandler.mjs");
-/* harmony import */ var _delay_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./delay.mjs */ "./node_modules/msw/lib/core/delay.mjs");
-/* harmony import */ var _utils_logging_getTimestamp_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/logging/getTimestamp.mjs */ "./node_modules/msw/lib/core/utils/logging/getTimestamp.mjs");
-/* harmony import */ var _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./utils/internal/devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
-/* harmony import */ var _ws_utils_attachWebSocketLogger_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ws/utils/attachWebSocketLogger.mjs */ "./node_modules/msw/lib/core/ws/utils/attachWebSocketLogger.mjs");
-/* harmony import */ var _utils_request_toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./utils/request/toPublicUrl.mjs */ "./node_modules/msw/lib/core/utils/request/toPublicUrl.mjs");
-
-
-
-
-
-
-
-
-const sse = (path, resolver) => {
-  return new ServerSentEventHandler(path, resolver);
-};
-const SSE_RESPONSE_INIT = {
-  headers: {
-    "content-type": "text/event-stream",
-    "cache-control": "no-cache",
-    connection: "keep-alive"
-  }
-};
-class ServerSentEventHandler extends _handlers_HttpHandler_mjs__WEBPACK_IMPORTED_MODULE_2__.HttpHandler {
-  #emitter;
-  constructor(path, resolver) {
-    (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
-      typeof EventSource !== "undefined",
-      'Failed to construct a Server-Sent Event handler for path "%s": the EventSource API is not supported in this environment',
-      path
-    );
-    super("GET", path, async (info) => {
-      const stream = new ReadableStream({
-        start: async (controller) => {
-          const client = new ServerSentEventClient({
-            controller,
-            emitter: this.#emitter
-          });
-          const server = new ServerSentEventServer({
-            request: info.request,
-            client
-          });
-          await resolver({
-            ...info,
-            client,
-            server
-          });
-        }
-      });
-      return new Response(stream, SSE_RESPONSE_INIT);
-    });
-    this.#emitter = new strict_event_emitter__WEBPACK_IMPORTED_MODULE_1__.Emitter();
-  }
-  async predicate(args) {
-    if (args.request.headers.get("accept") !== "text/event-stream") {
-      return false;
-    }
-    const matches = await super.predicate(args);
-    if (matches && !args.resolutionContext?.quiet) {
-      await super.log({
-        request: args.request,
-        /**
-         * @note Construct a placeholder response since SSE response
-         * is being streamed and cannot be cloned/consumed for logging.
-         */
-        response: new Response("[streaming]", SSE_RESPONSE_INIT)
-      });
-      this.#attachClientLogger(args.request, this.#emitter);
-    }
-    return matches;
-  }
-  async log(_args) {
-    return;
-  }
-  #attachClientLogger(request, emitter) {
-    const publicUrl = (0,_utils_request_toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_7__.toPublicUrl)(request.url);
-    emitter.on("message", (payload) => {
-      console.groupCollapsed(
-        _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_5__.devUtils.formatMessage(
-          `${(0,_utils_logging_getTimestamp_mjs__WEBPACK_IMPORTED_MODULE_4__.getTimestamp)()} SSE %s %c\u21E3%c ${payload.event}`
-        ),
-        publicUrl,
-        `color:${_ws_utils_attachWebSocketLogger_mjs__WEBPACK_IMPORTED_MODULE_6__.colors.mocked}`,
-        "color:inherit"
-      );
-      console.log(payload.frames);
-      console.groupEnd();
-    });
-    emitter.on("error", () => {
-      console.groupCollapsed(
-        _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_5__.devUtils.formatMessage(`${(0,_utils_logging_getTimestamp_mjs__WEBPACK_IMPORTED_MODULE_4__.getTimestamp)()} SSE %s %c\xD7%c error`),
-        publicUrl,
-        `color: ${_ws_utils_attachWebSocketLogger_mjs__WEBPACK_IMPORTED_MODULE_6__.colors.system}`,
-        "color:inherit"
-      );
-      console.log("Handler:", this);
-      console.groupEnd();
-    });
-    emitter.on("close", () => {
-      console.groupCollapsed(
-        _utils_internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_5__.devUtils.formatMessage(`${(0,_utils_logging_getTimestamp_mjs__WEBPACK_IMPORTED_MODULE_4__.getTimestamp)()} SSE %s %c\u25A0%c close`),
-        publicUrl,
-        `colors:${_ws_utils_attachWebSocketLogger_mjs__WEBPACK_IMPORTED_MODULE_6__.colors.system}`,
-        "color:inherit"
-      );
-      console.log("Handler:", this);
-      console.groupEnd();
-    });
-  }
-}
-class ServerSentEventClient {
-  #encoder;
-  #controller;
-  #emitter;
-  constructor(args) {
-    this.#encoder = new TextEncoder();
-    this.#controller = args.controller;
-    this.#emitter = args.emitter;
-  }
-  /**
-   * Sends the given payload to the intercepted `EventSource`.
-   */
-  send(payload) {
-    if ("retry" in payload && payload.retry != null) {
-      this.#sendRetry(payload.retry);
-      return;
-    }
-    this.#sendMessage({
-      id: payload.id,
-      event: payload.event,
-      data: typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data
-    });
-  }
-  /**
-   * Dispatches the given event on the intercepted `EventSource`.
-   */
-  dispatchEvent(event) {
-    if (event instanceof MessageEvent) {
-      this.#sendMessage({
-        id: event.lastEventId || void 0,
-        event: event.type === "message" ? void 0 : event.type,
-        data: event.data
-      });
-      return;
-    }
-    if (event.type === "error") {
-      this.error();
-      return;
-    }
-    if (event.type === "close") {
-      this.close();
-      return;
-    }
-  }
-  /**
-   * Errors the underlying `EventSource`, closing the connection with an error.
-   * This is equivalent to aborting the connection and will produce a `TypeError: Failed to fetch`
-   * error.
-   */
-  error() {
-    this.#controller.error();
-    this.#emitter.emit("error");
-  }
-  /**
-   * Closes the underlying `EventSource`, closing the connection.
-   */
-  close() {
-    this.#controller.close();
-    this.#emitter.emit("close");
-  }
-  #sendRetry(retry) {
-    if (typeof retry === "number") {
-      this.#controller.enqueue(this.#encoder.encode(`retry:${retry}
-
-`));
-    }
-  }
-  #sendMessage(message) {
-    const frames = [];
-    if (message.id) {
-      frames.push(`id:${message.id}`);
-    }
-    if (message.event) {
-      frames.push(`event:${message.event.toString()}`);
-    }
-    if (message.data != null) {
-      for (const line of message.data.toString().split(/\r\n|\r|\n/)) {
-        frames.push(`data:${line}`);
-      }
-    }
-    frames.push("", "");
-    this.#controller.enqueue(this.#encoder.encode(frames.join("\n")));
-    this.#emitter.emit("message", {
-      id: message.id,
-      event: message.event?.toString() || "message",
-      data: message.data,
-      frames
-    });
-  }
-}
-class ServerSentEventServer {
-  #request;
-  #client;
-  constructor(args) {
-    this.#request = args.request;
-    this.#client = args.client;
-  }
-  /**
-   * Establishes the actual connection for this SSE request
-   * and returns the `EventSource` instance.
-   */
-  connect() {
-    const source = new ObservableEventSource(this.#request.url, {
-      withCredentials: this.#request.credentials === "include",
-      headers: {
-        /**
-         * @note Mark this request as passthrough so it doesn't trigger
-         * an infinite loop matching against the existing request handler.
-         */
-        accept: "msw/passthrough"
-      }
-    });
-    source[kOnAnyMessage] = (event) => {
-      Object.defineProperties(event, {
-        target: {
-          value: this,
-          enumerable: true,
-          writable: true,
-          configurable: true
-        }
-      });
-      queueMicrotask(() => {
-        if (!event.defaultPrevented) {
-          this.#client.dispatchEvent(event);
-        }
-      });
-    };
-    source.addEventListener("error", (event) => {
-      Object.defineProperties(event, {
-        target: {
-          value: this,
-          enumerable: true,
-          writable: true,
-          configurable: true
-        }
-      });
-      queueMicrotask(() => {
-        if (!event.defaultPrevented) {
-          this.#client.dispatchEvent(event);
-        }
-      });
-    });
-    return source;
-  }
-}
-const kRequest = Symbol("kRequest");
-const kReconnectionTime = Symbol("kReconnectionTime");
-const kLastEventId = Symbol("kLastEventId");
-const kAbortController = Symbol("kAbortController");
-const kOnOpen = Symbol("kOnOpen");
-const kOnMessage = Symbol("kOnMessage");
-const kOnAnyMessage = Symbol("kOnAnyMessage");
-const kOnError = Symbol("kOnError");
-class ObservableEventSource extends EventTarget {
-  static CONNECTING = 0;
-  static OPEN = 1;
-  static CLOSED = 2;
-  CONNECTING = ObservableEventSource.CONNECTING;
-  OPEN = ObservableEventSource.OPEN;
-  CLOSED = ObservableEventSource.CLOSED;
-  readyState;
-  url;
-  withCredentials;
-  [kRequest];
-  [kReconnectionTime];
-  [kLastEventId];
-  [kAbortController];
-  [kOnOpen] = null;
-  [kOnMessage] = null;
-  [kOnAnyMessage] = null;
-  [kOnError] = null;
-  constructor(url, init) {
-    super();
-    this.url = new URL(url).href;
-    this.withCredentials = init?.withCredentials ?? false;
-    this.readyState = this.CONNECTING;
-    const headers = new Headers(init?.headers || {});
-    headers.append("accept", "text/event-stream");
-    this[kAbortController] = new AbortController();
-    this[kReconnectionTime] = 2e3;
-    this[kLastEventId] = "";
-    this[kRequest] = new Request(this.url, {
-      method: "GET",
-      headers,
-      credentials: this.withCredentials ? "include" : "omit",
-      signal: this[kAbortController].signal
-    });
-    this.connect();
-  }
-  get onopen() {
-    return this[kOnOpen];
-  }
-  set onopen(handler) {
-    if (this[kOnOpen]) {
-      this.removeEventListener("open", this[kOnOpen]);
-    }
-    this[kOnOpen] = handler.bind(this);
-    this.addEventListener("open", this[kOnOpen]);
-  }
-  get onmessage() {
-    return this[kOnMessage];
-  }
-  set onmessage(handler) {
-    if (this[kOnMessage]) {
-      this.removeEventListener("message", { handleEvent: this[kOnMessage] });
-    }
-    this[kOnMessage] = handler.bind(this);
-    this.addEventListener("message", { handleEvent: this[kOnMessage] });
-  }
-  get onerror() {
-    return this[kOnError];
-  }
-  set oneerror(handler) {
-    if (this[kOnError]) {
-      this.removeEventListener("error", { handleEvent: this[kOnError] });
-    }
-    this[kOnError] = handler.bind(this);
-    this.addEventListener("error", { handleEvent: this[kOnError] });
-  }
-  addEventListener(type, listener, options) {
-    super.addEventListener(
-      type,
-      listener,
-      options
-    );
-  }
-  removeEventListener(type, listener, options) {
-    super.removeEventListener(
-      type,
-      listener,
-      options
-    );
-  }
-  dispatchEvent(event) {
-    return super.dispatchEvent(event);
-  }
-  close() {
-    this[kAbortController].abort();
-    this.readyState = this.CLOSED;
-  }
-  async connect() {
-    await fetch(this[kRequest]).then((response) => {
-      this.processResponse(response);
-    }).catch(() => {
-      this.failConnection();
-    });
-  }
-  processResponse(response) {
-    if (!response.body) {
-      this.failConnection();
-      return;
-    }
-    if (isNetworkError(response)) {
-      this.reestablishConnection();
-      return;
-    }
-    if (response.status !== 200 || response.headers.get("content-type") !== "text/event-stream") {
-      this.failConnection();
-      return;
-    }
-    this.announceConnection();
-    this.interpretResponseBody(response);
-  }
-  announceConnection() {
-    queueMicrotask(() => {
-      if (this.readyState !== this.CLOSED) {
-        this.readyState = this.OPEN;
-        this.dispatchEvent(new Event("open"));
-      }
-    });
-  }
-  interpretResponseBody(response) {
-    const parsingStream = new EventSourceParsingStream({
-      message: (message) => {
-        if (message.id) {
-          this[kLastEventId] = message.id;
-        }
-        if (message.retry) {
-          this[kReconnectionTime] = message.retry;
-        }
-        const messageEvent = new MessageEvent(
-          message.event ? message.event : "message",
-          {
-            data: message.data,
-            origin: this[kRequest].url,
-            lastEventId: this[kLastEventId],
-            cancelable: true
-          }
-        );
-        this[kOnAnyMessage]?.(messageEvent);
-        this.dispatchEvent(messageEvent);
-      },
-      abort: () => {
-        throw new Error("Stream abort is not implemented");
-      },
-      close: () => {
-        this.failConnection();
-      }
-    });
-    response.body.pipeTo(parsingStream).then(() => {
-      this.processResponseEndOfBody(response);
-    }).catch(() => {
-      this.failConnection();
-    });
-  }
-  processResponseEndOfBody(response) {
-    if (!isNetworkError(response)) {
-      this.reestablishConnection();
-    }
-  }
-  async reestablishConnection() {
-    queueMicrotask(() => {
-      if (this.readyState === this.CLOSED) {
-        return;
-      }
-      this.readyState = this.CONNECTING;
-      this.dispatchEvent(new Event("error"));
-    });
-    await (0,_delay_mjs__WEBPACK_IMPORTED_MODULE_3__.delay)(this[kReconnectionTime]);
-    queueMicrotask(async () => {
-      if (this.readyState !== this.CONNECTING) {
-        return;
-      }
-      if (this[kLastEventId] !== "") {
-        this[kRequest].headers.set("last-event-id", this[kLastEventId]);
-      }
-      await this.connect();
-    });
-  }
-  failConnection() {
-    queueMicrotask(() => {
-      if (this.readyState !== this.CLOSED) {
-        this.readyState = this.CLOSED;
-        this.dispatchEvent(new Event("error"));
-      }
-    });
-  }
-}
-function isNetworkError(response) {
-  return response.type === "error" && response.status === 0 && response.statusText === "" && Array.from(response.headers.entries()).length === 0 && response.body === null;
-}
-var ControlCharacters = /* @__PURE__ */ ((ControlCharacters2) => {
-  ControlCharacters2[ControlCharacters2["NewLine"] = 10] = "NewLine";
-  ControlCharacters2[ControlCharacters2["CarriageReturn"] = 13] = "CarriageReturn";
-  ControlCharacters2[ControlCharacters2["Space"] = 32] = "Space";
-  ControlCharacters2[ControlCharacters2["Colon"] = 58] = "Colon";
-  return ControlCharacters2;
-})(ControlCharacters || {});
-class EventSourceParsingStream extends WritableStream {
-  constructor(underlyingSink) {
-    super({
-      write: (chunk) => {
-        this.processResponseBodyChunk(chunk);
-      },
-      abort: (reason) => {
-        this.underlyingSink.abort?.(reason);
-      },
-      close: () => {
-        this.underlyingSink.close?.();
-      }
-    });
-    this.underlyingSink = underlyingSink;
-    this.decoder = new TextDecoder();
-    this.position = 0;
-  }
-  decoder;
-  buffer;
-  position;
-  fieldLength;
-  discardTrailingNewline = false;
-  message = {
-    id: void 0,
-    event: void 0,
-    data: void 0,
-    retry: void 0
-  };
-  resetMessage() {
-    this.message = {
-      id: void 0,
-      event: void 0,
-      data: void 0,
-      retry: void 0
-    };
-  }
-  processResponseBodyChunk(chunk) {
-    if (this.buffer == null) {
-      this.buffer = chunk;
-      this.position = 0;
-      this.fieldLength = -1;
-    } else {
-      const nextBuffer = new Uint8Array(this.buffer.length + chunk.length);
-      nextBuffer.set(this.buffer);
-      nextBuffer.set(chunk, this.buffer.length);
-      this.buffer = nextBuffer;
-    }
-    const bufferLength = this.buffer.length;
-    let lineStart = 0;
-    while (this.position < bufferLength) {
-      if (this.discardTrailingNewline) {
-        if (this.buffer[this.position] === 10 /* NewLine */) {
-          lineStart = ++this.position;
-        }
-        this.discardTrailingNewline = false;
-      }
-      let lineEnd = -1;
-      for (; this.position < bufferLength && lineEnd === -1; ++this.position) {
-        switch (this.buffer[this.position]) {
-          case 58 /* Colon */: {
-            if (this.fieldLength === -1) {
-              this.fieldLength = this.position - lineStart;
-            }
-            break;
-          }
-          case 13 /* CarriageReturn */: {
-            this.discardTrailingNewline = true;
-            break;
-          }
-          case 10 /* NewLine */: {
-            lineEnd = this.position;
-            break;
-          }
-        }
-      }
-      if (lineEnd === -1) {
-        break;
-      }
-      this.processLine(
-        this.buffer.subarray(lineStart, lineEnd),
-        this.fieldLength
-      );
-      lineStart = this.position;
-      this.fieldLength = -1;
-    }
-    if (lineStart === bufferLength) {
-      this.buffer = void 0;
-    } else if (lineStart !== 0) {
-      this.buffer = this.buffer.subarray(lineStart);
-      this.position -= lineStart;
-    }
-  }
-  processLine(line, fieldLength) {
-    if (line.length === 0) {
-      if (this.message.data === void 0) {
-        this.message.event = void 0;
-        return;
-      }
-      this.underlyingSink.message(this.message);
-      this.resetMessage();
-      return;
-    }
-    if (fieldLength > 0) {
-      const field = this.decoder.decode(line.subarray(0, fieldLength));
-      const valueOffset = fieldLength + (line[fieldLength + 1] === 32 /* Space */ ? 2 : 1);
-      const value = this.decoder.decode(line.subarray(valueOffset));
-      switch (field) {
-        case "data": {
-          this.message.data = this.message.data ? this.message.data + "\n" + value : value;
-          break;
-        }
-        case "event": {
-          this.message.event = value;
-          break;
-        }
-        case "id": {
-          this.message.id = value;
-          break;
-        }
-        case "retry": {
-          const retry = parseInt(value, 10);
-          if (!isNaN(retry)) {
-            this.message.retry = retry;
-          }
-          break;
-        }
-      }
-    }
-  }
-}
-
-//# sourceMappingURL=sse.mjs.map
 
 /***/ },
 
@@ -9463,128 +8369,6 @@ const executeHandlers = async ({
 
 /***/ },
 
-/***/ "./node_modules/msw/lib/core/utils/handleRequest.mjs"
-/*!***********************************************************!*\
-  !*** ./node_modules/msw/lib/core/utils/handleRequest.mjs ***!
-  \***********************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   handleRequest: () => (/* binding */ handleRequest)
-/* harmony export */ });
-/* harmony import */ var until_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! until-async */ "./node_modules/until-async/lib/index.js");
-/* harmony import */ var _executeHandlers_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./executeHandlers.mjs */ "./node_modules/msw/lib/core/utils/executeHandlers.mjs");
-/* harmony import */ var _request_onUnhandledRequest_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./request/onUnhandledRequest.mjs */ "./node_modules/msw/lib/core/utils/request/onUnhandledRequest.mjs");
-/* harmony import */ var _request_storeResponseCookies_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./request/storeResponseCookies.mjs */ "./node_modules/msw/lib/core/utils/request/storeResponseCookies.mjs");
-
-
-
-
-async function handleRequest(request, requestId, handlers, options, emitter, handleRequestOptions) {
-  emitter.emit("request:start", { request, requestId });
-  if (request.headers.get("accept")?.includes("msw/passthrough")) {
-    emitter.emit("request:end", { request, requestId });
-    handleRequestOptions?.onPassthroughResponse?.(request);
-    return;
-  }
-  const [lookupError, lookupResult] = await (0,until_async__WEBPACK_IMPORTED_MODULE_0__.until)(() => {
-    return (0,_executeHandlers_mjs__WEBPACK_IMPORTED_MODULE_1__.executeHandlers)({
-      request,
-      requestId,
-      handlers,
-      resolutionContext: handleRequestOptions?.resolutionContext
-    });
-  });
-  if (lookupError) {
-    emitter.emit("unhandledException", {
-      error: lookupError,
-      request,
-      requestId
-    });
-    throw lookupError;
-  }
-  if (!lookupResult) {
-    await (0,_request_onUnhandledRequest_mjs__WEBPACK_IMPORTED_MODULE_2__.onUnhandledRequest)(request, options.onUnhandledRequest);
-    emitter.emit("request:unhandled", { request, requestId });
-    emitter.emit("request:end", { request, requestId });
-    handleRequestOptions?.onPassthroughResponse?.(request);
-    return;
-  }
-  const { response } = lookupResult;
-  if (!response) {
-    emitter.emit("request:end", { request, requestId });
-    handleRequestOptions?.onPassthroughResponse?.(request);
-    return;
-  }
-  if (response.status === 302 && response.headers.get("x-msw-intention") === "passthrough") {
-    emitter.emit("request:end", { request, requestId });
-    handleRequestOptions?.onPassthroughResponse?.(request);
-    return;
-  }
-  await (0,_request_storeResponseCookies_mjs__WEBPACK_IMPORTED_MODULE_3__.storeResponseCookies)(request, response);
-  emitter.emit("request:match", { request, requestId });
-  const requiredLookupResult = lookupResult;
-  handleRequestOptions?.onMockedResponse?.(response, requiredLookupResult);
-  emitter.emit("request:end", { request, requestId });
-  return response;
-}
-
-//# sourceMappingURL=handleRequest.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/utils/internal/Disposable.mjs"
-/*!*****************************************************************!*\
-  !*** ./node_modules/msw/lib/core/utils/internal/Disposable.mjs ***!
-  \*****************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Disposable: () => (/* binding */ Disposable)
-/* harmony export */ });
-class Disposable {
-  subscriptions = [];
-  dispose() {
-    let subscription;
-    while (subscription = this.subscriptions.shift()) {
-      subscription();
-    }
-  }
-}
-
-//# sourceMappingURL=Disposable.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/utils/internal/checkGlobals.mjs"
-/*!*******************************************************************!*\
-  !*** ./node_modules/msw/lib/core/utils/internal/checkGlobals.mjs ***!
-  \*******************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   checkGlobals: () => (/* binding */ checkGlobals)
-/* harmony export */ });
-/* harmony import */ var outvariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! outvariant */ "./node_modules/outvariant/lib/index.mjs");
-/* harmony import */ var _devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
-
-
-function checkGlobals() {
-  (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
-    typeof URL !== "undefined",
-    _devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__.devUtils.formatMessage(
-      `Global "URL" class is not defined. This likely means that you're running MSW in an environment that doesn't support all Node.js standard API (e.g. React Native). If that's the case, please use an appropriate polyfill for the "URL" class, like "react-native-url-polyfill".`
-    )
-  );
-}
-
-//# sourceMappingURL=checkGlobals.mjs.map
-
-/***/ },
-
 /***/ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs"
 /*!***************************************************************!*\
   !*** ./node_modules/msw/lib/core/utils/internal/devUtils.mjs ***!
@@ -9654,24 +8438,6 @@ function getCallFrame(error) {
 }
 
 //# sourceMappingURL=getCallFrame.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/utils/internal/hasRefCounted.mjs"
-/*!********************************************************************!*\
-  !*** ./node_modules/msw/lib/core/utils/internal/hasRefCounted.mjs ***!
-  \********************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   hasRefCounted: () => (/* binding */ hasRefCounted)
-/* harmony export */ });
-function hasRefCounted(value) {
-  return typeof Reflect.get(value, "ref") === "function" && typeof Reflect.get(value, "unref") === "function";
-}
-
-//# sourceMappingURL=hasRefCounted.mjs.map
 
 /***/ },
 
@@ -9751,225 +8517,6 @@ function jsonParse(value) {
 }
 
 //# sourceMappingURL=jsonParse.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/utils/internal/parseGraphQLRequest.mjs"
-/*!**************************************************************************!*\
-  !*** ./node_modules/msw/lib/core/utils/internal/parseGraphQLRequest.mjs ***!
-  \**************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   parseDocumentNode: () => (/* binding */ parseDocumentNode),
-/* harmony export */   parseGraphQLRequest: () => (/* binding */ parseGraphQLRequest)
-/* harmony export */ });
-/* harmony import */ var _request_toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../request/toPublicUrl.mjs */ "./node_modules/msw/lib/core/utils/request/toPublicUrl.mjs");
-/* harmony import */ var _devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
-/* harmony import */ var _jsonParse_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./jsonParse.mjs */ "./node_modules/msw/lib/core/utils/internal/jsonParse.mjs");
-/* harmony import */ var _parseMultipartData_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./parseMultipartData.mjs */ "./node_modules/msw/lib/core/utils/internal/parseMultipartData.mjs");
-
-
-
-
-function parseDocumentNode(node) {
-  const operationDef = node.definitions.find((definition) => {
-    return definition.kind === "OperationDefinition";
-  });
-  return {
-    operationType: operationDef?.operation,
-    operationName: operationDef?.name?.value
-  };
-}
-async function parseQuery(query) {
-  const { parse } = await __webpack_require__.e(/*! import() */ "node_modules_graphql_index_mjs").then(__webpack_require__.bind(__webpack_require__, /*! graphql */ "./node_modules/graphql/index.mjs")).catch((error) => {
-    console.error('[MSW] Failed to parse a GraphQL query: cannot import the "graphql" module. Please make sure you install it if you wish to intercept GraphQL requests. See the original import error below.');
-    throw error;
-  });
-  try {
-    const ast = parse(query);
-    return parseDocumentNode(ast);
-  } catch (error) {
-    return error;
-  }
-}
-function extractMultipartVariables(variables, map, files) {
-  const operations = { variables };
-  for (const [key, pathArray] of Object.entries(map)) {
-    if (!(key in files)) {
-      throw new Error(`Given files do not have a key '${key}' .`);
-    }
-    for (const dotPath of pathArray) {
-      const [lastPath, ...reversedPaths] = dotPath.split(".").reverse();
-      const paths = reversedPaths.reverse();
-      let target = operations;
-      for (const path of paths) {
-        if (!(path in target)) {
-          throw new Error(`Property '${path}' is not in operations.`);
-        }
-        target = target[path];
-      }
-      target[lastPath] = files[key];
-    }
-  }
-  return operations.variables;
-}
-async function getGraphQLInput(request) {
-  switch (request.method) {
-    case "GET": {
-      const url = new URL(request.url);
-      const query = url.searchParams.get("query");
-      const variables = url.searchParams.get("variables") || "";
-      return {
-        query,
-        variables: (0,_jsonParse_mjs__WEBPACK_IMPORTED_MODULE_2__.jsonParse)(variables)
-      };
-    }
-    case "POST": {
-      const requestClone = request.clone();
-      if (request.headers.get("content-type")?.includes("multipart/form-data")) {
-        const responseJson = (0,_parseMultipartData_mjs__WEBPACK_IMPORTED_MODULE_3__.parseMultipartData)(
-          await requestClone.text(),
-          request.headers
-        );
-        if (!responseJson) {
-          return null;
-        }
-        const { operations, map, ...files } = responseJson;
-        const parsedOperations = (0,_jsonParse_mjs__WEBPACK_IMPORTED_MODULE_2__.jsonParse)(
-          operations
-        ) || {};
-        if (!parsedOperations.query) {
-          return null;
-        }
-        const parsedMap = (0,_jsonParse_mjs__WEBPACK_IMPORTED_MODULE_2__.jsonParse)(map || "") || {};
-        const variables = parsedOperations.variables ? extractMultipartVariables(
-          parsedOperations.variables,
-          parsedMap,
-          files
-        ) : {};
-        return {
-          query: parsedOperations.query,
-          variables
-        };
-      }
-      const requestJson = await requestClone.json().catch(() => null);
-      if (requestJson?.query) {
-        const { query, variables } = requestJson;
-        return {
-          query,
-          variables
-        };
-      }
-      return null;
-    }
-    default:
-      return null;
-  }
-}
-async function parseGraphQLRequest(request) {
-  const input = await getGraphQLInput(request);
-  if (!input || !input.query) {
-    return;
-  }
-  const { query, variables } = input;
-  const parsedResult = await parseQuery(query);
-  if (parsedResult instanceof Error) {
-    const requestPublicUrl = (0,_request_toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_0__.toPublicUrl)(request.url);
-    throw new Error(
-      _devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__.devUtils.formatMessage(
-        'Failed to intercept a GraphQL request to "%s %s": cannot parse query. See the error message from the parser below.\n\n%s',
-        request.method,
-        requestPublicUrl,
-        parsedResult.message
-      )
-    );
-  }
-  return {
-    query: input.query,
-    operationType: parsedResult.operationType,
-    operationName: parsedResult.operationName,
-    variables
-  };
-}
-
-//# sourceMappingURL=parseGraphQLRequest.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/utils/internal/parseMultipartData.mjs"
-/*!*************************************************************************!*\
-  !*** ./node_modules/msw/lib/core/utils/internal/parseMultipartData.mjs ***!
-  \*************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   parseMultipartData: () => (/* binding */ parseMultipartData)
-/* harmony export */ });
-/* harmony import */ var headers_polyfill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! headers-polyfill */ "./node_modules/headers-polyfill/lib/index.mjs");
-
-function parseContentHeaders(headersString) {
-  const headers = (0,headers_polyfill__WEBPACK_IMPORTED_MODULE_0__.stringToHeaders)(headersString);
-  const contentType = headers.get("content-type") || "text/plain";
-  const disposition = headers.get("content-disposition");
-  if (!disposition) {
-    throw new Error('"Content-Disposition" header is required.');
-  }
-  const directives = disposition.split(";").reduce((acc, chunk) => {
-    const [name2, ...rest] = chunk.trim().split("=");
-    acc[name2] = rest.join("=");
-    return acc;
-  }, {});
-  const name = directives.name?.slice(1, -1);
-  const filename = directives.filename?.slice(1, -1);
-  return {
-    name,
-    filename,
-    contentType
-  };
-}
-function parseMultipartData(data, headers) {
-  const contentType = headers?.get("content-type");
-  if (!contentType) {
-    return void 0;
-  }
-  const [, ...directives] = contentType.split(/; */);
-  const boundary = directives.filter((d) => d.startsWith("boundary=")).map((s) => s.replace(/^boundary=/, ""))[0];
-  if (!boundary) {
-    return void 0;
-  }
-  const boundaryRegExp = new RegExp(
-    `--+${boundary.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`
-  );
-  const fields = data.split(boundaryRegExp).filter((chunk) => chunk.startsWith("\r\n") && chunk.endsWith("\r\n")).map((chunk) => chunk.trimStart().replace(/\r\n$/, ""));
-  if (!fields.length) {
-    return void 0;
-  }
-  const parsedBody = {};
-  try {
-    for (const field of fields) {
-      const [contentHeaders, ...rest] = field.split("\r\n\r\n");
-      const contentBody = rest.join("\r\n\r\n");
-      const { contentType: contentType2, filename, name } = parseContentHeaders(contentHeaders);
-      const value = filename === void 0 ? contentBody : new File([contentBody], filename, { type: contentType2 });
-      const parsedValue = parsedBody[name];
-      if (parsedValue === void 0) {
-        parsedBody[name] = value;
-      } else if (Array.isArray(parsedValue)) {
-        parsedBody[name] = [...parsedValue, value];
-      } else {
-        parsedBody[name] = [parsedValue, value];
-      }
-    }
-    return parsedBody;
-  } catch {
-    return void 0;
-  }
-}
-
-//# sourceMappingURL=parseMultipartData.mjs.map
 
 /***/ },
 
@@ -10177,58 +8724,6 @@ function normalizePath(path, baseUrl) {
 
 /***/ },
 
-/***/ "./node_modules/msw/lib/core/utils/request/getAllAcceptedMimeTypes.mjs"
-/*!*****************************************************************************!*\
-  !*** ./node_modules/msw/lib/core/utils/request/getAllAcceptedMimeTypes.mjs ***!
-  \*****************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getAllAcceptedMimeTypes: () => (/* binding */ getAllAcceptedMimeTypes)
-/* harmony export */ });
-function getAllAcceptedMimeTypes(acceptHeader) {
-  if (acceptHeader == null) {
-    return [];
-  }
-  const accepted = [];
-  for (const part of acceptHeader.split(",")) {
-    const [type, ...params] = part.split(";").map((v) => v.trim());
-    let quality = 1;
-    let parameterCount = 0;
-    for (const param of params) {
-      const [key, value] = param.split("=").map((v) => v.trim());
-      if (key === "q") {
-        quality = Number(value);
-      } else {
-        parameterCount++;
-      }
-    }
-    if (quality === 0) {
-      continue;
-    }
-    const [mediaType, mediaSubtype] = type.split("/");
-    const specificity = mediaType === "*" ? 0 : mediaSubtype === "*" ? 1 : 2;
-    accepted.push({ type, quality, specificity, parameterCount });
-  }
-  if (!accepted.length) {
-    return [];
-  }
-  return accepted.sort((left, right) => {
-    if (right.quality !== left.quality) {
-      return right.quality - left.quality;
-    }
-    if (right.specificity !== left.specificity) {
-      return right.specificity - left.specificity;
-    }
-    return right.parameterCount - left.parameterCount;
-  }).map((entry) => entry.type);
-}
-
-//# sourceMappingURL=getAllAcceptedMimeTypes.mjs.map
-
-/***/ },
-
 /***/ "./node_modules/msw/lib/core/utils/request/getRequestCookies.mjs"
 /*!***********************************************************************!*\
   !*** ./node_modules/msw/lib/core/utils/request/getRequestCookies.mjs ***!
@@ -10301,76 +8796,6 @@ function getAllRequestCookies(request) {
 
 /***/ },
 
-/***/ "./node_modules/msw/lib/core/utils/request/onUnhandledRequest.mjs"
-/*!************************************************************************!*\
-  !*** ./node_modules/msw/lib/core/utils/request/onUnhandledRequest.mjs ***!
-  \************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   onUnhandledRequest: () => (/* binding */ onUnhandledRequest)
-/* harmony export */ });
-/* harmony import */ var _toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toPublicUrl.mjs */ "./node_modules/msw/lib/core/utils/request/toPublicUrl.mjs");
-/* harmony import */ var _internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../internal/devUtils.mjs */ "./node_modules/msw/lib/core/utils/internal/devUtils.mjs");
-/* harmony import */ var _isCommonAssetRequest_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../isCommonAssetRequest.mjs */ "./node_modules/msw/lib/core/isCommonAssetRequest.mjs");
-
-
-
-async function onUnhandledRequest(request, strategy = "warn") {
-  const url = new URL(request.url);
-  const publicUrl = (0,_toPublicUrl_mjs__WEBPACK_IMPORTED_MODULE_0__.toPublicUrl)(url) + url.search;
-  const requestBody = request.method === "HEAD" || request.method === "GET" ? null : await request.clone().text();
-  const messageDetails = `
-
-  \u2022 ${request.method} ${publicUrl}
-
-${requestBody ? `  \u2022 Request body: ${requestBody}
-
-` : ""}`;
-  const unhandledRequestMessage = `intercepted a request without a matching request handler:${messageDetails}If you still wish to intercept this unhandled request, please create a request handler for it.
-Read more: https://mswjs.io/docs/http/intercepting-requests`;
-  function applyStrategy(strategy2) {
-    switch (strategy2) {
-      case "error": {
-        _internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__.devUtils.error("Error: %s", unhandledRequestMessage);
-        throw new _internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__.InternalError(
-          _internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__.devUtils.formatMessage(
-            'Cannot bypass a request when using the "error" strategy for the "onUnhandledRequest" option.'
-          )
-        );
-      }
-      case "warn": {
-        _internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__.devUtils.warn("Warning: %s", unhandledRequestMessage);
-        break;
-      }
-      case "bypass":
-        break;
-      default:
-        throw new _internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__.InternalError(
-          _internal_devUtils_mjs__WEBPACK_IMPORTED_MODULE_1__.devUtils.formatMessage(
-            'Failed to react to an unhandled request: unknown strategy "%s". Please provide one of the supported strategies ("bypass", "warn", "error") or a custom callback function as the value of the "onUnhandledRequest" option.',
-            strategy2
-          )
-        );
-    }
-  }
-  if (typeof strategy === "function") {
-    strategy(request, {
-      warning: applyStrategy.bind(null, "warn"),
-      error: applyStrategy.bind(null, "error")
-    });
-    return;
-  }
-  if (!(0,_isCommonAssetRequest_mjs__WEBPACK_IMPORTED_MODULE_2__.isCommonAssetRequest)(request)) {
-    applyStrategy(strategy);
-  }
-}
-
-//# sourceMappingURL=onUnhandledRequest.mjs.map
-
-/***/ },
-
 /***/ "./node_modules/msw/lib/core/utils/request/storeResponseCookies.mjs"
 /*!**************************************************************************!*\
   !*** ./node_modules/msw/lib/core/utils/request/storeResponseCookies.mjs ***!
@@ -10415,6 +8840,28 @@ function toPublicUrl(url) {
 }
 
 //# sourceMappingURL=toPublicUrl.mjs.map
+
+/***/ },
+
+/***/ "./node_modules/msw/lib/core/utils/toResponseInit.mjs"
+/*!************************************************************!*\
+  !*** ./node_modules/msw/lib/core/utils/toResponseInit.mjs ***!
+  \************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   toResponseInit: () => (/* binding */ toResponseInit)
+/* harmony export */ });
+function toResponseInit(response) {
+  return {
+    status: response.status,
+    statusText: response.statusText,
+    headers: Object.fromEntries(response.headers.entries())
+  };
+}
+
+//# sourceMappingURL=toResponseInit.mjs.map
 
 /***/ },
 
@@ -10485,377 +8932,6 @@ function isAbsoluteUrl(url) {
 }
 
 //# sourceMappingURL=isAbsoluteUrl.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/ws.mjs"
-/*!******************************************!*\
-  !*** ./node_modules/msw/lib/core/ws.mjs ***!
-  \******************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ws: () => (/* binding */ ws)
-/* harmony export */ });
-/* harmony import */ var outvariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! outvariant */ "./node_modules/outvariant/lib/index.mjs");
-/* harmony import */ var _handlers_WebSocketHandler_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./handlers/WebSocketHandler.mjs */ "./node_modules/msw/lib/core/handlers/WebSocketHandler.mjs");
-/* harmony import */ var _utils_internal_hasRefCounted_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils/internal/hasRefCounted.mjs */ "./node_modules/msw/lib/core/utils/internal/hasRefCounted.mjs");
-/* harmony import */ var _utils_matching_matchRequestUrl_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/matching/matchRequestUrl.mjs */ "./node_modules/msw/lib/core/utils/matching/matchRequestUrl.mjs");
-/* harmony import */ var _ws_WebSocketClientManager_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ws/WebSocketClientManager.mjs */ "./node_modules/msw/lib/core/ws/WebSocketClientManager.mjs");
-
-
-
-
-
-const webSocketChannel = new BroadcastChannel("msw:websocket-client-manager");
-if ((0,_utils_internal_hasRefCounted_mjs__WEBPACK_IMPORTED_MODULE_2__.hasRefCounted)(webSocketChannel)) {
-  webSocketChannel.unref();
-}
-function createWebSocketLinkHandler(url) {
-  (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(url, "Expected a WebSocket server URL but got undefined");
-  (0,outvariant__WEBPACK_IMPORTED_MODULE_0__.invariant)(
-    (0,_utils_matching_matchRequestUrl_mjs__WEBPACK_IMPORTED_MODULE_3__.isPath)(url),
-    "Expected a WebSocket server URL to be a valid path but got %s",
-    typeof url
-  );
-  const clientManager = new _ws_WebSocketClientManager_mjs__WEBPACK_IMPORTED_MODULE_4__.WebSocketClientManager(webSocketChannel);
-  return {
-    get clients() {
-      return clientManager.clients;
-    },
-    addEventListener(event, listener) {
-      const handler = new _handlers_WebSocketHandler_mjs__WEBPACK_IMPORTED_MODULE_1__.WebSocketHandler(url);
-      handler[_handlers_WebSocketHandler_mjs__WEBPACK_IMPORTED_MODULE_1__.kEmitter].on("connection", async ({ client }) => {
-        await clientManager.addConnection(client);
-      });
-      handler[_handlers_WebSocketHandler_mjs__WEBPACK_IMPORTED_MODULE_1__.kEmitter].on(event, listener);
-      return handler;
-    },
-    broadcast(data) {
-      this.broadcastExcept([], data);
-    },
-    broadcastExcept(clients, data) {
-      const ignoreClients = Array.prototype.concat(clients).map((client) => client.id);
-      clientManager.clients.forEach((otherClient) => {
-        if (!ignoreClients.includes(otherClient.id)) {
-          otherClient.send(data);
-        }
-      });
-    }
-  };
-}
-const ws = {
-  link: createWebSocketLinkHandler
-};
-
-//# sourceMappingURL=ws.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/ws/WebSocketClientManager.mjs"
-/*!*****************************************************************!*\
-  !*** ./node_modules/msw/lib/core/ws/WebSocketClientManager.mjs ***!
-  \*****************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   WebSocketClientManager: () => (/* binding */ WebSocketClientManager),
-/* harmony export */   WebSocketRemoteClientConnection: () => (/* binding */ WebSocketRemoteClientConnection)
-/* harmony export */ });
-/* harmony import */ var _WebSocketMemoryClientStore_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./WebSocketMemoryClientStore.mjs */ "./node_modules/msw/lib/core/ws/WebSocketMemoryClientStore.mjs");
-/* harmony import */ var _WebSocketIndexedDBClientStore_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WebSocketIndexedDBClientStore.mjs */ "./node_modules/msw/lib/core/ws/WebSocketIndexedDBClientStore.mjs");
-
-
-class WebSocketClientManager {
-  constructor(channel) {
-    this.channel = channel;
-    this.store = typeof indexedDB !== "undefined" ? new _WebSocketIndexedDBClientStore_mjs__WEBPACK_IMPORTED_MODULE_1__.WebSocketIndexedDBClientStore() : new _WebSocketMemoryClientStore_mjs__WEBPACK_IMPORTED_MODULE_0__.WebSocketMemoryClientStore();
-    this.runtimeClients = /* @__PURE__ */ new Map();
-    this.allClients = /* @__PURE__ */ new Set();
-    this.channel.addEventListener("message", (message) => {
-      if (message.data?.type === "db:update") {
-        this.flushDatabaseToMemory();
-      }
-    });
-    if (typeof window !== "undefined") {
-      window.addEventListener("message", async (message) => {
-        if (message.data?.type === "msw/worker:stop") {
-          await this.removeRuntimeClients();
-        }
-      });
-    }
-  }
-  store;
-  runtimeClients;
-  allClients;
-  async flushDatabaseToMemory() {
-    const storedClients = await this.store.getAll();
-    this.allClients = new Set(
-      storedClients.map((client) => {
-        const runtimeClient = this.runtimeClients.get(client.id);
-        if (runtimeClient) {
-          return runtimeClient;
-        }
-        return new WebSocketRemoteClientConnection(
-          client.id,
-          new URL(client.url),
-          this.channel
-        );
-      })
-    );
-  }
-  async removeRuntimeClients() {
-    await this.store.deleteMany(Array.from(this.runtimeClients.keys()));
-    this.runtimeClients.clear();
-    await this.flushDatabaseToMemory();
-    this.notifyOthersAboutDatabaseUpdate();
-  }
-  /**
-   * All active WebSocket client connections.
-   */
-  get clients() {
-    return this.allClients;
-  }
-  /**
-   * Notify other runtimes about the database update
-   * using the shared `BroadcastChannel` instance.
-   */
-  notifyOthersAboutDatabaseUpdate() {
-    this.channel.postMessage({ type: "db:update" });
-  }
-  async addClient(client) {
-    await this.store.add(client);
-    await this.flushDatabaseToMemory();
-    this.notifyOthersAboutDatabaseUpdate();
-  }
-  /**
-   * Adds the given `WebSocket` client connection to the set
-   * of all connections. The given connection is always the complete
-   * connection object because `addConnection()` is called only
-   * for the opened connections in the same runtime.
-   */
-  async addConnection(client) {
-    this.runtimeClients.set(client.id, client);
-    await this.addClient(client);
-    const handleExtraneousMessage = (message) => {
-      const { type, payload } = message.data;
-      if (typeof payload === "object" && "clientId" in payload && payload.clientId !== client.id) {
-        return;
-      }
-      switch (type) {
-        case "extraneous:send": {
-          client.send(payload.data);
-          break;
-        }
-        case "extraneous:close": {
-          client.close(payload.code, payload.reason);
-          break;
-        }
-      }
-    };
-    const abortController = new AbortController();
-    this.channel.addEventListener("message", handleExtraneousMessage, {
-      signal: abortController.signal
-    });
-    client.addEventListener("close", () => abortController.abort(), {
-      once: true
-    });
-  }
-}
-class WebSocketRemoteClientConnection {
-  constructor(id, url, channel) {
-    this.id = id;
-    this.url = url;
-    this.channel = channel;
-  }
-  send(data) {
-    this.channel.postMessage({
-      type: "extraneous:send",
-      payload: {
-        clientId: this.id,
-        data
-      }
-    });
-  }
-  close(code, reason) {
-    this.channel.postMessage({
-      type: "extraneous:close",
-      payload: {
-        clientId: this.id,
-        code,
-        reason
-      }
-    });
-  }
-  addEventListener(_type, _listener, _options) {
-    throw new Error(
-      "WebSocketRemoteClientConnection.addEventListener is not supported"
-    );
-  }
-  removeEventListener(_event, _listener, _options) {
-    throw new Error(
-      "WebSocketRemoteClientConnection.removeEventListener is not supported"
-    );
-  }
-}
-
-//# sourceMappingURL=WebSocketClientManager.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/ws/WebSocketIndexedDBClientStore.mjs"
-/*!************************************************************************!*\
-  !*** ./node_modules/msw/lib/core/ws/WebSocketIndexedDBClientStore.mjs ***!
-  \************************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   WebSocketIndexedDBClientStore: () => (/* binding */ WebSocketIndexedDBClientStore)
-/* harmony export */ });
-/* harmony import */ var _open_draft_deferred_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @open-draft/deferred-promise */ "./node_modules/@open-draft/deferred-promise/build/index.mjs");
-
-const DB_NAME = "msw-websocket-clients";
-const DB_STORE_NAME = "clients";
-class WebSocketIndexedDBClientStore {
-  db;
-  constructor() {
-    this.db = this.createDatabase();
-  }
-  async add(client) {
-    const promise = new _open_draft_deferred_promise__WEBPACK_IMPORTED_MODULE_0__.DeferredPromise();
-    const store = await this.getStore();
-    const request = store.put({
-      id: client.id,
-      url: client.url.href
-    });
-    request.onsuccess = () => {
-      promise.resolve();
-    };
-    request.onerror = () => {
-      console.error(request.error);
-      promise.reject(
-        new Error(
-          `Failed to add WebSocket client "${client.id}". There is likely an additional output above.`
-        )
-      );
-    };
-    return promise;
-  }
-  async getAll() {
-    const promise = new _open_draft_deferred_promise__WEBPACK_IMPORTED_MODULE_0__.DeferredPromise();
-    const store = await this.getStore();
-    const request = store.getAll();
-    request.onsuccess = () => {
-      promise.resolve(request.result);
-    };
-    request.onerror = () => {
-      console.error(request.error);
-      promise.reject(
-        new Error(
-          `Failed to get all WebSocket clients. There is likely an additional output above.`
-        )
-      );
-    };
-    return promise;
-  }
-  async deleteMany(clientIds) {
-    const promise = new _open_draft_deferred_promise__WEBPACK_IMPORTED_MODULE_0__.DeferredPromise();
-    const store = await this.getStore();
-    for (const clientId of clientIds) {
-      store.delete(clientId);
-    }
-    store.transaction.oncomplete = () => {
-      promise.resolve();
-    };
-    store.transaction.onerror = () => {
-      console.error(store.transaction.error);
-      promise.reject(
-        new Error(
-          `Failed to delete WebSocket clients [${clientIds.join(", ")}]. There is likely an additional output above.`
-        )
-      );
-    };
-    return promise;
-  }
-  async createDatabase() {
-    const promise = new _open_draft_deferred_promise__WEBPACK_IMPORTED_MODULE_0__.DeferredPromise();
-    const request = indexedDB.open(DB_NAME, 1);
-    request.onsuccess = ({ currentTarget }) => {
-      const db = Reflect.get(currentTarget, "result");
-      if (db.objectStoreNames.contains(DB_STORE_NAME)) {
-        return promise.resolve(db);
-      }
-    };
-    request.onupgradeneeded = async ({ currentTarget }) => {
-      const db = Reflect.get(currentTarget, "result");
-      if (db.objectStoreNames.contains(DB_STORE_NAME)) {
-        return;
-      }
-      const store = db.createObjectStore(DB_STORE_NAME, { keyPath: "id" });
-      store.transaction.oncomplete = () => {
-        promise.resolve(db);
-      };
-      store.transaction.onerror = () => {
-        console.error(store.transaction.error);
-        promise.reject(
-          new Error(
-            "Failed to create WebSocket client store. There is likely an additional output above."
-          )
-        );
-      };
-    };
-    request.onerror = () => {
-      console.error(request.error);
-      promise.reject(
-        new Error(
-          "Failed to open an IndexedDB database. There is likely an additional output above."
-        )
-      );
-    };
-    return promise;
-  }
-  async getStore() {
-    const db = await this.db;
-    return db.transaction(DB_STORE_NAME, "readwrite").objectStore(DB_STORE_NAME);
-  }
-}
-
-//# sourceMappingURL=WebSocketIndexedDBClientStore.mjs.map
-
-/***/ },
-
-/***/ "./node_modules/msw/lib/core/ws/WebSocketMemoryClientStore.mjs"
-/*!*********************************************************************!*\
-  !*** ./node_modules/msw/lib/core/ws/WebSocketMemoryClientStore.mjs ***!
-  \*********************************************************************/
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   WebSocketMemoryClientStore: () => (/* binding */ WebSocketMemoryClientStore)
-/* harmony export */ });
-class WebSocketMemoryClientStore {
-  store;
-  constructor() {
-    this.store = /* @__PURE__ */ new Map();
-  }
-  async add(client) {
-    this.store.set(client.id, { id: client.id, url: client.url.href });
-  }
-  getAll() {
-    return Promise.resolve(Array.from(this.store.values()));
-  }
-  async deleteMany(clientIds) {
-    for (const clientId of clientIds) {
-      this.store.delete(clientId);
-    }
-  }
-}
-
-//# sourceMappingURL=WebSocketMemoryClientStore.mjs.map
 
 /***/ },
 

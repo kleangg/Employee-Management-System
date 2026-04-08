@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\LeaveController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,8 +26,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/leave', [LeaveController::class, 'store']);
     Route::delete('/leave/{id}', [LeaveController::class, 'destroy']);
 
-    // Admin routes
+    // Leave admin routes
     Route::get('/admin/leave', [LeaveController::class, 'adminIndex']);
     Route::get('/admin/leave/balance/{userId}', [LeaveController::class, 'adminBalance']);
     Route::put('/admin/leave/{id}', [LeaveController::class, 'adminUpdate']);
 });
+
+// Attendance routes (public for testing)
+Route::get('/attendance/today', [AttendanceController::class, 'today']);
+Route::get('/attendance/summary', [AttendanceController::class, 'summary']);
+Route::get('/attendance', [AttendanceController::class, 'index']);
+Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn']);
+Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut']);
+
+// Attendance admin routes (public for testing)
+Route::get('/admin/attendance', [AttendanceController::class, 'adminIndex']);
+Route::get('/admin/employees', [AttendanceController::class, 'adminEmployees']);
+Route::get('/admin/attendance/summary', [AttendanceController::class, 'adminSummary']);
+Route::post('/admin/attendance', [AttendanceController::class, 'adminStore']);

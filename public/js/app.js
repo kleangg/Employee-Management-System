@@ -5179,6 +5179,7 @@ __webpack_require__(/*! ./components/Example */ "./resources/js/components/Examp
 __webpack_require__(/*! ./components/sidebar */ "./resources/js/components/sidebar.jsx");
 __webpack_require__(/*! ./components/user_profile */ "./resources/js/components/user_profile.jsx");
 __webpack_require__(/*! ./components/leave */ "./resources/js/components/leave.jsx");
+__webpack_require__(/*! ./components/attendance */ "./resources/js/components/attendance.jsx");
 
 // Start MSW in mock mode
 if (window.location.search.includes('mock=true')) {
@@ -5277,6 +5278,1185 @@ if (document.getElementById('example')) {
 
 /***/ },
 
+/***/ "./resources/js/components/attendance.jsx"
+/*!************************************************!*\
+  !*** ./resources/js/components/attendance.jsx ***!
+  \************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Attendance)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
+/* harmony import */ var _AuthContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../AuthContext */ "./resources/js/AuthContext.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+// ============================================================
+//  pages/Attendance.jsx  — role-based view
+//
+//  user.role === "HR Admin" → AdminAttendanceView
+//  otherwise               → EmployeeAttendanceView
+//
+//  EMPLOYEE VIEW:
+//  - Live clock + clock in / clock out button
+//  - Today's status card (clocked in at, hours so far)
+//  - Monthly summary (present, late, absent counts)
+//  - Full attendance history table
+//
+//  ADMIN VIEW:
+//  - All employees' records table
+//  - Filter by employee name, date range, status
+//  - Manual attendance entry modal
+//  - Per-employee summary report (present/late/absent/hours)
+// ============================================================
+
+
+
+
+
+// ── Shared helpers ────────────────────────────────────────────
+
+function authHeaders() {
+  return {
+    Authorization: "Bearer ".concat(localStorage.getItem("token")),
+    Accept: "application/json",
+    "Content-Type": "application/json"
+  };
+}
+function formatDate(d) {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("en-MY", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+}
+function formatTime(t) {
+  if (!t) return "—";
+  // t might be "09:05:00" or a full datetime string
+  var date = new Date(t);
+  if (isNaN(date)) {
+    // It's a time string like "09:05:00"
+    var _t$split = t.split(":"),
+      _t$split2 = _slicedToArray(_t$split, 2),
+      h = _t$split2[0],
+      m = _t$split2[1];
+    var hour = parseInt(h);
+    var ampm = hour >= 12 ? "PM" : "AM";
+    var h12 = hour % 12 || 12;
+    return "".concat(h12, ":").concat(m, " ").concat(ampm);
+  }
+  return date.toLocaleTimeString("en-MY", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+function calcHours(clockIn, clockOut) {
+  if (!clockIn || !clockOut) return "—";
+  var diff = new Date(clockOut) - new Date(clockIn);
+  if (isNaN(diff) || diff <= 0) return "—";
+  var h = Math.floor(diff / 3600000);
+  var m = Math.floor(diff % 3600000 / 60000);
+  return "".concat(h, "h ").concat(m, "m");
+}
+
+// ── Shared UI ─────────────────────────────────────────────────
+
+function StatusBadge(_ref) {
+  var status = _ref.status;
+  var s = {
+    present: "bg-green-50  text-green-700  border border-green-200",
+    late: "bg-amber-50  text-amber-700  border border-amber-200",
+    absent: "bg-red-50    text-red-600    border border-red-200"
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+    className: "text-xs font-medium px-2 py-0.5 rounded-full capitalize ".concat(s[status] || s.absent),
+    children: status
+  });
+}
+function Alert(_ref2) {
+  var type = _ref2.type,
+    message = _ref2.message,
+    onClose = _ref2.onClose;
+  if (!message) return null;
+  var s = {
+    success: "bg-green-50 border-green-200 text-green-800",
+    error: "bg-red-50 border-red-200 text-red-800"
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "border rounded-lg px-4 py-3 text-sm flex items-start justify-between gap-3 mb-4 ".concat(s[type]),
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+      children: message
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+      onClick: onClose,
+      className: "opacity-50 hover:opacity-100",
+      children: "\u2715"
+    })]
+  });
+}
+
+// ── Live clock component ──────────────────────────────────────
+function LiveClock() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new Date()),
+    _useState2 = _slicedToArray(_useState, 2),
+    time = _useState2[0],
+    setTime = _useState2[1];
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var t = setInterval(function () {
+      return setTime(new Date());
+    }, 1000);
+    return function () {
+      return clearInterval(t);
+    };
+  }, []);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "text-center",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "text-4xl font-medium text-gray-900 tabular-nums tracking-tight",
+      children: time.toLocaleTimeString("en-MY", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "text-sm text-gray-400 mt-1",
+      children: time.toLocaleDateString("en-MY", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      })
+    })]
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  EMPLOYEE VIEW
+// ══════════════════════════════════════════════════════════════
+function EmployeeAttendanceView() {
+  var _user$name, _summary$present, _summary$late, _summary$absent, _summary$avg_hours;
+  var _useAuth = (0,_AuthContext__WEBPACK_IMPORTED_MODULE_2__.useAuth)(),
+    user = _useAuth.user;
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState4 = _slicedToArray(_useState3, 2),
+    today = _useState4[0],
+    setToday = _useState4[1]; // today's record
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    summary = _useState6[0],
+    setSummary = _useState6[1]; // monthly summary
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState8 = _slicedToArray(_useState7, 2),
+    history = _useState8[0],
+    setHistory = _useState8[1]; // full history
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState0 = _slicedToArray(_useState9, 2),
+    loading = _useState0[0],
+    setLoading = _useState0[1];
+  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState10 = _slicedToArray(_useState1, 2),
+    clocking = _useState10[0],
+    setClocking = _useState10[1]; // clock in/out loading
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState12 = _slicedToArray(_useState11, 2),
+    success = _useState12[0],
+    setSuccess = _useState12[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState14 = _slicedToArray(_useState13, 2),
+    error = _useState14[0],
+    setError = _useState14[1];
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(function () {
+      var d = new Date();
+      return "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, "0"));
+    }),
+    _useState16 = _slicedToArray(_useState15, 2),
+    month = _useState16[0],
+    setMonth = _useState16[1];
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchAll();
+  }, [month]);
+  function fetchAll() {
+    return _fetchAll.apply(this, arguments);
+  } // Clock in or clock out depending on current state
+  function _fetchAll() {
+    _fetchAll = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var _yield$Promise$all, _yield$Promise$all2, todayRes, summaryRes, historyRes, _t, _t2, _t3, _t4, _t5, _t6, _t7;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            setLoading(true);
+            _context.p = 1;
+            _context.n = 2;
+            return Promise.all([fetch("/api/attendance/today", {
+              headers: authHeaders()
+            }), fetch("/api/attendance/summary?month=".concat(month), {
+              headers: authHeaders()
+            }), fetch("/api/attendance?month=".concat(month), {
+              headers: authHeaders()
+            })]);
+          case 2:
+            _yield$Promise$all = _context.v;
+            _yield$Promise$all2 = _slicedToArray(_yield$Promise$all, 3);
+            todayRes = _yield$Promise$all2[0];
+            summaryRes = _yield$Promise$all2[1];
+            historyRes = _yield$Promise$all2[2];
+            _t = setToday;
+            if (!todayRes.ok) {
+              _context.n = 4;
+              break;
+            }
+            _context.n = 3;
+            return todayRes.json();
+          case 3:
+            _t2 = _context.v;
+            _context.n = 5;
+            break;
+          case 4:
+            _t2 = null;
+          case 5:
+            _t(_t2);
+            _t3 = setSummary;
+            if (!summaryRes.ok) {
+              _context.n = 7;
+              break;
+            }
+            _context.n = 6;
+            return summaryRes.json();
+          case 6:
+            _t4 = _context.v;
+            _context.n = 8;
+            break;
+          case 7:
+            _t4 = null;
+          case 8:
+            _t3(_t4);
+            _t5 = setHistory;
+            if (!historyRes.ok) {
+              _context.n = 10;
+              break;
+            }
+            _context.n = 9;
+            return historyRes.json();
+          case 9:
+            _t6 = _context.v;
+            _context.n = 11;
+            break;
+          case 10:
+            _t6 = [];
+          case 11:
+            _t5(_t6);
+            _context.n = 13;
+            break;
+          case 12:
+            _context.p = 12;
+            _t7 = _context.v;
+            setError("Failed to load attendance data.");
+          case 13:
+            _context.p = 13;
+            setLoading(false);
+            return _context.f(13);
+          case 14:
+            return _context.a(2);
+        }
+      }, _callee, null, [[1, 12, 13, 14]]);
+    }));
+    return _fetchAll.apply(this, arguments);
+  }
+  function handleClock() {
+    return _handleClock.apply(this, arguments);
+  }
+  function _handleClock() {
+    _handleClock = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var endpoint, res, data, _t8;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            setClocking(true);
+            setError("");
+            endpoint = today !== null && today !== void 0 && today.clock_in && !(today !== null && today !== void 0 && today.clock_out) ? "/api/attendance/clock-out" : "/api/attendance/clock-in";
+            _context2.p = 1;
+            _context2.n = 2;
+            return fetch(endpoint, {
+              method: "POST",
+              headers: authHeaders()
+            });
+          case 2:
+            res = _context2.v;
+            _context2.n = 3;
+            return res.json();
+          case 3:
+            data = _context2.v;
+            if (res.ok) {
+              _context2.n = 4;
+              break;
+            }
+            setError(data.message || "Failed.");
+            return _context2.a(2);
+          case 4:
+            setSuccess(today !== null && today !== void 0 && today.clock_in ? "Clocked out successfully!" : "Clocked in successfully!");
+            fetchAll();
+            _context2.n = 6;
+            break;
+          case 5:
+            _context2.p = 5;
+            _t8 = _context2.v;
+            setError("Network error. Please try again.");
+          case 6:
+            _context2.p = 6;
+            setClocking(false);
+            return _context2.f(6);
+          case 7:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[1, 5, 6, 7]]);
+    }));
+    return _handleClock.apply(this, arguments);
+  }
+  var isClockedIn = (today === null || today === void 0 ? void 0 : today.clock_in) && !(today !== null && today !== void 0 && today.clock_out);
+  var isClockedOut = (today === null || today === void 0 ? void 0 : today.clock_in) && (today === null || today === void 0 ? void 0 : today.clock_out);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "p-8 max-w-4xl",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h1", {
+      className: "text-2xl font-medium text-gray-900 mb-1",
+      children: "Attendance"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+      className: "text-sm text-gray-400 mb-6",
+      children: ["Welcome, ", user === null || user === void 0 || (_user$name = user.name) === null || _user$name === void 0 ? void 0 : _user$name.split(" ")[0], ". Track your daily attendance here."]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
+      type: "success",
+      message: success,
+      onClose: function onClose() {
+        return setSuccess("");
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
+      type: "error",
+      message: error,
+      onClose: function onClose() {
+        return setError("");
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "bg-white border border-gray-200 rounded-xl p-8 mb-6 flex flex-col items-center gap-6",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(LiveClock, {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "text-center",
+        children: [isClockedIn && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+          className: "text-sm text-green-600 font-medium mb-1",
+          children: ["Clocked in at ", formatTime(today.clock_in)]
+        }), isClockedOut && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+          className: "text-sm text-gray-500 mb-1",
+          children: [formatTime(today.clock_in), " \u2192 ", formatTime(today.clock_out), " \xB7 ", calcHours(today.clock_in, today.clock_out)]
+        }), !(today !== null && today !== void 0 && today.clock_in) && !loading && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+          className: "text-sm text-gray-400 mb-1",
+          children: "You haven't clocked in yet today."
+        })]
+      }), !isClockedOut ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+        onClick: handleClock,
+        disabled: clocking,
+        className: ["px-10 py-3 rounded-xl text-base font-medium text-white transition-all disabled:opacity-60", isClockedIn ? "bg-red-500 hover:bg-red-600" // clock out = red
+        : "bg-green-600 hover:bg-green-700" // clock in  = green
+        ].join(" "),
+        children: clocking ? "Please wait..." : isClockedIn ? "Clock out" : "Clock in"
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "px-6 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-500",
+        children: "Done for today \u2014 see you tomorrow!"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6",
+      children: [{
+        label: "Present",
+        value: (_summary$present = summary === null || summary === void 0 ? void 0 : summary.present) !== null && _summary$present !== void 0 ? _summary$present : "—",
+        color: "text-green-600",
+        bg: "bg-green-50"
+      }, {
+        label: "Late",
+        value: (_summary$late = summary === null || summary === void 0 ? void 0 : summary.late) !== null && _summary$late !== void 0 ? _summary$late : "—",
+        color: "text-amber-600",
+        bg: "bg-amber-50"
+      }, {
+        label: "Absent",
+        value: (_summary$absent = summary === null || summary === void 0 ? void 0 : summary.absent) !== null && _summary$absent !== void 0 ? _summary$absent : "—",
+        color: "text-red-500",
+        bg: "bg-red-50"
+      }, {
+        label: "Avg hours",
+        value: (_summary$avg_hours = summary === null || summary === void 0 ? void 0 : summary.avg_hours) !== null && _summary$avg_hours !== void 0 ? _summary$avg_hours : "—",
+        color: "text-blue-600",
+        bg: "bg-blue-50"
+      }].map(function (_ref3) {
+        var label = _ref3.label,
+          value = _ref3.value,
+          color = _ref3.color,
+          bg = _ref3.bg;
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "".concat(bg, " border border-gray-100 rounded-xl p-4"),
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+            className: "text-xs text-gray-500 mb-1",
+            children: label
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+            className: "text-2xl font-medium ".concat(color),
+            children: value
+          })]
+        }, label);
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "flex items-center gap-3 mb-4",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+        className: "text-sm text-gray-500",
+        children: "Showing month:"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        type: "month",
+        value: month,
+        onChange: function onChange(e) {
+          return setMonth(e.target.value);
+        },
+        className: "border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "bg-white border border-gray-200 rounded-xl overflow-hidden",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "px-6 py-4 border-b border-gray-100",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h2", {
+          className: "text-base font-medium text-gray-900",
+          children: "Attendance history"
+        })
+      }), loading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "p-6 text-sm text-gray-400",
+        children: "Loading..."
+      }) : history.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "p-12 text-center text-sm text-gray-400",
+        children: "No records for this month."
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "overflow-x-auto",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("table", {
+          className: "w-full text-sm",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("thead", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tr", {
+              className: "border-b border-gray-100",
+              children: ["Date", "Clock in", "Clock out", "Hours worked", "Status"].map(function (h) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                  className: "text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider",
+                  children: h
+                }, h);
+              })
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tbody", {
+            className: "divide-y divide-gray-50",
+            children: history.map(function (r) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("tr", {
+                className: "hover:bg-gray-50",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-6 py-4 font-medium text-gray-800",
+                  children: formatDate(r.date)
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-6 py-4 text-gray-600",
+                  children: formatTime(r.clock_in)
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-6 py-4 text-gray-600",
+                  children: formatTime(r.clock_out)
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-6 py-4 text-gray-600",
+                  children: calcHours(r.clock_in, r.clock_out)
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-6 py-4",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(StatusBadge, {
+                    status: r.status
+                  })
+                })]
+              }, r.id);
+            })
+          })]
+        })
+      })]
+    })]
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ADMIN VIEW
+// ══════════════════════════════════════════════════════════════
+
+// ── Manual attendance modal ───────────────────────────────────
+function ManualEntryModal(_ref4) {
+  var employees = _ref4.employees,
+    onClose = _ref4.onClose,
+    onDone = _ref4.onDone;
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState18 = _slicedToArray(_useState17, 2),
+    userId = _useState18[0],
+    setUserId = _useState18[1];
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(new Date().toISOString().split("T")[0]),
+    _useState20 = _slicedToArray(_useState19, 2),
+    date = _useState20[0],
+    setDate = _useState20[1];
+  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("09:00"),
+    _useState22 = _slicedToArray(_useState21, 2),
+    clockIn = _useState22[0],
+    setClockIn = _useState22[1];
+  var _useState23 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("18:00"),
+    _useState24 = _slicedToArray(_useState23, 2),
+    clockOut = _useState24[0],
+    setClockOut = _useState24[1];
+  var _useState25 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("present"),
+    _useState26 = _slicedToArray(_useState25, 2),
+    status = _useState26[0],
+    setStatus = _useState26[1];
+  var _useState27 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState28 = _slicedToArray(_useState27, 2),
+    loading = _useState28[0],
+    setLoading = _useState28[1];
+  var _useState29 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState30 = _slicedToArray(_useState29, 2),
+    error = _useState30[0],
+    setError = _useState30[1];
+  function handleSubmit(_x) {
+    return _handleSubmit.apply(this, arguments);
+  }
+  function _handleSubmit() {
+    _handleSubmit = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(e) {
+      var res, data, _t9;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            e.preventDefault();
+            setLoading(true);
+            setError("");
+            _context3.p = 1;
+            _context3.n = 2;
+            return fetch("/api/admin/attendance", {
+              method: "POST",
+              headers: authHeaders(),
+              body: JSON.stringify({
+                user_id: userId,
+                date: date,
+                clock_in: "".concat(date, " ").concat(clockIn, ":00"),
+                clock_out: "".concat(date, " ").concat(clockOut, ":00"),
+                status: status
+              })
+            });
+          case 2:
+            res = _context3.v;
+            _context3.n = 3;
+            return res.json();
+          case 3:
+            data = _context3.v;
+            if (res.ok) {
+              _context3.n = 4;
+              break;
+            }
+            setError(data.message || "Failed.");
+            return _context3.a(2);
+          case 4:
+            onDone("Attendance record added successfully.");
+            onClose();
+            _context3.n = 6;
+            break;
+          case 5:
+            _context3.p = 5;
+            _t9 = _context3.v;
+            setError("Network error. Please try again.");
+          case 6:
+            _context3.p = 6;
+            setLoading(false);
+            return _context3.f(6);
+          case 7:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[1, 5, 6, 7]]);
+    }));
+    return _handleSubmit.apply(this, arguments);
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    style: {
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.4)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 50
+    },
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "bg-white rounded-xl border border-gray-200 w-full max-w-md mx-4 p-6",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "flex items-center justify-between mb-5",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h2", {
+          className: "text-base font-medium text-gray-900",
+          children: "Mark attendance manually"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+          onClick: onClose,
+          className: "text-gray-400 hover:text-gray-600 text-lg leading-none",
+          children: "\u2715"
+        })]
+      }), error && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
+        type: "error",
+        message: error,
+        onClose: function onClose() {
+          return setError("");
+        }
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("form", {
+        onSubmit: handleSubmit,
+        className: "space-y-4",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+            className: "block text-sm text-gray-600 mb-1",
+            children: "Employee"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("select", {
+            value: userId,
+            onChange: function onChange(e) {
+              return setUserId(e.target.value);
+            },
+            required: true,
+            className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+              value: "",
+              children: "Select employee..."
+            }), employees.map(function (e) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+                value: e.id,
+                children: e.name
+              }, e.id);
+            })]
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+            className: "block text-sm text-gray-600 mb-1",
+            children: "Date"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+            type: "date",
+            value: date,
+            onChange: function onChange(e) {
+              return setDate(e.target.value);
+            },
+            required: true,
+            className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "grid grid-cols-2 gap-4",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+              className: "block text-sm text-gray-600 mb-1",
+              children: "Clock in"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+              type: "time",
+              value: clockIn,
+              onChange: function onChange(e) {
+                return setClockIn(e.target.value);
+              },
+              required: true,
+              className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+              className: "block text-sm text-gray-600 mb-1",
+              children: "Clock out"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+              type: "time",
+              value: clockOut,
+              onChange: function onChange(e) {
+                return setClockOut(e.target.value);
+              },
+              required: true,
+              className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            })]
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+            className: "block text-sm text-gray-600 mb-1",
+            children: "Status"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+            className: "flex gap-2",
+            children: ["present", "late", "absent"].map(function (s) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+                type: "button",
+                onClick: function onClick() {
+                  return setStatus(s);
+                },
+                className: ["flex-1 py-2 rounded-lg text-sm font-medium border transition-all capitalize", status === s && s === "present" ? "bg-green-50 border-green-400 text-green-700" : status === s && s === "late" ? "bg-amber-50 border-amber-400 text-amber-700" : status === s && s === "absent" ? "bg-red-50 border-red-400 text-red-600" : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50"].join(" "),
+                children: s
+              }, s);
+            })
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "flex gap-2 pt-1",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+            type: "button",
+            onClick: onClose,
+            className: "flex-1 py-2 rounded-lg text-sm border border-gray-200 text-gray-600 hover:bg-gray-50",
+            children: "Cancel"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+            type: "submit",
+            disabled: loading,
+            className: "flex-1 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60",
+            children: loading ? "Saving..." : "Save record"
+          })]
+        })]
+      })]
+    })
+  });
+}
+
+// ── Summary report table ──────────────────────────────────────
+function SummaryReport(_ref5) {
+  var data = _ref5.data;
+  if (!data || data.length === 0) return null;
+
+  // CSV export — creates a downloadable file in the browser
+  function exportCSV() {
+    var headers = ["Employee", "Present", "Late", "Absent", "Total Hours"];
+    var rows = data.map(function (r) {
+      return [r.name, r.present, r.late, r.absent, r.total_hours];
+    });
+    var csv = [headers].concat(_toConsumableArray(rows)).map(function (r) {
+      return r.join(",");
+    }).join("\n");
+    var blob = new Blob([csv], {
+      type: "text/csv"
+    });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "attendance-summary-".concat(new Date().toISOString().split("T")[0], ".csv");
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "bg-white border border-gray-200 rounded-xl overflow-hidden mb-6",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "px-6 py-4 border-b border-gray-100 flex items-center justify-between",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h2", {
+        className: "text-base font-medium text-gray-900",
+        children: "Employee summary report"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+        onClick: exportCSV,
+        className: "flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium border border-blue-200 rounded-lg px-3 py-1.5 hover:bg-blue-50 transition-colors",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
+          className: "w-4 h-4",
+          viewBox: "0 0 16 16",
+          fill: "none",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+            d: "M8 1v9M4 6l4 4 4-4M2 13h12",
+            stroke: "currentColor",
+            strokeWidth: "1.5",
+            strokeLinecap: "round",
+            strokeLinejoin: "round"
+          })
+        }), "Export CSV"]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "overflow-x-auto",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("table", {
+        className: "w-full text-sm",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("thead", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tr", {
+            className: "border-b border-gray-100",
+            children: ["Employee", "Present", "Late", "Absent", "Total hours"].map(function (h) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                className: "text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider",
+                children: h
+              }, h);
+            })
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tbody", {
+          className: "divide-y divide-gray-50",
+          children: data.map(function (r) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("tr", {
+              className: "hover:bg-gray-50",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4 font-medium text-gray-800",
+                children: r.name
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  className: "text-green-600 font-medium",
+                  children: r.present
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  className: "text-amber-600 font-medium",
+                  children: r.late
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                className: "px-6 py-4",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+                  className: "text-red-500 font-medium",
+                  children: r.absent
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("td", {
+                className: "px-6 py-4 text-gray-600",
+                children: [r.total_hours, "h"]
+              })]
+            }, r.user_id);
+          })
+        })]
+      })
+    })]
+  });
+}
+function AdminAttendanceView() {
+  var _useState31 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState32 = _slicedToArray(_useState31, 2),
+    records = _useState32[0],
+    setRecords = _useState32[1];
+  var _useState33 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState34 = _slicedToArray(_useState33, 2),
+    summary = _useState34[0],
+    setSummary = _useState34[1];
+  var _useState35 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState36 = _slicedToArray(_useState35, 2),
+    employees = _useState36[0],
+    setEmployees = _useState36[1];
+  var _useState37 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState38 = _slicedToArray(_useState37, 2),
+    loading = _useState38[0],
+    setLoading = _useState38[1];
+  var _useState39 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState40 = _slicedToArray(_useState39, 2),
+    success = _useState40[0],
+    setSuccess = _useState40[1];
+  var _useState41 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState42 = _slicedToArray(_useState41, 2),
+    showModal = _useState42[0],
+    setShowModal = _useState42[1];
+  var _useState43 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState44 = _slicedToArray(_useState43, 2),
+    showSum = _useState44[0],
+    setShowSum = _useState44[1];
+
+  // Filters
+  var _useState45 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState46 = _slicedToArray(_useState45, 2),
+    filterName = _useState46[0],
+    setFilterName = _useState46[1];
+  var _useState47 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("all"),
+    _useState48 = _slicedToArray(_useState47, 2),
+    filterStatus = _useState48[0],
+    setFilterStatus = _useState48[1];
+  var _useState49 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
+    _useState50 = _slicedToArray(_useState49, 2),
+    filterDate = _useState50[0],
+    setFilterDate = _useState50[1];
+  var _useState51 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(function () {
+      var d = new Date();
+      return "".concat(d.getFullYear(), "-").concat(String(d.getMonth() + 1).padStart(2, "0"));
+    }),
+    _useState52 = _slicedToArray(_useState51, 2),
+    month = _useState52[0],
+    setMonth = _useState52[1];
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchAll();
+  }, [month]);
+  function fetchAll() {
+    return _fetchAll2.apply(this, arguments);
+  } // Apply filters to records
+  function _fetchAll2() {
+    _fetchAll2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+      var _yield$Promise$all3, _yield$Promise$all4, recRes, empRes, sumRes, _t0, _t1, _t10, _t11, _t12, _t13, _t14;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            setLoading(true);
+            _context4.p = 1;
+            _context4.n = 2;
+            return Promise.all([fetch("/api/admin/attendance?month=".concat(month), {
+              headers: authHeaders()
+            }), fetch("/api/admin/employees", {
+              headers: authHeaders()
+            }), fetch("/api/admin/attendance/summary?month=".concat(month), {
+              headers: authHeaders()
+            })]);
+          case 2:
+            _yield$Promise$all3 = _context4.v;
+            _yield$Promise$all4 = _slicedToArray(_yield$Promise$all3, 3);
+            recRes = _yield$Promise$all4[0];
+            empRes = _yield$Promise$all4[1];
+            sumRes = _yield$Promise$all4[2];
+            _t0 = setRecords;
+            if (!recRes.ok) {
+              _context4.n = 4;
+              break;
+            }
+            _context4.n = 3;
+            return recRes.json();
+          case 3:
+            _t1 = _context4.v;
+            _context4.n = 5;
+            break;
+          case 4:
+            _t1 = [];
+          case 5:
+            _t0(_t1);
+            _t10 = setEmployees;
+            if (!empRes.ok) {
+              _context4.n = 7;
+              break;
+            }
+            _context4.n = 6;
+            return empRes.json();
+          case 6:
+            _t11 = _context4.v;
+            _context4.n = 8;
+            break;
+          case 7:
+            _t11 = [];
+          case 8:
+            _t10(_t11);
+            _t12 = setSummary;
+            if (!sumRes.ok) {
+              _context4.n = 10;
+              break;
+            }
+            _context4.n = 9;
+            return sumRes.json();
+          case 9:
+            _t13 = _context4.v;
+            _context4.n = 11;
+            break;
+          case 10:
+            _t13 = [];
+          case 11:
+            _t12(_t13);
+            _context4.n = 13;
+            break;
+          case 12:
+            _context4.p = 12;
+            _t14 = _context4.v;
+            console.error("Failed to load admin attendance");
+          case 13:
+            _context4.p = 13;
+            setLoading(false);
+            return _context4.f(13);
+          case 14:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[1, 12, 13, 14]]);
+    }));
+    return _fetchAll2.apply(this, arguments);
+  }
+  var filtered = records.filter(function (r) {
+    if (filterStatus !== "all" && r.status !== filterStatus) return false;
+    if (filterDate && r.date !== filterDate) return false;
+    if (filterName && !r.user_name.toLowerCase().includes(filterName.toLowerCase())) return false;
+    return true;
+  });
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    className: "p-8 max-w-5xl",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "flex items-center justify-between mb-1",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("h1", {
+        className: "text-2xl font-medium text-gray-900",
+        children: "Attendance"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("span", {
+        className: "text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100",
+        children: "HR Admin view"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+      className: "text-sm text-gray-400 mb-6",
+      children: "Monitor and manage employee attendance records."
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Alert, {
+      type: "success",
+      message: success,
+      onClose: function onClose() {
+        return setSuccess("");
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "flex gap-3 mb-6",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+        onClick: function onClick() {
+          return setShowModal(true);
+        },
+        className: "flex items-center gap-2 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("svg", {
+          className: "w-4 h-4",
+          viewBox: "0 0 16 16",
+          fill: "none",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+            d: "M8 1v14M1 8h14",
+            stroke: "currentColor",
+            strokeWidth: "1.5",
+            strokeLinecap: "round"
+          })
+        }), "Mark attendance"]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("button", {
+        onClick: function onClick() {
+          return setShowSum(!showSum);
+        },
+        className: "flex items-center gap-2 border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("svg", {
+          className: "w-4 h-4",
+          viewBox: "0 0 16 16",
+          fill: "none",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("rect", {
+            x: "1",
+            y: "1",
+            width: "14",
+            height: "14",
+            rx: "2",
+            stroke: "currentColor",
+            strokeWidth: "1.5"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("path", {
+            d: "M4 8h8M4 5h8M4 11h5",
+            stroke: "currentColor",
+            strokeWidth: "1.5",
+            strokeLinecap: "round"
+          })]
+        }), showSum ? "Hide" : "Show", " summary report"]
+      })]
+    }), showSum && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(SummaryReport, {
+      data: summary
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+      className: "flex flex-wrap gap-3 mb-4 items-center",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        type: "month",
+        value: month,
+        onChange: function onChange(e) {
+          return setMonth(e.target.value);
+        },
+        className: "border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        type: "text",
+        value: filterName,
+        onChange: function onChange(e) {
+          return setFilterName(e.target.value);
+        },
+        placeholder: "Search employee...",
+        className: "border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 w-44"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+        type: "date",
+        value: filterDate,
+        onChange: function onChange(e) {
+          return setFilterDate(e.target.value);
+        },
+        className: "border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("select", {
+        value: filterStatus,
+        onChange: function onChange(e) {
+          return setFilterStatus(e.target.value);
+        },
+        className: "border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "all",
+          children: "All statuses"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "present",
+          children: "Present"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "late",
+          children: "Late"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("option", {
+          value: "absent",
+          children: "Absent"
+        })]
+      }), (filterName || filterDate || filterStatus !== "all") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
+        onClick: function onClick() {
+          setFilterName("");
+          setFilterDate("");
+          setFilterStatus("all");
+        },
+        className: "text-sm text-gray-400 hover:text-gray-600 px-2",
+        children: "Clear filters"
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+      className: "bg-white border border-gray-200 rounded-xl overflow-hidden",
+      children: loading ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "p-8 text-center text-sm text-gray-400",
+        children: "Loading..."
+      }) : filtered.length === 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "p-12 text-center text-sm text-gray-400",
+        children: "No records found."
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+        className: "overflow-x-auto",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("table", {
+          className: "w-full text-sm",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("thead", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tr", {
+              className: "border-b border-gray-100",
+              children: ["Employee", "Date", "Clock in", "Clock out", "Hours", "Status"].map(function (h) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+                  className: "text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider whitespace-nowrap",
+                  children: h
+                }, h);
+              })
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("tbody", {
+            className: "divide-y divide-gray-50",
+            children: filtered.map(function (r) {
+              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("tr", {
+                className: "hover:bg-gray-50",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-5 py-4 font-medium text-gray-800",
+                  children: r.user_name
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-5 py-4 text-gray-600",
+                  children: formatDate(r.date)
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-5 py-4 text-gray-600",
+                  children: formatTime(r.clock_in)
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-5 py-4 text-gray-600",
+                  children: formatTime(r.clock_out)
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-5 py-4 text-gray-600",
+                  children: calcHours(r.clock_in, r.clock_out)
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+                  className: "px-5 py-4",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(StatusBadge, {
+                    status: r.status
+                  })
+                })]
+              }, r.id);
+            })
+          })]
+        })
+      })
+    }), showModal && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(ManualEntryModal, {
+      employees: employees,
+      onClose: function onClose() {
+        return setShowModal(false);
+      },
+      onDone: function onDone(msg) {
+        setSuccess(msg);
+        fetchAll();
+      }
+    })]
+  });
+}
+
+// ── Main export — role switch ─────────────────────────────────
+function Attendance() {
+  var _useAuth2 = (0,_AuthContext__WEBPACK_IMPORTED_MODULE_2__.useAuth)(),
+    user = _useAuth2.user;
+  if (!user) return null;
+  return user.role === "HR Admin" ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(EmployeeAttendanceView, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(EmployeeAttendanceView, {});
+}
+
+// ── Mount the component ─────────────────
+var container = document.getElementById('attendancePage');
+if (container) {
+  var root = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot)(container);
+  root.render(/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_AuthContext__WEBPACK_IMPORTED_MODULE_2__.AuthProvider, {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(Attendance, {})
+  }));
+}
+
+/***/ },
+
 /***/ "./resources/js/components/leave.jsx"
 /*!*******************************************!*\
   !*** ./resources/js/components/leave.jsx ***!
@@ -5318,6 +6498,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 //  If role === "HR Admin" → renders <AdminLeaveView>
 //  Otherwise             → renders <EmployeeLeaveView>
 //
+// to check the mock data of employee leave view, add ?mock=true to the URL (e.g. http://localhost:8000/leave?mock=true)
 //  This means no extra route or page needed — the same
 //  /leave URL shows different UI based on who is logged in.
 // ============================================================
@@ -12000,7 +13181,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "*, ::before, ::after {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position:  ;\n  --tw-gradient-via-position:  ;\n  --tw-gradient-to-position:  ;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n  --tw-contain-size:  ;\n  --tw-contain-layout:  ;\n  --tw-contain-paint:  ;\n  --tw-contain-style:  ;\n}\n\n::backdrop {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position:  ;\n  --tw-gradient-via-position:  ;\n  --tw-gradient-to-position:  ;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n  --tw-contain-size:  ;\n  --tw-contain-layout:  ;\n  --tw-contain-paint:  ;\n  --tw-contain-style:  ;\n}/*\n! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com\n*//*\n1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)\n2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)\n*/\n\n*,\n::before,\n::after {\n  box-sizing: border-box; /* 1 */\n  border-width: 0; /* 2 */\n  border-style: solid; /* 2 */\n  border-color: #e5e7eb; /* 2 */\n}\n\n::before,\n::after {\n  --tw-content: '';\n}\n\n/*\n1. Use a consistent sensible line-height in all browsers.\n2. Prevent adjustments of font size after orientation changes in iOS.\n3. Use a more readable tab size.\n4. Use the user's configured `sans` font-family by default.\n5. Use the user's configured `sans` font-feature-settings by default.\n6. Use the user's configured `sans` font-variation-settings by default.\n7. Disable tap highlights on iOS\n*/\n\nhtml,\n:host {\n  line-height: 1.5; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n  -moz-tab-size: 4; /* 3 */\n  -o-tab-size: 4;\n     tab-size: 4; /* 3 */\n  font-family: ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"; /* 4 */\n  font-feature-settings: normal; /* 5 */\n  font-variation-settings: normal; /* 6 */\n  -webkit-tap-highlight-color: transparent; /* 7 */\n}\n\n/*\n1. Remove the margin in all browsers.\n2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.\n*/\n\nbody {\n  margin: 0; /* 1 */\n  line-height: inherit; /* 2 */\n}\n\n/*\n1. Add the correct height in Firefox.\n2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)\n3. Ensure horizontal rules are visible by default.\n*/\n\nhr {\n  height: 0; /* 1 */\n  color: inherit; /* 2 */\n  border-top-width: 1px; /* 3 */\n}\n\n/*\nAdd the correct text decoration in Chrome, Edge, and Safari.\n*/\n\nabbr:where([title]) {\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted;\n}\n\n/*\nRemove the default font size and weight for headings.\n*/\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-size: inherit;\n  font-weight: inherit;\n}\n\n/*\nReset links to optimize for opt-in styling instead of opt-out.\n*/\n\na {\n  color: inherit;\n  text-decoration: inherit;\n}\n\n/*\nAdd the correct font weight in Edge and Safari.\n*/\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/*\n1. Use the user's configured `mono` font-family by default.\n2. Use the user's configured `mono` font-feature-settings by default.\n3. Use the user's configured `mono` font-variation-settings by default.\n4. Correct the odd `em` font sizing in all browsers.\n*/\n\ncode,\nkbd,\nsamp,\npre {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace; /* 1 */\n  font-feature-settings: normal; /* 2 */\n  font-variation-settings: normal; /* 3 */\n  font-size: 1em; /* 4 */\n}\n\n/*\nAdd the correct font size in all browsers.\n*/\n\nsmall {\n  font-size: 80%;\n}\n\n/*\nPrevent `sub` and `sup` elements from affecting the line height in all browsers.\n*/\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/*\n1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)\n2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)\n3. Remove gaps between table borders by default.\n*/\n\ntable {\n  text-indent: 0; /* 1 */\n  border-color: inherit; /* 2 */\n  border-collapse: collapse; /* 3 */\n}\n\n/*\n1. Change the font styles in all browsers.\n2. Remove the margin in Firefox and Safari.\n3. Remove default padding in all browsers.\n*/\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-feature-settings: inherit; /* 1 */\n  font-variation-settings: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  font-weight: inherit; /* 1 */\n  line-height: inherit; /* 1 */\n  letter-spacing: inherit; /* 1 */\n  color: inherit; /* 1 */\n  margin: 0; /* 2 */\n  padding: 0; /* 3 */\n}\n\n/*\nRemove the inheritance of text transform in Edge and Firefox.\n*/\n\nbutton,\nselect {\n  text-transform: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Remove default button styles.\n*/\n\nbutton,\ninput:where([type='button']),\ninput:where([type='reset']),\ninput:where([type='submit']) {\n  -webkit-appearance: button; /* 1 */\n  background-color: transparent; /* 2 */\n  background-image: none; /* 2 */\n}\n\n/*\nUse the modern Firefox focus style for all focusable elements.\n*/\n\n:-moz-focusring {\n  outline: auto;\n}\n\n/*\nRemove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)\n*/\n\n:-moz-ui-invalid {\n  box-shadow: none;\n}\n\n/*\nAdd the correct vertical alignment in Chrome and Firefox.\n*/\n\nprogress {\n  vertical-align: baseline;\n}\n\n/*\nCorrect the cursor style of increment and decrement buttons in Safari.\n*/\n\n::-webkit-inner-spin-button,\n::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/*\n1. Correct the odd appearance in Chrome and Safari.\n2. Correct the outline style in Safari.\n*/\n\n[type='search'] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/*\nRemove the inner padding in Chrome and Safari on macOS.\n*/\n\n::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Change font properties to `inherit` in Safari.\n*/\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/*\nAdd the correct display in Chrome and Safari.\n*/\n\nsummary {\n  display: list-item;\n}\n\n/*\nRemoves the default spacing and border for appropriate elements.\n*/\n\nblockquote,\ndl,\ndd,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nhr,\nfigure,\np,\npre {\n  margin: 0;\n}\n\nfieldset {\n  margin: 0;\n  padding: 0;\n}\n\nlegend {\n  padding: 0;\n}\n\nol,\nul,\nmenu {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n/*\nReset default styling for dialogs.\n*/\ndialog {\n  padding: 0;\n}\n\n/*\nPrevent resizing textareas horizontally by default.\n*/\n\ntextarea {\n  resize: vertical;\n}\n\n/*\n1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)\n2. Set the default placeholder color to the user's configured gray 400 color.\n*/\n\ninput::-moz-placeholder, textarea::-moz-placeholder {\n  opacity: 1; /* 1 */\n  color: #9ca3af; /* 2 */\n}\n\ninput::placeholder,\ntextarea::placeholder {\n  opacity: 1; /* 1 */\n  color: #9ca3af; /* 2 */\n}\n\n/*\nSet the default cursor for buttons.\n*/\n\nbutton,\n[role=\"button\"] {\n  cursor: pointer;\n}\n\n/*\nMake sure disabled buttons don't get the pointer cursor.\n*/\n:disabled {\n  cursor: default;\n}\n\n/*\n1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)\n2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)\n   This can trigger a poorly considered lint error in some tools but is included by design.\n*/\n\nimg,\nsvg,\nvideo,\ncanvas,\naudio,\niframe,\nembed,\nobject {\n  display: block; /* 1 */\n  vertical-align: middle; /* 2 */\n}\n\n/*\nConstrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)\n*/\n\nimg,\nvideo {\n  max-width: 100%;\n  height: auto;\n}\n\n/* Make elements with the HTML hidden attribute stay hidden by default */\n[hidden]:where(:not([hidden=\"until-found\"])) {\n  display: none;\n}\r\n.container {\n  width: 100%;\n}\r\n@media (min-width: 640px) {\n\n  .container {\n    max-width: 640px;\n  }\n}\r\n@media (min-width: 768px) {\n\n  .container {\n    max-width: 768px;\n  }\n}\r\n@media (min-width: 1024px) {\n\n  .container {\n    max-width: 1024px;\n  }\n}\r\n@media (min-width: 1280px) {\n\n  .container {\n    max-width: 1280px;\n  }\n}\r\n@media (min-width: 1536px) {\n\n  .container {\n    max-width: 1536px;\n  }\n}\r\n.collapse {\n  visibility: collapse;\n}\r\n.fixed {\n  position: fixed;\n}\r\n.relative {\n  position: relative;\n}\r\n.sticky {\n  position: sticky;\n}\r\n.right-0 {\n  right: 0px;\n}\r\n.top-0 {\n  top: 0px;\n}\r\n.m-0 {\n  margin: 0px;\n}\r\n.mx-4 {\n  margin-left: 1rem;\n  margin-right: 1rem;\n}\r\n.mx-auto {\n  margin-left: auto;\n  margin-right: auto;\n}\r\n.-mt-px {\n  margin-top: -1px;\n}\r\n.mb-0 {\n  margin-bottom: 0px;\n}\r\n.mb-1 {\n  margin-bottom: 0.25rem;\n}\r\n.mb-2 {\n  margin-bottom: 0.5rem;\n}\r\n.mb-3 {\n  margin-bottom: 0.75rem;\n}\r\n.mb-4 {\n  margin-bottom: 1rem;\n}\r\n.mb-5 {\n  margin-bottom: 1.25rem;\n}\r\n.mb-6 {\n  margin-bottom: 1.5rem;\n}\r\n.mb-8 {\n  margin-bottom: 2rem;\n}\r\n.me-auto {\n  margin-inline-end: auto;\n}\r\n.ml-1 {\n  margin-left: 0.25rem;\n}\r\n.ml-12 {\n  margin-left: 3rem;\n}\r\n.ml-2 {\n  margin-left: 0.5rem;\n}\r\n.ml-4 {\n  margin-left: 1rem;\n}\r\n.mr-2 {\n  margin-right: 0.5rem;\n}\r\n.ms-auto {\n  margin-inline-start: auto;\n}\r\n.mt-0\\.5 {\n  margin-top: 0.125rem;\n}\r\n.mt-1 {\n  margin-top: 0.25rem;\n}\r\n.mt-2 {\n  margin-top: 0.5rem;\n}\r\n.mt-4 {\n  margin-top: 1rem;\n}\r\n.mt-8 {\n  margin-top: 2rem;\n}\r\n.line-clamp-2 {\n  overflow: hidden;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n}\r\n.block {\n  display: block;\n}\r\n.inline-block {\n  display: inline-block;\n}\r\n.flex {\n  display: flex;\n}\r\n.table {\n  display: table;\n}\r\n.grid {\n  display: grid;\n}\r\n.hidden {\n  display: none;\n}\r\n.h-1\\.5 {\n  height: 0.375rem;\n}\r\n.h-16 {\n  height: 4rem;\n}\r\n.h-4 {\n  height: 1rem;\n}\r\n.h-5 {\n  height: 1.25rem;\n}\r\n.h-8 {\n  height: 2rem;\n}\r\n.h-full {\n  height: 100%;\n}\r\n.min-h-screen {\n  min-height: 100vh;\n}\r\n.w-16 {\n  width: 4rem;\n}\r\n.w-20 {\n  width: 5rem;\n}\r\n.w-32 {\n  width: 8rem;\n}\r\n.w-4 {\n  width: 1rem;\n}\r\n.w-44 {\n  width: 11rem;\n}\r\n.w-5 {\n  width: 1.25rem;\n}\r\n.w-8 {\n  width: 2rem;\n}\r\n.w-auto {\n  width: auto;\n}\r\n.w-fit {\n  width: -moz-fit-content;\n  width: fit-content;\n}\r\n.w-full {\n  width: 100%;\n}\r\n.max-w-2xl {\n  max-width: 42rem;\n}\r\n.max-w-4xl {\n  max-width: 56rem;\n}\r\n.max-w-5xl {\n  max-width: 64rem;\n}\r\n.max-w-6xl {\n  max-width: 72rem;\n}\r\n.max-w-md {\n  max-width: 28rem;\n}\r\n.max-w-xs {\n  max-width: 20rem;\n}\r\n.flex-1 {\n  flex: 1 1 0%;\n}\r\n.flex-shrink {\n  flex-shrink: 1;\n}\r\n.flex-shrink-0 {\n  flex-shrink: 0;\n}\r\n.cursor-not-allowed {\n  cursor: not-allowed;\n}\r\n.resize-none {\n  resize: none;\n}\r\n.grid-cols-1 {\n  grid-template-columns: repeat(1, minmax(0, 1fr));\n}\r\n.grid-cols-2 {\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n}\r\n.grid-cols-3 {\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\r\n.flex-wrap {\n  flex-wrap: wrap;\n}\r\n.items-start {\n  align-items: flex-start;\n}\r\n.items-center {\n  align-items: center;\n}\r\n.items-baseline {\n  align-items: baseline;\n}\r\n.justify-center {\n  justify-content: center;\n}\r\n.justify-between {\n  justify-content: space-between;\n}\r\n.gap-1 {\n  gap: 0.25rem;\n}\r\n.gap-2 {\n  gap: 0.5rem;\n}\r\n.gap-3 {\n  gap: 0.75rem;\n}\r\n.gap-4 {\n  gap: 1rem;\n}\r\n.gap-5 {\n  gap: 1.25rem;\n}\r\n.space-y-1 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));\n}\r\n.space-y-4 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(1rem * var(--tw-space-y-reverse));\n}\r\n.divide-y > :not([hidden]) ~ :not([hidden]) {\n  --tw-divide-y-reverse: 0;\n  border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));\n  border-bottom-width: calc(1px * var(--tw-divide-y-reverse));\n}\r\n.divide-gray-50 > :not([hidden]) ~ :not([hidden]) {\n  --tw-divide-opacity: 1;\n  border-color: rgb(249 250 251 / var(--tw-divide-opacity, 1));\n}\r\n.overflow-hidden {\n  overflow: hidden;\n}\r\n.overflow-x-auto {\n  overflow-x: auto;\n}\r\n.truncate {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\r\n.whitespace-nowrap {\n  white-space: nowrap;\n}\r\n.rounded-full {\n  border-radius: 9999px;\n}\r\n.rounded-lg {\n  border-radius: 0.5rem;\n}\r\n.rounded-md {\n  border-radius: 0.375rem;\n}\r\n.rounded-xl {\n  border-radius: 0.75rem;\n}\r\n.border {\n  border-width: 1px;\n}\r\n.border-b {\n  border-bottom-width: 1px;\n}\r\n.border-t {\n  border-top-width: 1px;\n}\r\n.border-amber-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(253 230 138 / var(--tw-border-opacity, 1));\n}\r\n.border-blue-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(219 234 254 / var(--tw-border-opacity, 1));\n}\r\n.border-gray-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(243 244 246 / var(--tw-border-opacity, 1));\n}\r\n.border-gray-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(229 231 235 / var(--tw-border-opacity, 1));\n}\r\n.border-green-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(187 247 208 / var(--tw-border-opacity, 1));\n}\r\n.border-green-400 {\n  --tw-border-opacity: 1;\n  border-color: rgb(74 222 128 / var(--tw-border-opacity, 1));\n}\r\n.border-red-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));\n}\r\n.border-red-400 {\n  --tw-border-opacity: 1;\n  border-color: rgb(248 113 113 / var(--tw-border-opacity, 1));\n}\r\n.bg-amber-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(255 251 235 / var(--tw-bg-opacity, 1));\n}\r\n.bg-amber-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-600 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));\n}\r\n.bg-gray-100 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));\n}\r\n.bg-gray-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));\n}\r\n.bg-green-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(240 253 244 / var(--tw-bg-opacity, 1));\n}\r\n.bg-green-600 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));\n}\r\n.bg-red-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));\n}\r\n.bg-red-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(239 68 68 / var(--tw-bg-opacity, 1));\n}\r\n.bg-teal-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(240 253 250 / var(--tw-bg-opacity, 1));\n}\r\n.bg-teal-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(20 184 166 / var(--tw-bg-opacity, 1));\n}\r\n.bg-white {\n  --tw-bg-opacity: 1;\n  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));\n}\r\n.p-0 {\n  padding: 0px;\n}\r\n.p-1 {\n  padding: 0.25rem;\n}\r\n.p-3 {\n  padding: 0.75rem;\n}\r\n.p-4 {\n  padding: 1rem;\n}\r\n.p-5 {\n  padding: 1.25rem;\n}\r\n.p-6 {\n  padding: 1.5rem;\n}\r\n.p-8 {\n  padding: 2rem;\n}\r\n.px-2 {\n  padding-left: 0.5rem;\n  padding-right: 0.5rem;\n}\r\n.px-3 {\n  padding-left: 0.75rem;\n  padding-right: 0.75rem;\n}\r\n.px-4 {\n  padding-left: 1rem;\n  padding-right: 1rem;\n}\r\n.px-5 {\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n}\r\n.px-6 {\n  padding-left: 1.5rem;\n  padding-right: 1.5rem;\n}\r\n.py-0\\.5 {\n  padding-top: 0.125rem;\n  padding-bottom: 0.125rem;\n}\r\n.py-1 {\n  padding-top: 0.25rem;\n  padding-bottom: 0.25rem;\n}\r\n.py-1\\.5 {\n  padding-top: 0.375rem;\n  padding-bottom: 0.375rem;\n}\r\n.py-12 {\n  padding-top: 3rem;\n  padding-bottom: 3rem;\n}\r\n.py-2 {\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n}\r\n.py-3 {\n  padding-top: 0.75rem;\n  padding-bottom: 0.75rem;\n}\r\n.py-4 {\n  padding-top: 1rem;\n  padding-bottom: 1rem;\n}\r\n.pb-3 {\n  padding-bottom: 0.75rem;\n}\r\n.pt-0 {\n  padding-top: 0px;\n}\r\n.pt-0\\.5 {\n  padding-top: 0.125rem;\n}\r\n.pt-1 {\n  padding-top: 0.25rem;\n}\r\n.pt-8 {\n  padding-top: 2rem;\n}\r\n.text-left {\n  text-align: left;\n}\r\n.text-center {\n  text-align: center;\n}\r\n.align-baseline {\n  vertical-align: baseline;\n}\r\n.text-2xl {\n  font-size: 1.5rem;\n  line-height: 2rem;\n}\r\n.text-5xl {\n  font-size: 3rem;\n  line-height: 1;\n}\r\n.text-base {\n  font-size: 1rem;\n  line-height: 1.5rem;\n}\r\n.text-lg {\n  font-size: 1.125rem;\n  line-height: 1.75rem;\n}\r\n.text-sm {\n  font-size: 0.875rem;\n  line-height: 1.25rem;\n}\r\n.text-xl {\n  font-size: 1.25rem;\n  line-height: 1.75rem;\n}\r\n.text-xs {\n  font-size: 0.75rem;\n  line-height: 1rem;\n}\r\n.font-medium {\n  font-weight: 500;\n}\r\n.font-semibold {\n  font-weight: 600;\n}\r\n.uppercase {\n  text-transform: uppercase;\n}\r\n.capitalize {\n  text-transform: capitalize;\n}\r\n.leading-7 {\n  line-height: 1.75rem;\n}\r\n.leading-none {\n  line-height: 1;\n}\r\n.tracking-wider {\n  letter-spacing: 0.05em;\n}\r\n.text-amber-600 {\n  --tw-text-opacity: 1;\n  color: rgb(217 119 6 / var(--tw-text-opacity, 1));\n}\r\n.text-amber-700 {\n  --tw-text-opacity: 1;\n  color: rgb(180 83 9 / var(--tw-text-opacity, 1));\n}\r\n.text-amber-800 {\n  --tw-text-opacity: 1;\n  color: rgb(146 64 14 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-600 {\n  --tw-text-opacity: 1;\n  color: rgb(37 99 235 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-700 {\n  --tw-text-opacity: 1;\n  color: rgb(29 78 216 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-800 {\n  --tw-text-opacity: 1;\n  color: rgb(30 64 175 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-200 {\n  --tw-text-opacity: 1;\n  color: rgb(229 231 235 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-300 {\n  --tw-text-opacity: 1;\n  color: rgb(209 213 219 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-400 {\n  --tw-text-opacity: 1;\n  color: rgb(156 163 175 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-500 {\n  --tw-text-opacity: 1;\n  color: rgb(107 114 128 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-600 {\n  --tw-text-opacity: 1;\n  color: rgb(75 85 99 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-700 {\n  --tw-text-opacity: 1;\n  color: rgb(55 65 81 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-800 {\n  --tw-text-opacity: 1;\n  color: rgb(31 41 55 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-900 {\n  --tw-text-opacity: 1;\n  color: rgb(17 24 39 / var(--tw-text-opacity, 1));\n}\r\n.text-green-600 {\n  --tw-text-opacity: 1;\n  color: rgb(22 163 74 / var(--tw-text-opacity, 1));\n}\r\n.text-green-700 {\n  --tw-text-opacity: 1;\n  color: rgb(21 128 61 / var(--tw-text-opacity, 1));\n}\r\n.text-green-800 {\n  --tw-text-opacity: 1;\n  color: rgb(22 101 52 / var(--tw-text-opacity, 1));\n}\r\n.text-red-500 {\n  --tw-text-opacity: 1;\n  color: rgb(239 68 68 / var(--tw-text-opacity, 1));\n}\r\n.text-red-700 {\n  --tw-text-opacity: 1;\n  color: rgb(185 28 28 / var(--tw-text-opacity, 1));\n}\r\n.text-red-800 {\n  --tw-text-opacity: 1;\n  color: rgb(153 27 27 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-600 {\n  --tw-text-opacity: 1;\n  color: rgb(13 148 136 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-700 {\n  --tw-text-opacity: 1;\n  color: rgb(15 118 110 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-800 {\n  --tw-text-opacity: 1;\n  color: rgb(17 94 89 / var(--tw-text-opacity, 1));\n}\r\n.text-white {\n  --tw-text-opacity: 1;\n  color: rgb(255 255 255 / var(--tw-text-opacity, 1));\n}\r\n.underline {\n  text-decoration-line: underline;\n}\r\n.antialiased {\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\r\n.opacity-50 {\n  opacity: 0.5;\n}\r\n.shadow {\n  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);\n  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);\n  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\r\n.shadow-sm {\n  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);\n  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);\n  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\r\n.filter {\n  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);\n}\r\n.transition {\n  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.transition-all {\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.transition-colors {\n  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.last\\:border-0:last-child {\n  border-width: 0px;\n}\r\n.hover\\:bg-blue-700:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-gray-50:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-green-700:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-red-600:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:text-blue-800:hover {\n  --tw-text-opacity: 1;\n  color: rgb(30 64 175 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:text-gray-600:hover {\n  --tw-text-opacity: 1;\n  color: rgb(75 85 99 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:text-gray-700:hover {\n  --tw-text-opacity: 1;\n  color: rgb(55 65 81 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:underline:hover {\n  text-decoration-line: underline;\n}\r\n.hover\\:opacity-100:hover {\n  opacity: 1;\n}\r\n.focus\\:outline-none:focus {\n  outline: 2px solid transparent;\n  outline-offset: 2px;\n}\r\n.focus\\:ring-2:focus {\n  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);\n  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);\n}\r\n.focus\\:ring-blue-500:focus {\n  --tw-ring-opacity: 1;\n  --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity, 1));\n}\r\n.disabled\\:opacity-60:disabled {\n  opacity: 0.6;\n}\r\n@media (min-width: 640px) {\n\n  .sm\\:ml-0 {\n    margin-left: 0px;\n  }\n\n  .sm\\:block {\n    display: block;\n  }\n\n  .sm\\:grid-cols-3 {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n\n  .sm\\:items-center {\n    align-items: center;\n  }\n\n  .sm\\:justify-start {\n    justify-content: flex-start;\n  }\n\n  .sm\\:justify-between {\n    justify-content: space-between;\n  }\n\n  .sm\\:px-6 {\n    padding-left: 1.5rem;\n    padding-right: 1.5rem;\n  }\n\n  .sm\\:pt-0 {\n    padding-top: 0px;\n  }\n\n  .sm\\:text-left {\n    text-align: left;\n  }\n\n  .sm\\:text-right {\n    text-align: right;\n  }\n}\r\n@media (min-width: 1024px) {\n\n  .lg\\:px-8 {\n    padding-left: 2rem;\n    padding-right: 2rem;\n  }\n}\r\n@media (prefers-color-scheme: dark) {\n\n  .dark\\:bg-gray-900 {\n    --tw-bg-opacity: 1;\n    background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));\n  }\n\n  .dark\\:text-gray-500 {\n    --tw-text-opacity: 1;\n    color: rgb(107 114 128 / var(--tw-text-opacity, 1));\n  }\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "*, ::before, ::after {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position:  ;\n  --tw-gradient-via-position:  ;\n  --tw-gradient-to-position:  ;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n  --tw-contain-size:  ;\n  --tw-contain-layout:  ;\n  --tw-contain-paint:  ;\n  --tw-contain-style:  ;\n}\n\n::backdrop {\n  --tw-border-spacing-x: 0;\n  --tw-border-spacing-y: 0;\n  --tw-translate-x: 0;\n  --tw-translate-y: 0;\n  --tw-rotate: 0;\n  --tw-skew-x: 0;\n  --tw-skew-y: 0;\n  --tw-scale-x: 1;\n  --tw-scale-y: 1;\n  --tw-pan-x:  ;\n  --tw-pan-y:  ;\n  --tw-pinch-zoom:  ;\n  --tw-scroll-snap-strictness: proximity;\n  --tw-gradient-from-position:  ;\n  --tw-gradient-via-position:  ;\n  --tw-gradient-to-position:  ;\n  --tw-ordinal:  ;\n  --tw-slashed-zero:  ;\n  --tw-numeric-figure:  ;\n  --tw-numeric-spacing:  ;\n  --tw-numeric-fraction:  ;\n  --tw-ring-inset:  ;\n  --tw-ring-offset-width: 0px;\n  --tw-ring-offset-color: #fff;\n  --tw-ring-color: rgb(59 130 246 / 0.5);\n  --tw-ring-offset-shadow: 0 0 #0000;\n  --tw-ring-shadow: 0 0 #0000;\n  --tw-shadow: 0 0 #0000;\n  --tw-shadow-colored: 0 0 #0000;\n  --tw-blur:  ;\n  --tw-brightness:  ;\n  --tw-contrast:  ;\n  --tw-grayscale:  ;\n  --tw-hue-rotate:  ;\n  --tw-invert:  ;\n  --tw-saturate:  ;\n  --tw-sepia:  ;\n  --tw-drop-shadow:  ;\n  --tw-backdrop-blur:  ;\n  --tw-backdrop-brightness:  ;\n  --tw-backdrop-contrast:  ;\n  --tw-backdrop-grayscale:  ;\n  --tw-backdrop-hue-rotate:  ;\n  --tw-backdrop-invert:  ;\n  --tw-backdrop-opacity:  ;\n  --tw-backdrop-saturate:  ;\n  --tw-backdrop-sepia:  ;\n  --tw-contain-size:  ;\n  --tw-contain-layout:  ;\n  --tw-contain-paint:  ;\n  --tw-contain-style:  ;\n}/*\n! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com\n*//*\n1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)\n2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)\n*/\n\n*,\n::before,\n::after {\n  box-sizing: border-box; /* 1 */\n  border-width: 0; /* 2 */\n  border-style: solid; /* 2 */\n  border-color: #e5e7eb; /* 2 */\n}\n\n::before,\n::after {\n  --tw-content: '';\n}\n\n/*\n1. Use a consistent sensible line-height in all browsers.\n2. Prevent adjustments of font size after orientation changes in iOS.\n3. Use a more readable tab size.\n4. Use the user's configured `sans` font-family by default.\n5. Use the user's configured `sans` font-feature-settings by default.\n6. Use the user's configured `sans` font-variation-settings by default.\n7. Disable tap highlights on iOS\n*/\n\nhtml,\n:host {\n  line-height: 1.5; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n  -moz-tab-size: 4; /* 3 */\n  -o-tab-size: 4;\n     tab-size: 4; /* 3 */\n  font-family: ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"; /* 4 */\n  font-feature-settings: normal; /* 5 */\n  font-variation-settings: normal; /* 6 */\n  -webkit-tap-highlight-color: transparent; /* 7 */\n}\n\n/*\n1. Remove the margin in all browsers.\n2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.\n*/\n\nbody {\n  margin: 0; /* 1 */\n  line-height: inherit; /* 2 */\n}\n\n/*\n1. Add the correct height in Firefox.\n2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)\n3. Ensure horizontal rules are visible by default.\n*/\n\nhr {\n  height: 0; /* 1 */\n  color: inherit; /* 2 */\n  border-top-width: 1px; /* 3 */\n}\n\n/*\nAdd the correct text decoration in Chrome, Edge, and Safari.\n*/\n\nabbr:where([title]) {\n  -webkit-text-decoration: underline dotted;\n          text-decoration: underline dotted;\n}\n\n/*\nRemove the default font size and weight for headings.\n*/\n\nh1,\nh2,\nh3,\nh4,\nh5,\nh6 {\n  font-size: inherit;\n  font-weight: inherit;\n}\n\n/*\nReset links to optimize for opt-in styling instead of opt-out.\n*/\n\na {\n  color: inherit;\n  text-decoration: inherit;\n}\n\n/*\nAdd the correct font weight in Edge and Safari.\n*/\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/*\n1. Use the user's configured `mono` font-family by default.\n2. Use the user's configured `mono` font-feature-settings by default.\n3. Use the user's configured `mono` font-variation-settings by default.\n4. Correct the odd `em` font sizing in all browsers.\n*/\n\ncode,\nkbd,\nsamp,\npre {\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace; /* 1 */\n  font-feature-settings: normal; /* 2 */\n  font-variation-settings: normal; /* 3 */\n  font-size: 1em; /* 4 */\n}\n\n/*\nAdd the correct font size in all browsers.\n*/\n\nsmall {\n  font-size: 80%;\n}\n\n/*\nPrevent `sub` and `sup` elements from affecting the line height in all browsers.\n*/\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/*\n1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)\n2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)\n3. Remove gaps between table borders by default.\n*/\n\ntable {\n  text-indent: 0; /* 1 */\n  border-color: inherit; /* 2 */\n  border-collapse: collapse; /* 3 */\n}\n\n/*\n1. Change the font styles in all browsers.\n2. Remove the margin in Firefox and Safari.\n3. Remove default padding in all browsers.\n*/\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-feature-settings: inherit; /* 1 */\n  font-variation-settings: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  font-weight: inherit; /* 1 */\n  line-height: inherit; /* 1 */\n  letter-spacing: inherit; /* 1 */\n  color: inherit; /* 1 */\n  margin: 0; /* 2 */\n  padding: 0; /* 3 */\n}\n\n/*\nRemove the inheritance of text transform in Edge and Firefox.\n*/\n\nbutton,\nselect {\n  text-transform: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Remove default button styles.\n*/\n\nbutton,\ninput:where([type='button']),\ninput:where([type='reset']),\ninput:where([type='submit']) {\n  -webkit-appearance: button; /* 1 */\n  background-color: transparent; /* 2 */\n  background-image: none; /* 2 */\n}\n\n/*\nUse the modern Firefox focus style for all focusable elements.\n*/\n\n:-moz-focusring {\n  outline: auto;\n}\n\n/*\nRemove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)\n*/\n\n:-moz-ui-invalid {\n  box-shadow: none;\n}\n\n/*\nAdd the correct vertical alignment in Chrome and Firefox.\n*/\n\nprogress {\n  vertical-align: baseline;\n}\n\n/*\nCorrect the cursor style of increment and decrement buttons in Safari.\n*/\n\n::-webkit-inner-spin-button,\n::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/*\n1. Correct the odd appearance in Chrome and Safari.\n2. Correct the outline style in Safari.\n*/\n\n[type='search'] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/*\nRemove the inner padding in Chrome and Safari on macOS.\n*/\n\n::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/*\n1. Correct the inability to style clickable types in iOS and Safari.\n2. Change font properties to `inherit` in Safari.\n*/\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/*\nAdd the correct display in Chrome and Safari.\n*/\n\nsummary {\n  display: list-item;\n}\n\n/*\nRemoves the default spacing and border for appropriate elements.\n*/\n\nblockquote,\ndl,\ndd,\nh1,\nh2,\nh3,\nh4,\nh5,\nh6,\nhr,\nfigure,\np,\npre {\n  margin: 0;\n}\n\nfieldset {\n  margin: 0;\n  padding: 0;\n}\n\nlegend {\n  padding: 0;\n}\n\nol,\nul,\nmenu {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n/*\nReset default styling for dialogs.\n*/\ndialog {\n  padding: 0;\n}\n\n/*\nPrevent resizing textareas horizontally by default.\n*/\n\ntextarea {\n  resize: vertical;\n}\n\n/*\n1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)\n2. Set the default placeholder color to the user's configured gray 400 color.\n*/\n\ninput::-moz-placeholder, textarea::-moz-placeholder {\n  opacity: 1; /* 1 */\n  color: #9ca3af; /* 2 */\n}\n\ninput::placeholder,\ntextarea::placeholder {\n  opacity: 1; /* 1 */\n  color: #9ca3af; /* 2 */\n}\n\n/*\nSet the default cursor for buttons.\n*/\n\nbutton,\n[role=\"button\"] {\n  cursor: pointer;\n}\n\n/*\nMake sure disabled buttons don't get the pointer cursor.\n*/\n:disabled {\n  cursor: default;\n}\n\n/*\n1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)\n2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)\n   This can trigger a poorly considered lint error in some tools but is included by design.\n*/\n\nimg,\nsvg,\nvideo,\ncanvas,\naudio,\niframe,\nembed,\nobject {\n  display: block; /* 1 */\n  vertical-align: middle; /* 2 */\n}\n\n/*\nConstrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)\n*/\n\nimg,\nvideo {\n  max-width: 100%;\n  height: auto;\n}\n\n/* Make elements with the HTML hidden attribute stay hidden by default */\n[hidden]:where(:not([hidden=\"until-found\"])) {\n  display: none;\n}\r\n.container {\n  width: 100%;\n}\r\n@media (min-width: 640px) {\n\n  .container {\n    max-width: 640px;\n  }\n}\r\n@media (min-width: 768px) {\n\n  .container {\n    max-width: 768px;\n  }\n}\r\n@media (min-width: 1024px) {\n\n  .container {\n    max-width: 1024px;\n  }\n}\r\n@media (min-width: 1280px) {\n\n  .container {\n    max-width: 1280px;\n  }\n}\r\n@media (min-width: 1536px) {\n\n  .container {\n    max-width: 1536px;\n  }\n}\r\n.collapse {\n  visibility: collapse;\n}\r\n.fixed {\n  position: fixed;\n}\r\n.relative {\n  position: relative;\n}\r\n.sticky {\n  position: sticky;\n}\r\n.right-0 {\n  right: 0px;\n}\r\n.top-0 {\n  top: 0px;\n}\r\n.m-0 {\n  margin: 0px;\n}\r\n.mx-4 {\n  margin-left: 1rem;\n  margin-right: 1rem;\n}\r\n.mx-auto {\n  margin-left: auto;\n  margin-right: auto;\n}\r\n.-mt-px {\n  margin-top: -1px;\n}\r\n.mb-0 {\n  margin-bottom: 0px;\n}\r\n.mb-1 {\n  margin-bottom: 0.25rem;\n}\r\n.mb-2 {\n  margin-bottom: 0.5rem;\n}\r\n.mb-3 {\n  margin-bottom: 0.75rem;\n}\r\n.mb-4 {\n  margin-bottom: 1rem;\n}\r\n.mb-5 {\n  margin-bottom: 1.25rem;\n}\r\n.mb-6 {\n  margin-bottom: 1.5rem;\n}\r\n.mb-8 {\n  margin-bottom: 2rem;\n}\r\n.me-auto {\n  margin-inline-end: auto;\n}\r\n.ml-1 {\n  margin-left: 0.25rem;\n}\r\n.ml-12 {\n  margin-left: 3rem;\n}\r\n.ml-2 {\n  margin-left: 0.5rem;\n}\r\n.ml-4 {\n  margin-left: 1rem;\n}\r\n.mr-2 {\n  margin-right: 0.5rem;\n}\r\n.ms-auto {\n  margin-inline-start: auto;\n}\r\n.mt-0\\.5 {\n  margin-top: 0.125rem;\n}\r\n.mt-1 {\n  margin-top: 0.25rem;\n}\r\n.mt-2 {\n  margin-top: 0.5rem;\n}\r\n.mt-4 {\n  margin-top: 1rem;\n}\r\n.mt-8 {\n  margin-top: 2rem;\n}\r\n.line-clamp-2 {\n  overflow: hidden;\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n}\r\n.block {\n  display: block;\n}\r\n.inline-block {\n  display: inline-block;\n}\r\n.flex {\n  display: flex;\n}\r\n.table {\n  display: table;\n}\r\n.grid {\n  display: grid;\n}\r\n.hidden {\n  display: none;\n}\r\n.h-1\\.5 {\n  height: 0.375rem;\n}\r\n.h-16 {\n  height: 4rem;\n}\r\n.h-4 {\n  height: 1rem;\n}\r\n.h-5 {\n  height: 1.25rem;\n}\r\n.h-8 {\n  height: 2rem;\n}\r\n.h-full {\n  height: 100%;\n}\r\n.min-h-screen {\n  min-height: 100vh;\n}\r\n.w-16 {\n  width: 4rem;\n}\r\n.w-20 {\n  width: 5rem;\n}\r\n.w-32 {\n  width: 8rem;\n}\r\n.w-4 {\n  width: 1rem;\n}\r\n.w-44 {\n  width: 11rem;\n}\r\n.w-5 {\n  width: 1.25rem;\n}\r\n.w-8 {\n  width: 2rem;\n}\r\n.w-auto {\n  width: auto;\n}\r\n.w-fit {\n  width: -moz-fit-content;\n  width: fit-content;\n}\r\n.w-full {\n  width: 100%;\n}\r\n.max-w-2xl {\n  max-width: 42rem;\n}\r\n.max-w-4xl {\n  max-width: 56rem;\n}\r\n.max-w-5xl {\n  max-width: 64rem;\n}\r\n.max-w-6xl {\n  max-width: 72rem;\n}\r\n.max-w-md {\n  max-width: 28rem;\n}\r\n.max-w-xs {\n  max-width: 20rem;\n}\r\n.flex-1 {\n  flex: 1 1 0%;\n}\r\n.flex-shrink {\n  flex-shrink: 1;\n}\r\n.flex-shrink-0 {\n  flex-shrink: 0;\n}\r\n.cursor-not-allowed {\n  cursor: not-allowed;\n}\r\n.resize-none {\n  resize: none;\n}\r\n.grid-cols-1 {\n  grid-template-columns: repeat(1, minmax(0, 1fr));\n}\r\n.grid-cols-2 {\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n}\r\n.grid-cols-3 {\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\r\n.flex-col {\n  flex-direction: column;\n}\r\n.flex-wrap {\n  flex-wrap: wrap;\n}\r\n.items-start {\n  align-items: flex-start;\n}\r\n.items-center {\n  align-items: center;\n}\r\n.items-baseline {\n  align-items: baseline;\n}\r\n.justify-center {\n  justify-content: center;\n}\r\n.justify-between {\n  justify-content: space-between;\n}\r\n.gap-1 {\n  gap: 0.25rem;\n}\r\n.gap-2 {\n  gap: 0.5rem;\n}\r\n.gap-3 {\n  gap: 0.75rem;\n}\r\n.gap-4 {\n  gap: 1rem;\n}\r\n.gap-5 {\n  gap: 1.25rem;\n}\r\n.gap-6 {\n  gap: 1.5rem;\n}\r\n.space-y-1 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));\n}\r\n.space-y-4 > :not([hidden]) ~ :not([hidden]) {\n  --tw-space-y-reverse: 0;\n  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));\n  margin-bottom: calc(1rem * var(--tw-space-y-reverse));\n}\r\n.divide-y > :not([hidden]) ~ :not([hidden]) {\n  --tw-divide-y-reverse: 0;\n  border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));\n  border-bottom-width: calc(1px * var(--tw-divide-y-reverse));\n}\r\n.divide-gray-50 > :not([hidden]) ~ :not([hidden]) {\n  --tw-divide-opacity: 1;\n  border-color: rgb(249 250 251 / var(--tw-divide-opacity, 1));\n}\r\n.overflow-hidden {\n  overflow: hidden;\n}\r\n.overflow-x-auto {\n  overflow-x: auto;\n}\r\n.truncate {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\r\n.whitespace-nowrap {\n  white-space: nowrap;\n}\r\n.rounded-full {\n  border-radius: 9999px;\n}\r\n.rounded-lg {\n  border-radius: 0.5rem;\n}\r\n.rounded-md {\n  border-radius: 0.375rem;\n}\r\n.rounded-xl {\n  border-radius: 0.75rem;\n}\r\n.border {\n  border-width: 1px;\n}\r\n.border-b {\n  border-bottom-width: 1px;\n}\r\n.border-t {\n  border-top-width: 1px;\n}\r\n.border-amber-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(253 230 138 / var(--tw-border-opacity, 1));\n}\r\n.border-amber-400 {\n  --tw-border-opacity: 1;\n  border-color: rgb(251 191 36 / var(--tw-border-opacity, 1));\n}\r\n.border-blue-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(219 234 254 / var(--tw-border-opacity, 1));\n}\r\n.border-blue-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(191 219 254 / var(--tw-border-opacity, 1));\n}\r\n.border-gray-100 {\n  --tw-border-opacity: 1;\n  border-color: rgb(243 244 246 / var(--tw-border-opacity, 1));\n}\r\n.border-gray-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(229 231 235 / var(--tw-border-opacity, 1));\n}\r\n.border-green-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(187 247 208 / var(--tw-border-opacity, 1));\n}\r\n.border-green-400 {\n  --tw-border-opacity: 1;\n  border-color: rgb(74 222 128 / var(--tw-border-opacity, 1));\n}\r\n.border-red-200 {\n  --tw-border-opacity: 1;\n  border-color: rgb(254 202 202 / var(--tw-border-opacity, 1));\n}\r\n.border-red-400 {\n  --tw-border-opacity: 1;\n  border-color: rgb(248 113 113 / var(--tw-border-opacity, 1));\n}\r\n.bg-amber-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(255 251 235 / var(--tw-bg-opacity, 1));\n}\r\n.bg-amber-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1));\n}\r\n.bg-blue-600 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));\n}\r\n.bg-gray-100 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));\n}\r\n.bg-gray-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));\n}\r\n.bg-green-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(240 253 244 / var(--tw-bg-opacity, 1));\n}\r\n.bg-green-600 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));\n}\r\n.bg-red-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));\n}\r\n.bg-red-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(239 68 68 / var(--tw-bg-opacity, 1));\n}\r\n.bg-teal-50 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(240 253 250 / var(--tw-bg-opacity, 1));\n}\r\n.bg-teal-500 {\n  --tw-bg-opacity: 1;\n  background-color: rgb(20 184 166 / var(--tw-bg-opacity, 1));\n}\r\n.bg-white {\n  --tw-bg-opacity: 1;\n  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));\n}\r\n.p-0 {\n  padding: 0px;\n}\r\n.p-1 {\n  padding: 0.25rem;\n}\r\n.p-12 {\n  padding: 3rem;\n}\r\n.p-3 {\n  padding: 0.75rem;\n}\r\n.p-4 {\n  padding: 1rem;\n}\r\n.p-5 {\n  padding: 1.25rem;\n}\r\n.p-6 {\n  padding: 1.5rem;\n}\r\n.p-8 {\n  padding: 2rem;\n}\r\n.px-10 {\n  padding-left: 2.5rem;\n  padding-right: 2.5rem;\n}\r\n.px-2 {\n  padding-left: 0.5rem;\n  padding-right: 0.5rem;\n}\r\n.px-3 {\n  padding-left: 0.75rem;\n  padding-right: 0.75rem;\n}\r\n.px-4 {\n  padding-left: 1rem;\n  padding-right: 1rem;\n}\r\n.px-5 {\n  padding-left: 1.25rem;\n  padding-right: 1.25rem;\n}\r\n.px-6 {\n  padding-left: 1.5rem;\n  padding-right: 1.5rem;\n}\r\n.py-0\\.5 {\n  padding-top: 0.125rem;\n  padding-bottom: 0.125rem;\n}\r\n.py-1 {\n  padding-top: 0.25rem;\n  padding-bottom: 0.25rem;\n}\r\n.py-1\\.5 {\n  padding-top: 0.375rem;\n  padding-bottom: 0.375rem;\n}\r\n.py-12 {\n  padding-top: 3rem;\n  padding-bottom: 3rem;\n}\r\n.py-2 {\n  padding-top: 0.5rem;\n  padding-bottom: 0.5rem;\n}\r\n.py-3 {\n  padding-top: 0.75rem;\n  padding-bottom: 0.75rem;\n}\r\n.py-4 {\n  padding-top: 1rem;\n  padding-bottom: 1rem;\n}\r\n.pb-3 {\n  padding-bottom: 0.75rem;\n}\r\n.pt-0 {\n  padding-top: 0px;\n}\r\n.pt-0\\.5 {\n  padding-top: 0.125rem;\n}\r\n.pt-1 {\n  padding-top: 0.25rem;\n}\r\n.pt-8 {\n  padding-top: 2rem;\n}\r\n.text-left {\n  text-align: left;\n}\r\n.text-center {\n  text-align: center;\n}\r\n.align-baseline {\n  vertical-align: baseline;\n}\r\n.text-2xl {\n  font-size: 1.5rem;\n  line-height: 2rem;\n}\r\n.text-4xl {\n  font-size: 2.25rem;\n  line-height: 2.5rem;\n}\r\n.text-5xl {\n  font-size: 3rem;\n  line-height: 1;\n}\r\n.text-base {\n  font-size: 1rem;\n  line-height: 1.5rem;\n}\r\n.text-lg {\n  font-size: 1.125rem;\n  line-height: 1.75rem;\n}\r\n.text-sm {\n  font-size: 0.875rem;\n  line-height: 1.25rem;\n}\r\n.text-xl {\n  font-size: 1.25rem;\n  line-height: 1.75rem;\n}\r\n.text-xs {\n  font-size: 0.75rem;\n  line-height: 1rem;\n}\r\n.font-medium {\n  font-weight: 500;\n}\r\n.font-semibold {\n  font-weight: 600;\n}\r\n.uppercase {\n  text-transform: uppercase;\n}\r\n.capitalize {\n  text-transform: capitalize;\n}\r\n.tabular-nums {\n  --tw-numeric-spacing: tabular-nums;\n  font-variant-numeric: var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction);\n}\r\n.leading-7 {\n  line-height: 1.75rem;\n}\r\n.leading-none {\n  line-height: 1;\n}\r\n.tracking-tight {\n  letter-spacing: -0.025em;\n}\r\n.tracking-wider {\n  letter-spacing: 0.05em;\n}\r\n.text-amber-600 {\n  --tw-text-opacity: 1;\n  color: rgb(217 119 6 / var(--tw-text-opacity, 1));\n}\r\n.text-amber-700 {\n  --tw-text-opacity: 1;\n  color: rgb(180 83 9 / var(--tw-text-opacity, 1));\n}\r\n.text-amber-800 {\n  --tw-text-opacity: 1;\n  color: rgb(146 64 14 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-600 {\n  --tw-text-opacity: 1;\n  color: rgb(37 99 235 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-700 {\n  --tw-text-opacity: 1;\n  color: rgb(29 78 216 / var(--tw-text-opacity, 1));\n}\r\n.text-blue-800 {\n  --tw-text-opacity: 1;\n  color: rgb(30 64 175 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-200 {\n  --tw-text-opacity: 1;\n  color: rgb(229 231 235 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-300 {\n  --tw-text-opacity: 1;\n  color: rgb(209 213 219 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-400 {\n  --tw-text-opacity: 1;\n  color: rgb(156 163 175 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-500 {\n  --tw-text-opacity: 1;\n  color: rgb(107 114 128 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-600 {\n  --tw-text-opacity: 1;\n  color: rgb(75 85 99 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-700 {\n  --tw-text-opacity: 1;\n  color: rgb(55 65 81 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-800 {\n  --tw-text-opacity: 1;\n  color: rgb(31 41 55 / var(--tw-text-opacity, 1));\n}\r\n.text-gray-900 {\n  --tw-text-opacity: 1;\n  color: rgb(17 24 39 / var(--tw-text-opacity, 1));\n}\r\n.text-green-600 {\n  --tw-text-opacity: 1;\n  color: rgb(22 163 74 / var(--tw-text-opacity, 1));\n}\r\n.text-green-700 {\n  --tw-text-opacity: 1;\n  color: rgb(21 128 61 / var(--tw-text-opacity, 1));\n}\r\n.text-green-800 {\n  --tw-text-opacity: 1;\n  color: rgb(22 101 52 / var(--tw-text-opacity, 1));\n}\r\n.text-red-500 {\n  --tw-text-opacity: 1;\n  color: rgb(239 68 68 / var(--tw-text-opacity, 1));\n}\r\n.text-red-600 {\n  --tw-text-opacity: 1;\n  color: rgb(220 38 38 / var(--tw-text-opacity, 1));\n}\r\n.text-red-700 {\n  --tw-text-opacity: 1;\n  color: rgb(185 28 28 / var(--tw-text-opacity, 1));\n}\r\n.text-red-800 {\n  --tw-text-opacity: 1;\n  color: rgb(153 27 27 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-600 {\n  --tw-text-opacity: 1;\n  color: rgb(13 148 136 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-700 {\n  --tw-text-opacity: 1;\n  color: rgb(15 118 110 / var(--tw-text-opacity, 1));\n}\r\n.text-teal-800 {\n  --tw-text-opacity: 1;\n  color: rgb(17 94 89 / var(--tw-text-opacity, 1));\n}\r\n.text-white {\n  --tw-text-opacity: 1;\n  color: rgb(255 255 255 / var(--tw-text-opacity, 1));\n}\r\n.underline {\n  text-decoration-line: underline;\n}\r\n.antialiased {\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\r\n.opacity-50 {\n  opacity: 0.5;\n}\r\n.shadow {\n  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);\n  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);\n  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\r\n.shadow-sm {\n  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);\n  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);\n  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\r\n.filter {\n  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);\n}\r\n.transition {\n  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.transition-all {\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.transition-colors {\n  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n}\r\n.last\\:border-0:last-child {\n  border-width: 0px;\n}\r\n.hover\\:bg-blue-50:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-blue-700:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-gray-50:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-green-700:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:bg-red-600:hover {\n  --tw-bg-opacity: 1;\n  background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1));\n}\r\n.hover\\:text-blue-800:hover {\n  --tw-text-opacity: 1;\n  color: rgb(30 64 175 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:text-gray-600:hover {\n  --tw-text-opacity: 1;\n  color: rgb(75 85 99 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:text-gray-700:hover {\n  --tw-text-opacity: 1;\n  color: rgb(55 65 81 / var(--tw-text-opacity, 1));\n}\r\n.hover\\:underline:hover {\n  text-decoration-line: underline;\n}\r\n.hover\\:opacity-100:hover {\n  opacity: 1;\n}\r\n.focus\\:outline-none:focus {\n  outline: 2px solid transparent;\n  outline-offset: 2px;\n}\r\n.focus\\:ring-2:focus {\n  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);\n  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);\n  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);\n}\r\n.focus\\:ring-blue-500:focus {\n  --tw-ring-opacity: 1;\n  --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity, 1));\n}\r\n.disabled\\:opacity-60:disabled {\n  opacity: 0.6;\n}\r\n@media (min-width: 640px) {\n\n  .sm\\:ml-0 {\n    margin-left: 0px;\n  }\n\n  .sm\\:block {\n    display: block;\n  }\n\n  .sm\\:grid-cols-3 {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n\n  .sm\\:grid-cols-4 {\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n  }\n\n  .sm\\:items-center {\n    align-items: center;\n  }\n\n  .sm\\:justify-start {\n    justify-content: flex-start;\n  }\n\n  .sm\\:justify-between {\n    justify-content: space-between;\n  }\n\n  .sm\\:px-6 {\n    padding-left: 1.5rem;\n    padding-right: 1.5rem;\n  }\n\n  .sm\\:pt-0 {\n    padding-top: 0px;\n  }\n\n  .sm\\:text-left {\n    text-align: left;\n  }\n\n  .sm\\:text-right {\n    text-align: right;\n  }\n}\r\n@media (min-width: 1024px) {\n\n  .lg\\:px-8 {\n    padding-left: 2rem;\n    padding-right: 2rem;\n  }\n}\r\n@media (prefers-color-scheme: dark) {\n\n  .dark\\:bg-gray-900 {\n    --tw-bg-opacity: 1;\n    background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));\n  }\n\n  .dark\\:text-gray-500 {\n    --tw-text-opacity: 1;\n    color: rgb(107 114 128 / var(--tw-text-opacity, 1));\n  }\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -76077,7 +77258,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_mocks_server_js":1,"node_modules_graphql_index_mjs":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if (chunkId === "resources_js_mocks_server_js") return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

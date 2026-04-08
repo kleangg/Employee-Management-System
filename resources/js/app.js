@@ -17,6 +17,7 @@ require('./components/Example')
 require('./components/sidebar');
 require('./components/user_profile');
 require('./components/leave');
+require('./components/attendance');
 
 // Start MSW in mock mode
 if (window.location.search.includes('mock=true')) {

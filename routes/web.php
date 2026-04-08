@@ -29,3 +29,7 @@ Route::get('/profile', function(){
 Route::get('/leave', function(){
     return view('leave');
 });
+
+Route::get('/attendance', function(){
+    return view('attendance');
+});
