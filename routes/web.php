@@ -33,3 +33,7 @@ Route::get('/leave', function(){
 Route::get('/attendance', function(){
     return view('attendance');
 });
+
+Route::get('/reports', function(){
+    return view('reports');
+});

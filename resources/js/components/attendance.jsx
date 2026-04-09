@@ -609,7 +609,7 @@ export default function Attendance() {
   const { user } = useAuth();
   if (!user) return null;
   return user.role === "HR Admin"
-    ? <EmployeeAttendanceView />
+    ? <AdminAttendanceView />
     : <EmployeeAttendanceView />;
 }
 

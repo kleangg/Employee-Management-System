@@ -156,6 +156,109 @@ var mockAdminAttendanceSummary = [{
   total_hours: 138
 }];
 
+// Mock report data
+var mockAttendanceReport = [{
+  user_id: 1,
+  name: 'John Doe',
+  department: 'Engineering',
+  present: 20,
+  late: 1,
+  absent: 0,
+  total_hours: 160,
+  rate: 95
+}, {
+  user_id: 2,
+  name: 'Jane Smith',
+  department: 'HR',
+  present: 18,
+  late: 2,
+  absent: 1,
+  total_hours: 144,
+  rate: 85
+}, {
+  user_id: 3,
+  name: 'Bob Johnson',
+  department: 'Marketing',
+  present: 19,
+  late: 0,
+  absent: 2,
+  total_hours: 152,
+  rate: 90
+}];
+var mockLeaveReport = [{
+  user_id: 1,
+  name: 'John Doe',
+  department: 'Engineering',
+  approved: 5,
+  pending: 1,
+  rejected: 0,
+  total_days: 5
+}, {
+  user_id: 2,
+  name: 'Jane Smith',
+  department: 'HR',
+  approved: 3,
+  pending: 0,
+  rejected: 1,
+  total_days: 3
+}, {
+  user_id: 3,
+  name: 'Bob Johnson',
+  department: 'Marketing',
+  approved: 4,
+  pending: 2,
+  rejected: 0,
+  total_days: 4
+}];
+var mockHeadcountReport = [{
+  department: 'Engineering',
+  count: 15,
+  pct: 50
+}, {
+  department: 'HR',
+  count: 5,
+  pct: 17
+}, {
+  department: 'Marketing',
+  count: 8,
+  pct: 27
+}, {
+  department: 'Finance',
+  count: 2,
+  pct: 6
+}];
+var mockMonthlyTrend = [{
+  month: 'Jan 2024',
+  present: 280,
+  late: 10,
+  absent: 5
+}, {
+  month: 'Feb 2024',
+  present: 275,
+  late: 15,
+  absent: 3
+}, {
+  month: 'Mar 2024',
+  present: 290,
+  late: 8,
+  absent: 2
+}, {
+  month: 'Apr 2024',
+  present: 285,
+  late: 12,
+  absent: 4
+}, {
+  month: 'May 2024',
+  present: 295,
+  late: 5,
+  absent: 1
+}, {
+  month: 'Jun 2024',
+  present: 288,
+  late: 9,
+  absent: 3
+}];
+
 // Handlers
 var handlers = [
 // Employee leave history
@@ -313,7 +416,31 @@ msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/admin/attendance', /*#__PURE__*
   return function (_x3) {
     return _ref7.apply(this, arguments);
   };
-}())];
+}()),
+// Reports: attendance report
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/attendance', function (_ref8) {
+  var request = _ref8.request;
+  var url = new URL(request.url);
+  var month = url.searchParams.get('month');
+  // For simplicity, return the same data regardless of month
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAttendanceReport);
+}),
+// Reports: leave report
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/leave', function (_ref9) {
+  var request = _ref9.request;
+  var url = new URL(request.url);
+  var year = url.searchParams.get('year');
+  // For simplicity, return the same data regardless of year
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockLeaveReport);
+}),
+// Reports: headcount report
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/headcount', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockHeadcountReport);
+}),
+// Reports: monthly trend
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/monthly-trend', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockMonthlyTrend);
+})];
 
 /***/ },
 
