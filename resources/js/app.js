@@ -7,24 +7,20 @@ import '../css/app.css';
 
 require('./bootstrap');
 
-/**
- * Next, we will create a fresh React component instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+async function startApp() {
+  const isMockMode = window.location.search.includes('mock=true') || process.env.NODE_ENV === 'development';
 
-require('./components/Example')
-require('./components/sidebar');
-require('./components/user_profile');
-require('./components/leave');
-require('./components/attendance');
-require('./components/reports')
+  if (isMockMode) {
+    const { worker } = await import('./mocks/server');
+    await worker.start({ onUnhandledRequest: 'bypass' });
+  }
 
-// Start MSW in mock mode
-if (window.location.search.includes('mock=true')) {
-  import('./mocks/server').then(({ worker }) => {
-    worker.start({
-      onUnhandledRequest: 'bypass'
-    });
-  });
+  require('./components/Example');
+  require('./components/sidebar');
+  require('./components/user_profile');
+  require('./components/leave');
+  require('./components/attendance');
+  require('./components/reports');
 }
+
+startApp();

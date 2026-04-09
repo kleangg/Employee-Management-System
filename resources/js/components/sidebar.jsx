@@ -180,7 +180,9 @@ export default function Sidebar(){
                 
                 <SectionLabel label="Management" collapsed={collapsed} />
                 <NavItem to="/leave" label="Leave" collapsed={collapsed} icon={icons.leave} />
-                <NavItem to="/reports" label="Reports" collapsed={collapsed} icon={icons.reports} />
+                {user?.role === "HR Admin" && (
+                    <NavItem to="/reports" label="Reports" collapsed={collapsed} icon={icons.reports} />
+                )}
             </nav>
 
             {/*collapse toggle button*/}
