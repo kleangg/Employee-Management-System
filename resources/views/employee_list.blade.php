@@ -3,9 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Leave Management</title>
+        <title>Employees — Employee Management System</title>
+        <meta name="description" content="View and manage all employees in your organisation.">
 
-        <link href="{{asset('css/app.css')}}" rel="stylesheet">
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <style>
             body {
                 font-family: 'Nunito', sans-serif;
@@ -19,10 +20,10 @@
             <div id="sideBar" style="flex-shrink: 0;">
             </div>
 
-            <div id="attendancePage" style="flex: 1; overflow-y: auto; background-color: #f3f4f6;">
+            <div id="employeeListPage" style="flex: 1; overflow-y: auto; background-color: #f3f4f6;">
             </div>
         </div>
 
         <script src="/js/app.js"></script>
     </body>
-        
+</html>

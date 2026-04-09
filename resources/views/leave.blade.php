@@ -15,12 +15,11 @@
     </head>
     <body class="antialiased">
         <!-- Sidebar and Main Content in Row -->
-        <div style="display: flex; min-height: 100vh;">
-            <div id="sideBar" style="flex-shrink: 0; background-color: white; border-right: 1px solid #e5e7eb; overflow-y: auto;">
-                Sidebar content here
+        <div style="display: flex; height: 100vh; overflow: hidden;">
+            <div id="sideBar" style="flex-shrink: 0;">
             </div>
 
-            <div id="leavePage" style="flex: 1; overflow-y: auto; background-color: #f3f4f6; padding: 1rem;">
+            <div id="leavePage" style="flex: 1; overflow-y: auto; background-color: #f3f4f6;">
             </div>
         </div>
 

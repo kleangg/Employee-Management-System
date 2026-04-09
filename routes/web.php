@@ -21,19 +21,46 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-Route::get('/profile', function(){
+Route::get('/profile', function () {
     return view('user_profile');
 });
 
-Route::get('/leave', function(){
+Route::get('/leave', function () {
     return view('leave');
 });
 
-Route::get('/attendance', function(){
+Route::get('/attendance', function () {
     return view('attendance');
 });
 
-Route::get('/reports', function(){
+Route::get('/reports', function () {
     return view('reports');
+});
+
+Route::get('/login-page', function () {
+    return view('login');
+});
+
+Route::get('/forgot-password', function () {
+    return view('forgot_password');
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+});
+
+Route::get('/employees', function () {
+    return view('employee_list');
+});
+
+Route::get('/employees/add', function () {
+    return view('add_employee');
+});
+
+Route::get('/employees/edit/{id}', function () {
+    return view('edit_employee');
+});
+
+Route::get('/employees/{id}', function () {
+    return view('employee_profile_page');
 });

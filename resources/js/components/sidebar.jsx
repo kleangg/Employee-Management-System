@@ -1,6 +1,5 @@
 
 import React, {useState} from 'react';
-import {NavLink, useNavigate, BrowserRouter} from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import { useAuth, AuthProvider } from '../AuthContext';
 
@@ -41,11 +40,6 @@ const icons = {
             <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
     ),
-    departments: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-    ),
     attendance: (
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
             <path d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -63,25 +57,42 @@ const icons = {
     ),
 };
 
-function NavItem ({ to, label, collapsed, icon}){
+// ── Detect active route from current URL ──────────────────────
+function isActive(path) {
+    const current = window.location.pathname;
+    // For "/employees" match "/employees", "/employees/add", etc.
+    if (path === '/') return current === '/';
+    return current === path || current.startsWith(path + '/');
+}
+
+// ── NavItem using <a> tag for full page reload ────────────────
+function NavItem ({ href, label, collapsed, icon}){
+    const active = isActive(href);
     return(
-        <NavLink 
-            to={to}
-            style={({ isActive }) => ({
+        <a 
+            href={href}
+            style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
                 padding: '12px 14px',
                 borderRadius: '12px',
                 textDecoration: 'none',
-                color: isActive ? '#1d4ed8' : '#475569',
-                backgroundColor: isActive ? '#eff6ff' : 'transparent',
-                fontWeight: isActive ? 600 : 500,
-                borderRight: isActive ? '3px solid #3b82f6' : '3px solid transparent',
+                color: active ? '#1d4ed8' : '#475569',
+                backgroundColor: active ? '#eff6ff' : 'transparent',
+                fontWeight: active ? 600 : 500,
+                borderRight: active ? '3px solid #3b82f6' : '3px solid transparent',
                 transition: 'all .2s ease',
                 justifyContent: collapsed ? 'center' : 'flex-start',
-            })}
+                fontSize: 14,
+            }}
             title={collapsed ? label : ""}
+            onMouseOver={(e) => {
+                if (!active) e.currentTarget.style.backgroundColor = '#f1f5f9';
+            }}
+            onMouseOut={(e) => {
+                if (!active) e.currentTarget.style.backgroundColor = 'transparent';
+            }}
         >
             {icon && (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 24, minHeight: 24 }}>
@@ -91,7 +102,7 @@ function NavItem ({ to, label, collapsed, icon}){
             {!collapsed && (
                 <span style={{ whiteSpace: 'nowrap' }}>{label}</span>
             )}
-        </NavLink>
+        </a>
     );
 }
 
@@ -106,7 +117,6 @@ function SectionLabel({ label, collapsed }) {
 export default function Sidebar(){ 
     const [collapsed, setCollapsed] = useState(false);
     const [loggingOut, setLoggingOut] = useState(false);
-    const navigate = useNavigate();
     const { user, logout } = useAuth();
 
     const handleLogout = () => {
@@ -114,11 +124,7 @@ export default function Sidebar(){
         logout();
         setTimeout(() => {
             setLoggingOut(false);
-            if (navigate) {
-                navigate('/login');
-            } else {
-                window.location = '/login';
-            }
+            window.location.href = '/login-page';
         }, 200);
     };
 
@@ -129,12 +135,13 @@ export default function Sidebar(){
             display: 'flex',
             flexDirection: 'column',
             width: collapsed ? 64 : 250,
-            minHeight: '100%',
+            height: '100vh',
             backgroundColor: '#ffffff',
             borderRight: '1px solid #e5e7eb',
             boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)',
             alignSelf: 'flex-start',
             transition: 'width 0.3s ease',
+            overflow: 'hidden',
         }}>
 
             {/*The header of the sidebar*/}
@@ -163,7 +170,7 @@ export default function Sidebar(){
                 )}
             </div>
 
-            {/*navigation links*/}
+            {/*navigation links — uses <a> tags for full page reload*/}
             <nav style={{
                 flex: 1,
                 display: 'flex',
@@ -173,15 +180,14 @@ export default function Sidebar(){
                 overflowY: 'auto',
             }}>
                 <SectionLabel label="Main" collapsed={collapsed} />
-                <NavItem to="/dashboard" label="Dashboard" collapsed={collapsed} icon={icons.dashboard} />
-                <NavItem to="/employees" label="Employees" collapsed={collapsed} icon={icons.employees} />
-                <NavItem to="/departments" label="Departments" collapsed={collapsed} icon={icons.departments} />
-                <NavItem to="/attendance" label="Attendance" collapsed={collapsed} icon={icons.attendance} />
+                <NavItem href="/dashboard" label="Dashboard" collapsed={collapsed} icon={icons.dashboard} />
+                <NavItem href="/employees" label="Employees" collapsed={collapsed} icon={icons.employees} />
+                <NavItem href="/attendance" label="Attendance" collapsed={collapsed} icon={icons.attendance} />
                 
                 <SectionLabel label="Management" collapsed={collapsed} />
-                <NavItem to="/leave" label="Leave" collapsed={collapsed} icon={icons.leave} />
-                {user?.role === "HR Admin" && (
-                    <NavItem to="/reports" label="Reports" collapsed={collapsed} icon={icons.reports} />
+                <NavItem href="/leave" label="Leave" collapsed={collapsed} icon={icons.leave} />
+                {(user?.role === "HR Admin" || user?.role === "Manager") && (
+                    <NavItem href="/reports" label="Reports" collapsed={collapsed} icon={icons.reports} />
                 )}
             </nav>
 
@@ -224,7 +230,7 @@ export default function Sidebar(){
             <div style={{ borderTop: '1px solid #bdc4d2', padding: '18px 14px', backgroundColor: '#f9fafb' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 25 }}>
                     <button
-                    onClick={() => navigate('/profile')}
+                    onClick={() => window.location.href = '/profile'}
                     style={{
                         display: 'flex',
                         width: '100%',
@@ -232,7 +238,10 @@ export default function Sidebar(){
                         gap: 12,
                         borderRadius: 12, 
                         cursor: 'pointer',
-
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        padding: '4px',
+                        textAlign: 'left',
                     }}
                     onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e2e5e8'}
                     onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
@@ -299,14 +308,14 @@ export default function Sidebar(){
     )
 }
 
+// ── Mount WITHOUT BrowserRouter ──────────────────────────────
+// We no longer need BrowserRouter since we use <a> tags
 if (document.getElementById('sideBar')) {
     const container = document.getElementById('sideBar');
     const root = createRoot(container);
     root.render(
-        <BrowserRouter>
-            <AuthProvider>
-                <Sidebar />
-            </AuthProvider>
-        </BrowserRouter>
+        <AuthProvider>
+            <Sidebar />
+        </AuthProvider>
     );
 }

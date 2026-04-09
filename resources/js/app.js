@@ -21,6 +21,13 @@ async function startApp() {
   require('./components/leave');
   require('./components/attendance');
   require('./components/reports');
+  require('./components/login');
+  require('./components/forgot_password');
+  require('./components/employee_list');
+  require('./components/add_employee');
+  require('./components/edit_employee');
+  require('./components/employee_profile');
+  require('./components/dashboard');
 }
 
 startApp();

@@ -16,22 +16,232 @@ __webpack_require__.r(__webpack_exports__);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 
 
-// Mock data
-var mockUser = {
+// ── Mock Employees (full dataset) ─────────────────────────────
+var mockEmployees = [{
   id: 1,
+  employeeID: 'EMP001',
   name: 'John Doe',
-  email: 'john@example.com',
-  role: 'Employee'
-};
+  email: 'john.doe@company.com',
+  phone: '012-345-6789',
+  department: 'Engineering',
+  position: 'Senior Developer',
+  date_of_joining: '2021-03-15',
+  salary: 8500,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 2,
+  employeeID: 'EMP002',
+  name: 'Jane Smith',
+  email: 'jane.smith@company.com',
+  phone: '012-456-7890',
+  department: 'HR',
+  position: 'HR Manager',
+  date_of_joining: '2020-01-10',
+  salary: 9200,
+  role: 'HR',
+  status: 'Active'
+}, {
+  id: 3,
+  employeeID: 'EMP003',
+  name: 'Bob Johnson',
+  email: 'bob.johnson@company.com',
+  phone: '013-567-8901',
+  department: 'Marketing',
+  position: 'Marketing Lead',
+  date_of_joining: '2022-06-20',
+  salary: 7800,
+  role: 'Manager',
+  status: 'Active'
+}, {
+  id: 4,
+  employeeID: 'EMP004',
+  name: 'Alice Wong',
+  email: 'alice.wong@company.com',
+  phone: '011-678-9012',
+  department: 'Engineering',
+  position: 'Frontend Developer',
+  date_of_joining: '2023-01-05',
+  salary: 6500,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 5,
+  employeeID: 'EMP005',
+  name: 'Charlie Brown',
+  email: 'charlie.brown@company.com',
+  phone: '014-789-0123',
+  department: 'Finance',
+  position: 'Financial Analyst',
+  date_of_joining: '2021-09-12',
+  salary: 7200,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 6,
+  employeeID: 'EMP006',
+  name: 'Diana Lee',
+  email: 'diana.lee@company.com',
+  phone: '016-890-1234',
+  department: 'Engineering',
+  position: 'Backend Developer',
+  date_of_joining: '2022-04-18',
+  salary: 7000,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 7,
+  employeeID: 'EMP007',
+  name: 'Edward Tan',
+  email: 'edward.tan@company.com',
+  phone: '017-901-2345',
+  department: 'HR',
+  position: 'HR Executive',
+  date_of_joining: '2023-07-01',
+  salary: 5500,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 8,
+  employeeID: 'EMP008',
+  name: 'Fiona Chen',
+  email: 'fiona.chen@company.com',
+  phone: '018-012-3456',
+  department: 'Marketing',
+  position: 'Content Writer',
+  date_of_joining: '2022-11-25',
+  salary: 5000,
+  role: 'Employee',
+  status: 'Inactive'
+}, {
+  id: 9,
+  employeeID: 'EMP009',
+  name: 'George Lim',
+  email: 'george.lim@company.com',
+  phone: '019-123-4567',
+  department: 'Engineering',
+  position: 'DevOps Engineer',
+  date_of_joining: '2021-05-30',
+  salary: 8000,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 10,
+  employeeID: 'EMP010',
+  name: 'Hannah Ng',
+  email: 'hannah.ng@company.com',
+  phone: '012-234-5678',
+  department: 'Finance',
+  position: 'Accountant',
+  date_of_joining: '2020-08-14',
+  salary: 6800,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 11,
+  employeeID: 'EMP011',
+  name: 'Ivan Kumar',
+  email: 'ivan.kumar@company.com',
+  phone: '013-345-6789',
+  department: 'Engineering',
+  position: 'QA Engineer',
+  date_of_joining: '2023-03-22',
+  salary: 6000,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 12,
+  employeeID: 'EMP012',
+  name: 'Julia Ong',
+  email: 'julia.ong@company.com',
+  phone: '014-456-7890',
+  department: 'Marketing',
+  position: 'SEO Specialist',
+  date_of_joining: '2022-09-08',
+  salary: 5500,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 13,
+  employeeID: 'EMP013',
+  name: 'Kevin Raj',
+  email: 'kevin.raj@company.com',
+  phone: '016-567-8901',
+  department: 'Engineering',
+  position: 'Tech Lead',
+  date_of_joining: '2019-12-01',
+  salary: 10000,
+  role: 'Manager',
+  status: 'Active'
+}, {
+  id: 14,
+  employeeID: 'EMP014',
+  name: 'Lisa Tan',
+  email: 'lisa.tan@company.com',
+  phone: '017-678-9012',
+  department: 'HR',
+  position: 'Recruiter',
+  date_of_joining: '2023-05-15',
+  salary: 5200,
+  role: 'Employee',
+  status: 'Active'
+}, {
+  id: 15,
+  employeeID: 'EMP015',
+  name: 'Michael Yap',
+  email: 'michael.yap@company.com',
+  phone: '018-789-0123',
+  department: 'Finance',
+  position: 'Finance Manager',
+  date_of_joining: '2020-02-28',
+  salary: 9500,
+  role: 'Manager',
+  status: 'Active'
+}];
+
+// ── Mock Users for login ──────────────────────────────────────
+var mockUsers = [{
+  email: 'admin@company.com',
+  password: 'password',
+  name: 'Admin User',
+  role: 'HR Admin',
+  id: 100
+}, {
+  email: 'jane.smith@company.com',
+  password: 'password',
+  name: 'Jane Smith',
+  role: 'HR Admin',
+  id: 2
+}, {
+  email: 'bob.johnson@company.com',
+  password: 'password',
+  name: 'Bob Johnson',
+  role: 'Manager',
+  id: 3
+}, {
+  email: 'kevin.raj@company.com',
+  password: 'password',
+  name: 'Kevin Raj',
+  role: 'Manager',
+  id: 13
+}, {
+  email: 'john.doe@company.com',
+  password: 'password',
+  name: 'John Doe',
+  role: 'Employee',
+  id: 1
+}];
+
+// ── Mock leave data ───────────────────────────────────────────
 var mockLeaveHistory = [{
   id: 1,
   type: 'annual',
@@ -74,6 +284,26 @@ var mockAdminLeaveRequests = [{
   reason: 'Medical checkup',
   status: 'approved',
   created_at: '2024-03-05T11:15:00Z'
+}, {
+  id: 3,
+  user_id: 4,
+  user_name: 'Alice Wong',
+  type: 'annual',
+  start_date: '2024-04-01',
+  end_date: '2024-04-05',
+  reason: 'Personal travel',
+  status: 'pending',
+  created_at: '2024-03-20T08:30:00Z'
+}, {
+  id: 4,
+  user_id: 9,
+  user_name: 'George Lim',
+  type: 'emergency',
+  start_date: '2024-03-25',
+  end_date: '2024-03-25',
+  reason: 'Family emergency',
+  status: 'pending',
+  created_at: '2024-03-24T16:45:00Z'
 }];
 var mockAdminBalance = {
   annual: 5,
@@ -81,7 +311,7 @@ var mockAdminBalance = {
   emergency: 1
 };
 
-// Mock attendance data
+// ── Mock attendance data ──────────────────────────────────────
 var mockTodayAttendance = {
   date: new Date().toISOString().split('T')[0],
   clock_in: new Date().toISOString(),
@@ -96,20 +326,20 @@ var mockAttendanceSummary = {
 };
 var mockAttendanceHistory = [{
   id: 1,
-  date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-  clock_in: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 9 * 60 * 60 * 1000).toISOString(),
-  clock_out: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 17 * 60 * 60 * 1000).toISOString(),
+  date: new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0],
+  clock_in: new Date(Date.now() - 2 * 86400000 + 9 * 3600000).toISOString(),
+  clock_out: new Date(Date.now() - 2 * 86400000 + 17 * 3600000).toISOString(),
   status: 'present'
 }, {
   id: 2,
-  date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-  clock_in: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 9.5 * 60 * 60 * 1000).toISOString(),
-  clock_out: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 17.25 * 60 * 60 * 1000).toISOString(),
+  date: new Date(Date.now() - 1 * 86400000).toISOString().split('T')[0],
+  clock_in: new Date(Date.now() - 1 * 86400000 + 9.5 * 3600000).toISOString(),
+  clock_out: new Date(Date.now() - 1 * 86400000 + 17.25 * 3600000).toISOString(),
   status: 'late'
 }, {
   id: 3,
   date: new Date().toISOString().split('T')[0],
-  clock_in: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+  clock_in: new Date(Date.now() - 2 * 3600000).toISOString(),
   clock_out: null,
   status: 'present'
 }];
@@ -117,28 +347,18 @@ var mockAdminAttendance = [{
   id: 1,
   user_id: 1,
   user_name: 'John Doe',
-  date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-  clock_in: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 9 * 60 * 60 * 1000).toISOString(),
-  clock_out: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 17 * 60 * 60 * 1000).toISOString(),
+  date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
+  clock_in: new Date(Date.now() - 86400000 + 9 * 3600000).toISOString(),
+  clock_out: new Date(Date.now() - 86400000 + 17 * 3600000).toISOString(),
   status: 'present'
 }, {
   id: 2,
   user_id: 2,
   user_name: 'Jane Smith',
-  date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-  clock_in: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 9.5 * 60 * 60 * 1000).toISOString(),
-  clock_out: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 17.25 * 60 * 60 * 1000).toISOString(),
+  date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
+  clock_in: new Date(Date.now() - 86400000 + 9.5 * 3600000).toISOString(),
+  clock_out: new Date(Date.now() - 86400000 + 17.25 * 3600000).toISOString(),
   status: 'late'
-}];
-var mockEmployees = [{
-  id: 1,
-  name: 'John Doe'
-}, {
-  id: 2,
-  name: 'Jane Smith'
-}, {
-  id: 3,
-  name: 'Bob Johnson'
 }];
 var mockAdminAttendanceSummary = [{
   user_id: 1,
@@ -156,7 +376,7 @@ var mockAdminAttendanceSummary = [{
   total_hours: 138
 }];
 
-// Mock report data
+// ── Mock report data ──────────────────────────────────────────
 var mockAttendanceReport = [{
   user_id: 1,
   name: 'John Doe',
@@ -212,20 +432,20 @@ var mockLeaveReport = [{
 }];
 var mockHeadcountReport = [{
   department: 'Engineering',
-  count: 15,
-  pct: 50
+  count: 6,
+  pct: 40
 }, {
   department: 'HR',
-  count: 5,
-  pct: 17
+  count: 3,
+  pct: 20
 }, {
   department: 'Marketing',
-  count: 8,
-  pct: 27
+  count: 3,
+  pct: 20
 }, {
   department: 'Finance',
-  count: 2,
-  pct: 6
+  count: 3,
+  pct: 20
 }];
 var mockMonthlyTrend = [{
   month: 'Jan 2024',
@@ -259,20 +479,232 @@ var mockMonthlyTrend = [{
   absent: 3
 }];
 
-// Handlers
+// ── Mock dashboard data ───────────────────────────────────────
+var mockDashboard = {
+  total_employees: 15,
+  attendance_today: {
+    present: 11,
+    late: 2,
+    absent: 2,
+    total: 15
+  },
+  pending_leaves: 3,
+  avg_attendance: 91.5,
+  attendance_trend: [{
+    month: 'Oct',
+    rate: 88
+  }, {
+    month: 'Nov',
+    rate: 91
+  }, {
+    month: 'Dec',
+    rate: 85
+  }, {
+    month: 'Jan',
+    rate: 92
+  }, {
+    month: 'Feb',
+    rate: 90
+  }, {
+    month: 'Mar',
+    rate: 94
+  }],
+  recent_leaves: [{
+    id: 1,
+    employee: 'John Doe',
+    type: 'Annual',
+    days: 5,
+    status: 'pending'
+  }, {
+    id: 3,
+    employee: 'Alice Wong',
+    type: 'Annual',
+    days: 5,
+    status: 'pending'
+  }, {
+    id: 4,
+    employee: 'George Lim',
+    type: 'Emergency',
+    days: 1,
+    status: 'pending'
+  }],
+  department_headcount: [{
+    department: 'Engineering',
+    count: 6
+  }, {
+    department: 'HR',
+    count: 3
+  }, {
+    department: 'Marketing',
+    count: 3
+  }, {
+    department: 'Finance',
+    count: 3
+  }],
+  today_attendance_list: [{
+    name: 'John Doe',
+    department: 'Engineering',
+    clock_in: '09:02 AM',
+    status: 'present'
+  }, {
+    name: 'Jane Smith',
+    department: 'HR',
+    clock_in: '08:55 AM',
+    status: 'present'
+  }, {
+    name: 'Bob Johnson',
+    department: 'Marketing',
+    clock_in: '09:35 AM',
+    status: 'late'
+  }, {
+    name: 'Alice Wong',
+    department: 'Engineering',
+    clock_in: '08:58 AM',
+    status: 'present'
+  }, {
+    name: 'Charlie Brown',
+    department: 'Finance',
+    clock_in: '09:10 AM',
+    status: 'present'
+  }, {
+    name: 'Diana Lee',
+    department: 'Engineering',
+    clock_in: '—',
+    status: 'absent'
+  }, {
+    name: 'Edward Tan',
+    department: 'HR',
+    clock_in: '09:45 AM',
+    status: 'late'
+  }, {
+    name: 'George Lim',
+    department: 'Engineering',
+    clock_in: '08:50 AM',
+    status: 'present'
+  }, {
+    name: 'Hannah Ng',
+    department: 'Finance',
+    clock_in: '09:00 AM',
+    status: 'present'
+  }, {
+    name: 'Ivan Kumar',
+    department: 'Engineering',
+    clock_in: '—',
+    status: 'absent'
+  }, {
+    name: 'Kevin Raj',
+    department: 'Engineering',
+    clock_in: '08:45 AM',
+    status: 'present'
+  }, {
+    name: 'Lisa Tan',
+    department: 'HR',
+    clock_in: '09:05 AM',
+    status: 'present'
+  }, {
+    name: 'Michael Yap',
+    department: 'Finance',
+    clock_in: '09:01 AM',
+    status: 'present'
+  }]
+};
+
+// ── Mock employee profile data ────────────────────────────────
+function getEmployeeProfile(id) {
+  var emp = mockEmployees.find(function (e) {
+    return e.id === parseInt(id);
+  });
+  if (!emp) return null;
+  return _objectSpread(_objectSpread({}, emp), {}, {
+    address: '123 Jalan Bukit Bintang, 55100 Kuala Lumpur',
+    emergency_contact: '012-999-8888',
+    attendance: {
+      summary: {
+        present: 20,
+        late: 1,
+        absent: 0,
+        avg_hours: 8.1
+      },
+      recent: [{
+        date: '2024-03-20',
+        clock_in: '09:00 AM',
+        clock_out: '06:05 PM',
+        hours: '9h 5m',
+        status: 'present'
+      }, {
+        date: '2024-03-19',
+        clock_in: '09:15 AM',
+        clock_out: '06:00 PM',
+        hours: '8h 45m',
+        status: 'present'
+      }, {
+        date: '2024-03-18',
+        clock_in: '09:32 AM',
+        clock_out: '06:10 PM',
+        hours: '8h 38m',
+        status: 'late'
+      }, {
+        date: '2024-03-17',
+        clock_in: '08:55 AM',
+        clock_out: '05:50 PM',
+        hours: '8h 55m',
+        status: 'present'
+      }, {
+        date: '2024-03-14',
+        clock_in: '09:00 AM',
+        clock_out: '06:00 PM',
+        hours: '9h 0m',
+        status: 'present'
+      }]
+    },
+    leave: {
+      balance: {
+        annual: 10,
+        medical: 12,
+        emergency: 3
+      },
+      used: {
+        annual: 4,
+        medical: 2,
+        emergency: 0
+      },
+      history: [{
+        id: 1,
+        type: 'annual',
+        start_date: '2024-01-15',
+        end_date: '2024-01-17',
+        days: 3,
+        status: 'approved',
+        reason: 'Family vacation'
+      }, {
+        id: 2,
+        type: 'medical',
+        start_date: '2024-02-01',
+        end_date: '2024-02-02',
+        days: 2,
+        status: 'approved',
+        reason: 'Flu / sick leave'
+      }, {
+        id: 3,
+        type: 'annual',
+        start_date: '2024-03-25',
+        end_date: '2024-03-25',
+        days: 1,
+        status: 'pending',
+        reason: 'Personal day'
+      }]
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  HANDLERS
+// ═══════════════════════════════════════════════════════════════
 var handlers = [
-// Employee leave history
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/leave', function () {
-  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockLeaveHistory);
-}),
-// Employee leave balance
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/leave/balance', function () {
-  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockLeaveBalance);
-}),
-// Submit leave request
-msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/leave', /*#__PURE__*/function () {
+// ── Auth ─────────────────────────────────────────────────────
+msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/login', /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(_ref) {
-    var request, body, newRequest;
+    var request, body, user;
     return _regenerator().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
@@ -281,15 +713,27 @@ msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/leave', /*#__PURE__*/function (
           return request.json();
         case 1:
           body = _context.v;
-          newRequest = _objectSpread(_objectSpread({
-            id: Date.now()
-          }, body), {}, {
-            status: 'pending',
-            created_at: new Date().toISOString()
+          user = mockUsers.find(function (u) {
+            return u.email === body.email && u.password === body.password;
           });
-          mockLeaveHistory.push(newRequest);
-          return _context.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(newRequest, {
-            status: 201
+          if (user) {
+            _context.n = 2;
+            break;
+          }
+          return _context.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+            message: 'Invalid credentials. Please check your email and password.'
+          }, {
+            status: 401
+          }));
+        case 2:
+          return _context.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+            token: 'mock-jwt-token-' + user.id,
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role
+            }
           }));
       }
     }, _callee);
@@ -297,71 +741,290 @@ msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/leave', /*#__PURE__*/function (
   return function (_x) {
     return _ref2.apply(this, arguments);
   };
-}()),
-// Admin: list all leave requests
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/leave', function () {
-  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAdminLeaveRequests);
-}),
-// Admin: get employee balance
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/leave/balance/:userId', function (_ref3) {
-  var params = _ref3.params;
-  var userId = params.userId;
-  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(_objectSpread(_objectSpread({}, mockAdminBalance), {}, {
-    user_id: userId
-  }));
-}),
-// Admin: approve/reject leave request
-msw__WEBPACK_IMPORTED_MODULE_0__.http.put('/api/admin/leave/:id', /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(_ref4) {
-    var request, params, id, body, requestIndex;
+}()), msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/forgot-password', /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(_ref3) {
+    var request, body, user;
     return _regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
-          request = _ref4.request, params = _ref4.params;
-          id = params.id;
+          request = _ref3.request;
           _context2.n = 1;
           return request.json();
         case 1:
           body = _context2.v;
-          requestIndex = mockAdminLeaveRequests.findIndex(function (r) {
-            return r.id === parseInt(id);
+          user = mockUsers.find(function (u) {
+            return u.email === body.email;
           });
-          if (!(requestIndex !== -1)) {
+          if (user) {
             _context2.n = 2;
             break;
           }
-          mockAdminLeaveRequests[requestIndex] = _objectSpread(_objectSpread({}, mockAdminLeaveRequests[requestIndex]), {}, {
-            status: body.status,
-            note: body.note
-          });
-          return _context2.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAdminLeaveRequests[requestIndex]));
+          return _context2.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+            message: 'If an account exists with this email, a password reset link has been sent.'
+          }, {
+            status: 200
+          }));
         case 2:
           return _context2.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
-            error: 'Request not found'
-          }, {
-            status: 404
+            message: 'Password reset link has been sent to your email address.'
           }));
       }
     }, _callee2);
   }));
   return function (_x2) {
-    return _ref5.apply(this, arguments);
+    return _ref4.apply(this, arguments);
   };
 }()),
-// Attendance: today's record
+// ── Profile ─────────────────────────────────────────────────
+msw__WEBPACK_IMPORTED_MODULE_0__.http.put('/api/profile', /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(_ref5) {
+    var request, body;
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.n) {
+        case 0:
+          request = _ref5.request;
+          _context3.n = 1;
+          return request.json();
+        case 1:
+          body = _context3.v;
+          return _context3.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+            user: _objectSpread(_objectSpread({}, body), {}, {
+              role: 'HR Admin',
+              id: 1
+            })
+          }));
+      }
+    }, _callee3);
+  }));
+  return function (_x3) {
+    return _ref6.apply(this, arguments);
+  };
+}()), msw__WEBPACK_IMPORTED_MODULE_0__.http.put('/api/profile/password', /*#__PURE__*/function () {
+  var _ref8 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(_ref7) {
+    var request, body;
+    return _regenerator().w(function (_context4) {
+      while (1) switch (_context4.n) {
+        case 0:
+          request = _ref7.request;
+          _context4.n = 1;
+          return request.json();
+        case 1:
+          body = _context4.v;
+          if (!(body.current_password === 'wrong')) {
+            _context4.n = 2;
+            break;
+          }
+          return _context4.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+            message: 'Current password is incorrect.'
+          }, {
+            status: 422
+          }));
+        case 2:
+          return _context4.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+            message: 'Password updated.'
+          }));
+      }
+    }, _callee4);
+  }));
+  return function (_x4) {
+    return _ref8.apply(this, arguments);
+  };
+}()),
+// ── Employees CRUD ──────────────────────────────────────────
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/employees', function (_ref9) {
+  var request = _ref9.request;
+  var url = new URL(request.url);
+  var search = (url.searchParams.get('search') || '').toLowerCase();
+  var department = url.searchParams.get('department') || '';
+  var role = url.searchParams.get('role') || '';
+  var page = parseInt(url.searchParams.get('page') || '1');
+  var perPage = parseInt(url.searchParams.get('per_page') || '8');
+  var filtered = [].concat(mockEmployees);
+  if (search) {
+    filtered = filtered.filter(function (e) {
+      return e.name.toLowerCase().includes(search) || e.email.toLowerCase().includes(search) || e.employeeID.toLowerCase().includes(search);
+    });
+  }
+  if (department) {
+    filtered = filtered.filter(function (e) {
+      return e.department === department;
+    });
+  }
+  if (role) {
+    filtered = filtered.filter(function (e) {
+      return e.position === role;
+    });
+  }
+  var total = filtered.length;
+  var lastPage = Math.max(1, Math.ceil(total / perPage));
+  var start = (page - 1) * perPage;
+  var data = filtered.slice(start, start + perPage);
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+    data: data,
+    current_page: page,
+    last_page: lastPage,
+    per_page: perPage,
+    total: total
+  });
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/employees/:id', function (_ref0) {
+  var params = _ref0.params;
+  var profile = getEmployeeProfile(params.id);
+  if (!profile) {
+    return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+      message: 'Employee not found.'
+    }, {
+      status: 404
+    });
+  }
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(profile);
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/employees', /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(_ref1) {
+    var request, body, newEmployee;
+    return _regenerator().w(function (_context5) {
+      while (1) switch (_context5.n) {
+        case 0:
+          request = _ref1.request;
+          _context5.n = 1;
+          return request.json();
+        case 1:
+          body = _context5.v;
+          newEmployee = _objectSpread(_objectSpread({
+            id: Date.now()
+          }, body), {}, {
+            status: 'Active'
+          });
+          mockEmployees.push(newEmployee);
+          return _context5.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(newEmployee, {
+            status: 201
+          }));
+      }
+    }, _callee5);
+  }));
+  return function (_x5) {
+    return _ref10.apply(this, arguments);
+  };
+}()), msw__WEBPACK_IMPORTED_MODULE_0__.http.put('/api/employees/:id', /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(_ref11) {
+    var request, params, body, idx;
+    return _regenerator().w(function (_context6) {
+      while (1) switch (_context6.n) {
+        case 0:
+          request = _ref11.request, params = _ref11.params;
+          _context6.n = 1;
+          return request.json();
+        case 1:
+          body = _context6.v;
+          idx = mockEmployees.findIndex(function (e) {
+            return e.id === parseInt(params.id);
+          });
+          if (!(idx === -1)) {
+            _context6.n = 2;
+            break;
+          }
+          return _context6.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+            message: 'Employee not found.'
+          }, {
+            status: 404
+          }));
+        case 2:
+          mockEmployees[idx] = _objectSpread(_objectSpread({}, mockEmployees[idx]), body);
+          return _context6.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockEmployees[idx]));
+      }
+    }, _callee6);
+  }));
+  return function (_x6) {
+    return _ref12.apply(this, arguments);
+  };
+}()),
+// ── Dashboard ───────────────────────────────────────────────
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/dashboard', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockDashboard);
+}),
+// ── Leave (employee) ───────────────────────────────────────
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/leave', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockLeaveHistory);
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/leave/balance', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockLeaveBalance);
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/leave', /*#__PURE__*/function () {
+  var _ref14 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(_ref13) {
+    var request, body, newRequest;
+    return _regenerator().w(function (_context7) {
+      while (1) switch (_context7.n) {
+        case 0:
+          request = _ref13.request;
+          _context7.n = 1;
+          return request.json();
+        case 1:
+          body = _context7.v;
+          newRequest = _objectSpread(_objectSpread({
+            id: Date.now()
+          }, body), {}, {
+            status: 'pending',
+            created_at: new Date().toISOString()
+          });
+          mockLeaveHistory.push(newRequest);
+          return _context7.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(newRequest, {
+            status: 201
+          }));
+      }
+    }, _callee7);
+  }));
+  return function (_x7) {
+    return _ref14.apply(this, arguments);
+  };
+}()),
+// ── Leave (admin) ──────────────────────────────────────────
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/leave', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAdminLeaveRequests);
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/leave/balance/:userId', function (_ref15) {
+  var params = _ref15.params;
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(_objectSpread(_objectSpread({}, mockAdminBalance), {}, {
+    user_id: params.userId
+  }));
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.put('/api/admin/leave/:id', /*#__PURE__*/function () {
+  var _ref17 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(_ref16) {
+    var request, params, body, idx;
+    return _regenerator().w(function (_context8) {
+      while (1) switch (_context8.n) {
+        case 0:
+          request = _ref16.request, params = _ref16.params;
+          _context8.n = 1;
+          return request.json();
+        case 1:
+          body = _context8.v;
+          idx = mockAdminLeaveRequests.findIndex(function (r) {
+            return r.id === parseInt(params.id);
+          });
+          if (!(idx !== -1)) {
+            _context8.n = 2;
+            break;
+          }
+          mockAdminLeaveRequests[idx] = _objectSpread(_objectSpread({}, mockAdminLeaveRequests[idx]), {}, {
+            status: body.status,
+            note: body.note
+          });
+          return _context8.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAdminLeaveRequests[idx]));
+        case 2:
+          return _context8.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
+            error: 'Request not found'
+          }, {
+            status: 404
+          }));
+      }
+    }, _callee8);
+  }));
+  return function (_x8) {
+    return _ref17.apply(this, arguments);
+  };
+}()),
+// ── Attendance (employee) ──────────────────────────────────
 msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/attendance/today', function () {
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockTodayAttendance);
-}),
-// Attendance: monthly summary
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/attendance/summary', function () {
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/attendance/summary', function () {
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAttendanceSummary);
-}),
-// Attendance: history
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/attendance', function () {
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/attendance', function () {
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAttendanceHistory);
-}),
-// Attendance: clock in
-msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/attendance/clock-in', function () {
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/attendance/clock-in', function () {
   mockTodayAttendance.clock_in = new Date().toISOString();
   mockTodayAttendance.clock_out = null;
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
@@ -369,9 +1032,7 @@ msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/attendance/clock-in', function 
     clock_in: mockTodayAttendance.clock_in,
     date: mockTodayAttendance.date
   });
-}),
-// Attendance: clock out
-msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/attendance/clock-out', function () {
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/attendance/clock-out', function () {
   mockTodayAttendance.clock_out = new Date().toISOString();
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json({
     message: 'Clocked out successfully.',
@@ -379,66 +1040,51 @@ msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/attendance/clock-out', function
     date: mockTodayAttendance.date
   });
 }),
-// Admin: attendance records
+// ── Attendance (admin) ─────────────────────────────────────
 msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/attendance', function () {
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAdminAttendance);
-}),
-// Admin: employees list
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/employees', function () {
-  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockEmployees);
-}),
-// Admin: attendance summary
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/attendance/summary', function () {
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/employees', function () {
+  return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockEmployees.map(function (e) {
+    return {
+      id: e.id,
+      name: e.name
+    };
+  }));
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/admin/attendance/summary', function () {
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAdminAttendanceSummary);
-}),
-// Admin: add attendance record
-msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/admin/attendance', /*#__PURE__*/function () {
-  var _ref7 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(_ref6) {
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.post('/api/admin/attendance', /*#__PURE__*/function () {
+  var _ref19 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(_ref18) {
     var request, body, newRecord;
-    return _regenerator().w(function (_context3) {
-      while (1) switch (_context3.n) {
+    return _regenerator().w(function (_context9) {
+      while (1) switch (_context9.n) {
         case 0:
-          request = _ref6.request;
-          _context3.n = 1;
+          request = _ref18.request;
+          _context9.n = 1;
           return request.json();
         case 1:
-          body = _context3.v;
+          body = _context9.v;
           newRecord = _objectSpread({
             id: Date.now()
           }, body);
           mockAdminAttendance.push(newRecord);
-          return _context3.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(newRecord, {
+          return _context9.a(2, msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(newRecord, {
             status: 201
           }));
       }
-    }, _callee3);
+    }, _callee9);
   }));
-  return function (_x3) {
-    return _ref7.apply(this, arguments);
+  return function (_x9) {
+    return _ref19.apply(this, arguments);
   };
 }()),
-// Reports: attendance report
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/attendance', function (_ref8) {
-  var request = _ref8.request;
-  var url = new URL(request.url);
-  var month = url.searchParams.get('month');
-  // For simplicity, return the same data regardless of month
+// ── Reports ────────────────────────────────────────────────
+msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/attendance', function () {
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockAttendanceReport);
-}),
-// Reports: leave report
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/leave', function (_ref9) {
-  var request = _ref9.request;
-  var url = new URL(request.url);
-  var year = url.searchParams.get('year');
-  // For simplicity, return the same data regardless of year
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/leave', function () {
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockLeaveReport);
-}),
-// Reports: headcount report
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/headcount', function () {
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/headcount', function () {
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockHeadcountReport);
-}),
-// Reports: monthly trend
-msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/monthly-trend', function () {
+}), msw__WEBPACK_IMPORTED_MODULE_0__.http.get('/api/reports/monthly-trend', function () {
   return msw__WEBPACK_IMPORTED_MODULE_1__.HttpResponse.json(mockMonthlyTrend);
 })];
 
