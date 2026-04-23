@@ -89,7 +89,7 @@ function JobDetailsTab({ emp }) {
   return (
     <div>
       <InfoRow label="Employee ID" value={<span className="font-mono text-xs bg-gray-50 px-2 py-1 rounded">{emp.employeeID}</span>} />
-      <InfoRow label="Department" value={emp.department} />
+      <InfoRow label="Department" value={emp.department?.name || '—'} />
       <InfoRow label="Position" value={emp.position} />
       <InfoRow label="Role" value={emp.role} />
       <InfoRow label="Date of Joining" value={formatDate(emp.date_of_joining)} />
@@ -250,7 +250,7 @@ export default function EmployeeProfile() {
 
   if (!user) return null;
 
-  const isHR = user?.role === "HR Admin";
+  const isHR = user?.role === "hr";
 
   const tabs = [
     { key: "personal", label: "Personal Info" },
@@ -305,7 +305,7 @@ export default function EmployeeProfile() {
           {/* Info */}
           <div className="flex-1">
             <h1 className="text-xl font-semibold text-gray-900">{emp.name}</h1>
-            <p className="text-sm text-gray-400">{emp.position} · {emp.department}</p>
+            <p className="text-sm text-gray-400">{emp.position} · {emp.department?.name || '—'}</p>
             <div className="flex items-center gap-2 mt-1.5">
               <StatusBadge status={emp.status} />
               <span className="text-xs font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">{emp.role}</span>

@@ -407,9 +407,12 @@ export default function Reports() {
   const { user }   = useAuth();
   const navigate   = useNavigate();
  
-  // Redirect non-admins immediately
+  // Redirect non-admins immediately.
+  // Backend role enum: 'hr' | 'manager' | 'employee'. HR and Manager can view.
   useEffect(() => {
-    if (user && user.role !== "HR Admin") navigate("/dashboard", { replace: true });
+    if (user && user.role !== "hr" && user.role !== "manager") {
+      navigate("/dashboard", { replace: true });
+    }
   }, [user]);
  
   const [activeTab, setActiveTab] = useState("attendance");
@@ -488,7 +491,7 @@ export default function Reports() {
     { key: "trend",      label: "Monthly trend"},
   ];
  
-  if (!user || user.role !== "HR Admin") return null;
+  if (!user || (user.role !== "hr" && user.role !== "manager")) return null;
  
   return (
     <div className="p-8 max-w-5xl">

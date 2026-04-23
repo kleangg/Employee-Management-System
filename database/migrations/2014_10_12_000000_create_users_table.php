@@ -16,9 +16,20 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('employeeID')->unique();           // e.g. "EMP001"
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone_no')->nullable();
+            $table->string('position')->nullable();           // e.g. "Software Engineer"
+            $table->date('date_of_joining')->nullable();
+            $table->decimal('salary', 10, 2)->default(0);
+
+            // Role decides what the user is allowed to do (RBAC)
+            $table->enum('role', ['hr', 'manager', 'employee'])->default('employee');
+
+            // Foreign key linking user to the departments table
+            $table->unsignedBigInteger('department_id')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

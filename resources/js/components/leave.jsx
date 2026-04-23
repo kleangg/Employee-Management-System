@@ -82,7 +82,8 @@ function ReviewModal({ leave, onClose, onDone }) {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`/api/admin/leave/${leave.id}`, {
+      // Admin approve/reject uses the real leaves endpoint (PUT /api/leaves/{id}).
+      const res = await fetch(`/api/leaves/${leave.id}`, {
         method: "PUT",
         headers: authHeaders(),
         body: JSON.stringify({ status: action, note }),
@@ -108,7 +109,7 @@ function ReviewModal({ leave, onClose, onDone }) {
           <div>
             <h2 className="text-base font-medium text-gray-900">Review leave request</h2>
             <p className="text-sm text-gray-400 mt-0.5">
-              {leave.user_name} · {leave.type} leave · {countDays(leave.start_date, leave.end_date)} day(s)
+              {leave.user?.name} · {leave.type} leave · {countDays(leave.start_date, leave.end_date)} day(s)
             </p>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none">✕</button>
@@ -219,8 +220,9 @@ function EmployeeBalanceCard({ balance }) {
 }
 
 // ── ADMIN VIEW ────────────────────────────────────────────────
-// Shown when user.role === "HR Admin"
-function AdminLeaveView() {
+// Shown to HR/Manager. The "onSwitchView" prop, if provided, turns
+// the top-right pill into a toggle back to the personal (employee) view.
+function AdminLeaveView({ onSwitchView }) {
   const [requests, setRequests] = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [success,  setSuccess]  = useState("");
@@ -242,7 +244,8 @@ function AdminLeaveView() {
   async function fetchRequests() {
     setLoading(true);
     try {
-      const res  = await fetch("/api/admin/leave", { headers: authHeaders() });
+      // Admin sees every leave. Backend already filters by role (HR/Manager).
+      const res  = await fetch("/api/leaves", { headers: authHeaders() });
       if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
       setRequests(Array.isArray(data) ? data : []);
@@ -281,7 +284,7 @@ function AdminLeaveView() {
   const filtered = requests.filter((r) => {
     if (filterStatus !== "all" && r.status !== filterStatus) return false;
     if (filterType   !== "all" && r.type   !== filterType)   return false;
-    if (filterName && !r.user_name.toLowerCase().includes(filterName.toLowerCase())) return false;
+    if (filterName && !(r.user?.name || '').toLowerCase().includes(filterName.toLowerCase())) return false;
     return true;
   });
 
@@ -294,9 +297,19 @@ function AdminLeaveView() {
     <div className="p-8 max-w-5xl">
       <div className="flex items-center justify-between mb-1">
         <h1 className="text-2xl font-medium text-gray-900">Leave requests</h1>
-        <span className="text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100">
-          HR Admin view
-        </span>
+        {onSwitchView ? (
+          <button
+            onClick={onSwitchView}
+            title="Switch to my own leave view"
+            className="text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors cursor-pointer"
+          >
+            Admin view · Switch to My view
+          </button>
+        ) : (
+          <span className="text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100">
+            Admin view
+          </span>
+        )}
       </div>
       <p className="text-sm text-gray-400 mb-6">Review and manage employee leave applications.</p>
 
@@ -387,11 +400,11 @@ function AdminLeaveView() {
                       {/* Employee name — click to toggle balance */}
                       <td className="px-4 py-3">
                         <button
-                          onClick={() => fetchBalance(r.user_id, r.user_name)}
+                          onClick={() => fetchBalance(r.user_id, r.user?.name)}
                           className="font-medium text-blue-600 hover:text-blue-800 hover:underline text-left"
                           title="View leave balance"
                         >
-                          {r.user_name}
+                          {r.user?.name}
                         </button>
                       </td>
                       <td className="px-4 py-3 capitalize text-gray-700">{r.type}</td>
@@ -500,13 +513,16 @@ function ApplyForm({ onSuccess }) {
     if (new Date(to) < new Date(from)) { setError("End date cannot be before start date."); return; }
     setLoading(true);
     try {
-      const res = await fetch("/api/leave", {
+      // Apply for leave via real backend: POST /api/leaves
+      const res = await fetch("/api/leaves", {
         method: "POST", headers: authHeaders(),
         body: JSON.stringify({ type, start_date: from, end_date: to, reason }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.errors ? Object.values(data.errors).flat()[0] : data.message);
+        // 422 returns a Laravel validator bag; pull the first error message.
+        const firstError = data.type?.[0] || data.start_date?.[0] || data.end_date?.[0] || data.reason?.[0];
+        setError(firstError || data.message || data.error || "Failed to submit.");
         return;
       }
       setType("annual"); setFrom(""); setTo(""); setReason("");
@@ -596,7 +612,7 @@ function LeaveHistory({ records, loading }) {
   );
 }
 
-function EmployeeLeaveView() {
+function EmployeeLeaveView({ onSwitchView }) {
   const { user }   = useAuth();
   const [balance,  setBalance]    = useState({});
   const [records,  setRecords]    = useState([]);
@@ -613,14 +629,34 @@ function EmployeeLeaveView() {
   }
   async function fetchHistory() {
     setRecLoad(true);
-    try { const r = await fetch("/api/leave", { headers: authHeaders() }); setRecords(await r.json()); }
-    catch {} finally { setRecLoad(false); }
+    try {
+      const r = await fetch("/api/leaves", { headers: authHeaders() });
+      const all = await r.json();
+      // Backend returns all leaves for HR/Manager. Keep only the
+      // current user's rows so "My leave history" is truly "mine".
+      const mine = Array.isArray(all)
+        ? all.filter(x => x.user_id === user?.id)
+        : [];
+      setRecords(mine);
+    } catch {}
+    finally { setRecLoad(false); }
   }
   function handleSuccess(msg) { setSuccess(msg); fetchBalance(); fetchHistory(); }
 
   return (
     <div className="p-8 max-w-4xl">
-      <h1 className="text-2xl font-medium text-gray-900 mb-1">Leave management</h1>
+      <div className="flex items-center justify-between mb-1">
+        <h1 className="text-2xl font-medium text-gray-900">Leave management</h1>
+        {onSwitchView && (
+          <button
+            onClick={onSwitchView}
+            title="Switch to the team admin view"
+            className="text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors cursor-pointer"
+          >
+            My view · Switch to Admin view
+          </button>
+        )}
+      </div>
       <p className="text-sm text-gray-400 mb-8">
         Welcome, {user?.name?.split(" ")[0]}. Manage your leave requests below.
       </p>
@@ -639,10 +675,17 @@ export default function Leave() {
   // Wait for user to load before deciding which view to show
   if (!user) return null;
 
-  // THE KEY LINE: role check decides which view to render
-  return user.role === "HR Admin"
-    ? <AdminLeaveView />
-    : <EmployeeLeaveView />;
+  // HR and Manager have the option to switch between admin and personal view.
+  // Regular employees only have the personal view.
+  const canAdmin = user.role === 'hr' || user.role === 'manager';
+  const [adminMode, setAdminMode] = useState(canAdmin);
+  const toggleView = () => setAdminMode(!adminMode);
+
+  if (!canAdmin) return <EmployeeLeaveView />;
+
+  return adminMode
+    ? <AdminLeaveView onSwitchView={toggleView} />
+    : <EmployeeLeaveView onSwitchView={toggleView} />;
 }
 
 // ── Mount the component ─────────────────

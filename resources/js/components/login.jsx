@@ -263,7 +263,8 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/login', {
+      // Call the JWT login endpoint served by our Laravel backend.
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -271,11 +272,17 @@ export default function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || 'Login failed. Please try again.');
+        // Backend uses "error" for 401 and an errors object for 422
+        const msg = data.error
+          || (data.email && data.email[0])
+          || (data.password && data.password[0])
+          || 'Login failed. Please try again.';
+        setError(msg);
         return;
       }
 
-      login(data.token, data.user);
+      // Our backend returns { access_token, token_type, expires_in, user }.
+      login(data.access_token, data.user);
       window.location.href = '/dashboard';
     } catch {
       setError('Network error. Please check your connection.');
@@ -285,9 +292,9 @@ export default function Login() {
   }
 
   const demoAccounts = [
-    { email: 'jane.smith@company.com', role: 'HR Admin', color: 'blue' },
-    { email: 'bob.johnson@company.com', role: 'Manager', color: 'green' },
-    { email: 'john.doe@company.com', role: 'Employee', color: 'purple' },
+    { email: 'hr@company.com',        role: 'HR Admin', color: 'blue'   },
+    { email: 'manager@company.com',   role: 'Manager',  color: 'green'  },
+    { email: 'employee@company.com',  role: 'Employee', color: 'purple' },
   ];
 
   return (
@@ -409,12 +416,12 @@ export default function Login() {
 
         {/* Demo accounts */}
         <div style={styles.demoBox}>
-          <p style={styles.demoTitle}>Demo accounts (password: password)</p>
+          <p style={styles.demoTitle}>Demo accounts (password: password123)</p>
           {demoAccounts.map((acc) => (
             <div
               key={acc.email}
               style={{ ...styles.demoItem, cursor: 'pointer', borderRadius: 8, padding: '6px 8px', transition: 'background 0.15s' }}
-              onClick={() => { setEmail(acc.email); setPassword('password'); setError(''); }}
+              onClick={() => { setEmail(acc.email); setPassword('password123'); setError(''); }}
               onMouseOver={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
               onMouseOut={(e) => (e.currentTarget.style.background = 'transparent')}
             >

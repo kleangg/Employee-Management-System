@@ -2,43 +2,65 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+// We implement JWTSubject so this User model can be used
+// by tymon/jwt-auth to generate JSON Web Tokens.
+class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    // Columns that can be mass-assigned using User::create([...]).
     protected $fillable = [
         'name',
+        'employeeID',
         'email',
         'password',
+        'phone_no',
+        'position',
+        'date_of_joining',
+        'salary',
+        'role',
+        'department_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    // Hide password when the model is converted to JSON.
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+    // Cast date_of_joining so Laravel treats it as a date.
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'date_of_joining' => 'date',
     ];
+
+    // Relationship: a user belongs to one department.
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    // Relationship: a user (employee) can have many leave records.
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
+    }
+
+    // ---- Required methods for tymon/jwt-auth ----
+
+    // Return the primary key of the user (used inside the JWT).
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    // Extra claims we want to store in the JWT. We leave it empty here.
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 }

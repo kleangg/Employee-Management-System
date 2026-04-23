@@ -6,27 +6,39 @@ try {
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
+ * to our Laravel back-end.
  */
-
 window.axios = require('axios');
 
+// Default headers every request will carry
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common['Accept'] = 'application/json';
 
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
+// When the SPA is served from the same Laravel origin (http://localhost:8000),
+// baseURL of '/' is enough. If you ever point at a different host, change this.
+window.axios.defaults.baseURL = '/';
 
-// import Echo from 'laravel-echo';
+// Request interceptor: automatically attach the JWT token (if present)
+window.axios.interceptors.request.use(function (config) {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = 'Bearer ' + token;
+    }
+    return config;
+});
 
-// window.Pusher = require('pusher-js');
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     forceTLS: true
-// });
+// Response interceptor: if the server says the token is invalid/expired,
+// clear local state and send the user back to the login page.
+window.axios.interceptors.response.use(
+    function (response) { return response; },
+    function (error) {
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            if (!window.location.pathname.includes('/login-page')) {
+                window.location.href = '/login-page';
+            }
+        }
+        return Promise.reject(error);
+    }
+);

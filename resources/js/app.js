@@ -1,18 +1,20 @@
 /**
- * First we will load all of this project's JavaScript dependencies which
- * includes React and other helpers. It's a great starting point while
- * building robust, powerful web applications using React + Laravel.
+ * Load all of the project's JavaScript dependencies — React, axios, etc.
  */
 import '../css/app.css';
 
 require('./bootstrap');
 
 async function startApp() {
-  const isMockMode = window.location.search.includes('mock=true') || process.env.NODE_ENV === 'development';
+  // Mock mode is OPT-IN: append ?mock=true to any URL (e.g. /dashboard?mock=true)
+  // to have the Service Worker intercept API calls with dummy data. By default
+  // the SPA talks to the real Laravel backend at /api/...
+  const isMockMode = window.location.search.includes('mock=true');
 
   if (isMockMode) {
     const { worker } = await import('./mocks/server');
     await worker.start({ onUnhandledRequest: 'bypass' });
+    console.info('[EMS] Mock API mode is ON. Remove ?mock=true from the URL to use the real backend.');
   }
 
   require('./components/Example');

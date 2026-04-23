@@ -36,14 +36,18 @@ function StatusBadge({ status }) {
 
 // ── Role badge ────────────────────────────────────────────────
 function RoleBadge({ role }) {
+  // Backend stores role as lowercase enum: 'hr', 'manager', 'employee'.
+  // We map those to colour + display label here.
   const colors = {
-    'HR': 'bg-blue-50 text-blue-700',
-    'Manager': 'bg-purple-50 text-purple-700',
-    'Employee': 'bg-gray-100 text-gray-600',
+    hr:       'bg-blue-50 text-blue-700',
+    manager:  'bg-purple-50 text-purple-700',
+    employee: 'bg-gray-100 text-gray-600',
   };
+  const labels = { hr: 'HR', manager: 'Manager', employee: 'Employee' };
+  const key = (role || '').toLowerCase();
   return (
-    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${colors[role] || colors.Employee}`}>
-      {role}
+    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${colors[key] || colors.employee}`}>
+      {labels[key] || role}
     </span>
   );
 }
@@ -55,20 +59,14 @@ function getInitials(name = "") {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-// ── Departments and Positions for filters ─────────────────────
-const departments = ['Engineering', 'HR', 'Marketing', 'Finance'];
-const positions = [
-  'Senior Developer', 'Frontend Developer', 'Backend Developer', 'DevOps Engineer',
-  'QA Engineer', 'Tech Lead', 'HR Manager', 'HR Executive', 'Recruiter',
-  'Marketing Lead', 'Content Writer', 'SEO Specialist',
-  'Financial Analyst', 'Accountant', 'Finance Manager',
-];
+// Departments are loaded from /api/departments at runtime.
 
 // ── Main Component ────────────────────────────────────────────
 export default function EmployeeList() {
   const { user } = useAuth();
 
   const [employees, setEmployees] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [department, setDepartment] = useState('');
@@ -76,7 +74,15 @@ export default function EmployeeList() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-  const [perPage] = useState(8);
+  const [perPage] = useState(20);
+
+  // Load departments once so the filter dropdown matches real data.
+  useEffect(() => {
+    fetch('/api/departments', { headers: authHeaders() })
+      .then(r => r.ok ? r.json() : [])
+      .then(d => setDepartments(Array.isArray(d) ? d : []))
+      .catch(() => setDepartments([]));
+  }, []);
 
   useEffect(() => {
     fetchEmployees();
@@ -90,7 +96,8 @@ export default function EmployeeList() {
         per_page: perPage.toString(),
       });
       if (search) params.set('search', search);
-      if (department) params.set('department', department);
+      // Backend expects department_id (integer), not a department name.
+      if (department) params.set('department_id', department);
       if (role) params.set('role', role);
 
       const res = await fetch(`/api/employees?${params}`, { headers: authHeaders() });
@@ -130,7 +137,7 @@ export default function EmployeeList() {
   }
 
   const hasFilters = search || department || role;
-  const isHR = user?.role === "HR Admin";
+  const isHR = user?.role === "hr";
 
   if (!user) return null;
 
@@ -182,17 +189,19 @@ export default function EmployeeList() {
             className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[160px]"
           >
             <option value="">All Departments</option>
-            {departments.map(d => <option key={d} value={d}>{d}</option>)}
+            {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
 
-          {/* Position filter */}
+          {/* Role filter (backend enum: hr/manager/employee) */}
           <select
             value={role}
             onChange={(e) => handleRoleChange(e.target.value)}
-            className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px]"
+            className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[160px]"
           >
-            <option value="">All Positions</option>
-            {positions.map(r => <option key={r} value={r}>{r}</option>)}
+            <option value="">All Roles</option>
+            <option value="hr">HR</option>
+            <option value="manager">Manager</option>
+            <option value="employee">Employee</option>
           </select>
 
           {/* Clear */}
@@ -254,7 +263,7 @@ export default function EmployeeList() {
                     </td>
                     <td className="px-4 py-3 text-gray-500 font-mono text-xs">{emp.employeeID}</td>
                     <td className="px-4 py-3 text-gray-500 truncate">{emp.email}</td>
-                    <td className="px-4 py-3 text-gray-600 truncate">{emp.department}</td>
+                    <td className="px-4 py-3 text-gray-600 truncate">{emp.department?.name || '—'}</td>
                     <td className="px-4 py-3 text-gray-600 truncate">{emp.position}</td>
                     <td className="px-4 py-3"><StatusBadge status={emp.status} /></td>
                     {isHR && (

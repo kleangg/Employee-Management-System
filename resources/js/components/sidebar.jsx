@@ -181,12 +181,15 @@ export default function Sidebar(){
             }}>
                 <SectionLabel label="Main" collapsed={collapsed} />
                 <NavItem href="/dashboard" label="Dashboard" collapsed={collapsed} icon={icons.dashboard} />
-                <NavItem href="/employees" label="Employees" collapsed={collapsed} icon={icons.employees} />
+                {/* Employees directory is only visible to HR and Manager */}
+                {(user?.role === "hr" || user?.role === "manager") && (
+                    <NavItem href="/employees" label="Employees" collapsed={collapsed} icon={icons.employees} />
+                )}
                 <NavItem href="/attendance" label="Attendance" collapsed={collapsed} icon={icons.attendance} />
                 
                 <SectionLabel label="Management" collapsed={collapsed} />
                 <NavItem href="/leave" label="Leave" collapsed={collapsed} icon={icons.leave} />
-                {(user?.role === "HR Admin" || user?.role === "Manager") && (
+                {(user?.role === "hr" || user?.role === "manager") && (
                     <NavItem href="/reports" label="Reports" collapsed={collapsed} icon={icons.reports} />
                 )}
             </nav>
@@ -228,15 +231,16 @@ export default function Sidebar(){
             {/* ── Current user card ── */}
             {/* This section shows who is logged in */}
             <div style={{ borderTop: '1px solid #bdc4d2', padding: '18px 14px', backgroundColor: '#f9fafb' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 25 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <button
                     onClick={() => window.location.href = '/profile'}
                     style={{
                         display: 'flex',
-                        width: '100%',
+                        flex: 1,
+                        minWidth: 0,
                         alignItems: 'center',
                         gap: 12,
-                        borderRadius: 12, 
+                        borderRadius: 12,
                         cursor: 'pointer',
                         border: 'none',
                         backgroundColor: 'transparent',
@@ -266,9 +270,13 @@ export default function Sidebar(){
                             disabled={loggingOut}
                             title="Logout"
                             style={{
-                                width: 32,
-                                height: 32,
-                                padding: 8,
+                                flexShrink: 0,
+                                width: 36,
+                                height: 36,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: 0,
                                 borderRadius: 10,
                                 border: 'none',
                                 backgroundColor: 'transparent',

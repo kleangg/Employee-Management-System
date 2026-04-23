@@ -277,9 +277,15 @@ export default function Profile() {
   return (
     <div className="p-8 max-w-2xl">
  
-      {/* Back button */}
+      {/* Back button — returns to previous page, or Dashboard if there's none */}
       <button
-        onClick={() => back()}
+        onClick={() => {
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            window.location.href = '/dashboard';
+          }
+        }}
         className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-700 mb-6 transition-colors"
       >
         <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">

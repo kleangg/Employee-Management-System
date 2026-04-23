@@ -60,6 +60,9 @@ function calcHours(clockIn, clockOut) {
   if (isNaN(diff) || diff <= 0) return "—";
   const h = Math.floor(diff / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  // When the diff is under a minute, show seconds so the value isn't just "0h 0m"
+  if (h === 0 && m === 0) return `${s}s`;
   return `${h}h ${m}m`;
 }
  
@@ -111,7 +114,7 @@ function LiveClock() {
 // ══════════════════════════════════════════════════════════════
 //  EMPLOYEE VIEW
 // ══════════════════════════════════════════════════════════════
-function EmployeeAttendanceView() {
+function EmployeeAttendanceView({ onSwitchView }) {
   const { user } = useAuth();
  
   const [today,     setToday]     = useState(null);   // today's record
@@ -165,7 +168,18 @@ function EmployeeAttendanceView() {
  
   return (
     <div className="p-8 max-w-4xl">
-      <h1 className="text-2xl font-medium text-gray-900 mb-1">Attendance</h1>
+      <div className="flex items-center justify-between mb-1">
+        <h1 className="text-2xl font-medium text-gray-900">Attendance</h1>
+        {onSwitchView && (
+          <button
+            onClick={onSwitchView}
+            title="Switch to the team admin view"
+            className="text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors cursor-pointer"
+          >
+            My view · Switch to Admin view
+          </button>
+        )}
+      </div>
       <p className="text-sm text-gray-400 mb-6">
         Welcome, {user?.name?.split(" ")[0]}. Track your daily attendance here.
       </p>
@@ -459,7 +473,7 @@ function SummaryReport({ data }) {
   );
 }
  
-function AdminAttendanceView() {
+function AdminAttendanceView({ onSwitchView }) {
   const [records,   setRecords]   = useState([]);
   const [summary,   setSummary]   = useState([]);
   const [employees, setEmployees] = useState([]);
@@ -506,9 +520,19 @@ function AdminAttendanceView() {
     <div className="p-8 max-w-5xl">
       <div className="flex items-center justify-between mb-1">
         <h1 className="text-2xl font-medium text-gray-900">Attendance</h1>
-        <span className="text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100">
-          HR Admin view
-        </span>
+        {onSwitchView ? (
+          <button
+            onClick={onSwitchView}
+            title="Switch to my own attendance view"
+            className="text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors cursor-pointer"
+          >
+            Admin view · Switch to My view
+          </button>
+        ) : (
+          <span className="text-xs font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100">
+            Admin view
+          </span>
+        )}
       </div>
       <p className="text-sm text-gray-400 mb-6">Monitor and manage employee attendance records.</p>
  
@@ -604,13 +628,22 @@ function AdminAttendanceView() {
   );
 }
  
-// ── Main export — role switch ─────────────────────────────────
+// ── Main export — role switch with view toggle ────────────────
 export default function Attendance() {
   const { user } = useAuth();
   if (!user) return null;
-  return user.role === "HR Admin"
-    ? <AdminAttendanceView />
-    : <EmployeeAttendanceView />;
+
+  // HR and Manager can switch between the team admin view and their
+  // own personal clock-in view; regular employees only have the personal view.
+  const canAdmin = user.role === 'hr' || user.role === 'manager';
+  const [adminMode, setAdminMode] = useState(canAdmin);
+  const toggleView = () => setAdminMode(!adminMode);
+
+  if (!canAdmin) return <EmployeeAttendanceView />;
+
+  return adminMode
+    ? <AdminAttendanceView onSwitchView={toggleView} />
+    : <EmployeeAttendanceView onSwitchView={toggleView} />;
 }
 
 // ── Mount the component ─────────────────
